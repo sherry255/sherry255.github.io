@@ -5,19 +5,19 @@
   
 
   
-  <title>Hello World | Sherry&#39;s Blog</title>
+  <title>new | Sherry&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  <meta name="description" content="Python中一切都是对象,对外表现是传地址, tuple,string,number是不可变对象,也就是内存分配后,内存内 存的值不再改变.Python中 list和dict是可变对象, 可以append和pop, 所以就有了坑, 深拷贝浅拷贝:12345678910a = 1def fun(a):    a = 2fun(a)print a  # 1a = []def fun(a):    a">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2018/04/16/hello-world/index.html">
+<meta property="og:title" content="new">
+<meta property="og:url" content="http://yoursite.com/2017/01/01/python 可变对象导致的坑/index.html">
 <meta property="og:site_name" content="Sherry&#39;s Blog">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="Python中一切都是对象,对外表现是传地址, tuple,string,number是不可变对象,也就是内存分配后,内存内 存的值不再改变.Python中 list和dict是可变对象, 可以append和pop, 所以就有了坑, 深拷贝浅拷贝:12345678910a = 1def fun(a):    a = 2fun(a)print a  # 1a = []def fun(a):    a">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-04-16T11:36:50.594Z">
+<meta property="og:updated_time" content="2018-04-16T12:04:58.141Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="new">
+<meta name="twitter:description" content="Python中一切都是对象,对外表现是传地址, tuple,string,number是不可变对象,也就是内存分配后,内存内 存的值不再改变.Python中 list和dict是可变对象, 可以append和pop, 所以就有了坑, 深拷贝浅拷贝:12345678910a = 1def fun(a):    a = 2fun(a)print a  # 1a = []def fun(a):    a">
   
     <link rel="alternate" href="/atom.xml" title="Sherry&#39;s Blog" type="application/atom+xml">
   
@@ -64,10 +64,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-python 可变对象导致的坑" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/04/16/hello-world/" class="article-date">
-  <time datetime="2018-04-16T11:36:50.594Z" itemprop="datePublished">2018-04-16</time>
+    <a href="/2017/01/01/python 可变对象导致的坑/" class="article-date">
+  <time datetime="2017-01-01T11:45:14.000Z" itemprop="datePublished">2017-01-01</time>
 </a>
     
   </div>
@@ -78,7 +78,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      new
     </h1>
   
 
@@ -86,20 +86,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <p>Python中一切都是对象,对外表现是传地址, tuple,string,number是不可变对象,也就是内存分配后,内存内 存的值不再改变.<br>Python中 list和dict是可变对象, 可以append和pop, 所以就有了坑,</p>
+<p>深拷贝浅拷贝:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a = 1</span><br><span class="line">def fun(a):</span><br><span class="line">    a = 2</span><br><span class="line">fun(a)</span><br><span class="line">print a  # 1</span><br><span class="line">a = []</span><br><span class="line">def fun(a):</span><br><span class="line">    a.append(1)</span><br><span class="line">fun(a)</span><br><span class="line">print a  # [1]</span><br></pre></td></tr></table></figure></p>
+<p>函数参数默认值 :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def generate_new_list_with(my_list=[], element=None):</span><br><span class="line">...     my_list.append(element)</span><br><span class="line">...     return my_list</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; list_1 = generate_new_list_with(element=1)</span><br><span class="line">&gt;&gt;&gt; list_1</span><br><span class="line">[1]</span><br><span class="line">&gt;&gt;&gt; list_2 = generate_new_list_with(element=2)</span><br><span class="line">&gt;&gt;&gt; list_2</span><br><span class="line">[1, 2]</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/04/16/hello-world/" data-id="cjg26zxcw000go6ft3xaac5bc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/01/01/python 可变对象导致的坑/" data-id="cjg26zxd7000ko6ftgzipe494" class="article-share-link">Share</a>
       
       
     </footer>
@@ -108,7 +102,7 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/04/16/Django 数据库事务/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/01/11/2016年买过的提高生活质量的东西/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
@@ -118,7 +112,7 @@
     </a>
   
   
-    <a href="/2018/02/16/Python 的id, type, value/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/12/16/Linux 下删除文件夹的完美解决方案/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">new</div>
     </a>
