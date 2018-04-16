@@ -809,7 +809,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Flask 源码剖析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sherry">
@@ -828,7 +828,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/16/Flask 源码剖析/" itemprop="url">Flask 源码剖析</a></h1>
+                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
         
 
         <div class="post-meta">
@@ -880,7 +880,28 @@
       
         
           
-            <p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
+            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
+<ul>
+<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
+</ul>
+<ul>
+<li><p>新建一个Django的项目</p>
+</li>
+<li><p>编写测试环境的脚本 (develop下)</p>
+</li>
+<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
+</li>
+<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
+</li>
+<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
+<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
+<ul>
+<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
+</ul>
+<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
 
           
         
@@ -1093,7 +1114,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Flask 源码剖析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sherry">
@@ -1112,7 +1133,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
+                <a class="post-title-link" href="/2017/04/16/Flask 源码剖析/" itemprop="url">Flask 源码剖析</a></h1>
         
 
         <div class="post-meta">
@@ -1164,28 +1185,7 @@
       
         
           
-            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
-<ul>
-<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
-</ul>
-<ul>
-<li><p>新建一个Django的项目</p>
-</li>
-<li><p>编写测试环境的脚本 (develop下)</p>
-</li>
-<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
-</li>
-<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
-</li>
-<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
-<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
-<ul>
-<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
-</ul>
-<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
+            <p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
 
           
         
