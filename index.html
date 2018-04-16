@@ -686,147 +686,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
-                2017-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
-<ul>
-<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
-</ul>
-<ul>
-<li><p>新建一个Django的项目</p>
-</li>
-<li><p>编写测试环境的脚本 (develop下)</p>
-</li>
-<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
-</li>
-<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
-</li>
-<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
-<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
-<ul>
-<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
-</ul>
-<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/2016年的读书总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -943,6 +802,147 @@
 </ul>
 <h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
 <h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
+<ul>
+<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
+</ul>
+<ul>
+<li><p>新建一个Django的项目</p>
+</li>
+<li><p>编写测试环境的脚本 (develop下)</p>
+</li>
+<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
+</li>
+<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
+</li>
+<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
+<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
+<ul>
+<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
+</ul>
+<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
 
           
         
@@ -1360,6 +1360,129 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/30/about/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/01/30/about/" itemprop="url">about</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-30T19:45:14+08:00">
+                2017-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Python 后端，平时也写 JavaScript。</p>
+<p>热爱生活，也喜欢写代码。</p>
+<p>联系方式：<a href="mailto:xcmkya@gmail.com" target="_blank" rel="noopener">xcmkya@gmail.com</a></p>
+<p>Github：<a href="https://github.com/sherry255" target="_blank" rel="noopener">https://github.com/sherry255</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/30/各种Web框架比较/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1444,129 +1567,6 @@
 <p>###Bottle<br>　　我研究过几遍 Bottle 的源码, 相比Flask好懂太多, 研究源码的好处是了解了实现方式,比如很多人纠结的GET/POST哪个更安全什么的. Bottle的话, 源码上是看不出有什么区别的.</p>
 <p>###node.js<br>　　上次学了点node.js, 用express搭建博客. 不得不说, Express比Flask优秀太多了= =<br>　　语法层面上来说, JavaScript 是没有 Python 优秀的, 但是, JavaScript确实比 Python 有前途啊.<br>　　这就好比, 一个富人家的小孩, 虽然资质可能比不过某个穷人家的小孩, 长得不好看, 基因不好, 智商也不够高, 但是, 富人有足够多的资源和更好的环境来把他的小孩培养成一个更优质的人.<br>(JavaScript就是这样.自从它被钦定为浏览器唯一指定的官方脚本语言时, 它就出身名门了)</p>
 <p>###Express<br>学这个时, 我已经了解了三个Python web框架了, 难度基本在语言层面上, 确实蛮绕的. = =<br>应该继续好好学 JavaScript.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/30/关于我/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/30/关于我/" itemprop="url">关于我</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-30T19:45:14+08:00">
-                2017-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python 后端，平时也写 JavaScript。</p>
-<p>热爱生活，也喜欢写代码。</p>
-<p>联系方式：<a href="mailto:xcmkya@gmail.com" target="_blank" rel="noopener">xcmkya@gmail.com</a></p>
-<p>Github：<a href="https://github.com/sherry255" target="_blank" rel="noopener">https://github.com/sherry255</a></p>
 
           
         
