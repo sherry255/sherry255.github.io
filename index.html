@@ -9,8 +9,11 @@
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
+
+
+
 
 
 
@@ -38,10 +41,6 @@
 
 
 
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
 
 
 
@@ -50,42 +49,25 @@
 
 <link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
 
 
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
 
 
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
 
 
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
 
 
 
 
 
 
-
-
-
-
-<meta property="og:type" content="website">
-<meta property="og:title" content="Sherry&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Sherry&#39;s Blog">
-<meta property="og:locale" content="default">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sherry&#39;s Blog">
 
 
 
@@ -94,15 +76,13 @@
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    version: '5.1.4',
+    version: '6.1.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
     algolia: {
       applicationID: '',
       apiKey: '',
@@ -114,12 +94,33 @@
 </script>
 
 
+  
+
+
+
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Sherry&#39;s Blog">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Sherry&#39;s Blog">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sherry&#39;s Blog">
+
+
+
+
+
 
   <link rel="canonical" href="http://yoursite.com/"/>
 
 
 
-
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
 
   <title>Sherry's Blog</title>
   
@@ -130,6 +131,34 @@
 
 
 
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
 
 </head>
 
@@ -150,7 +179,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Sherry's Blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -162,7 +191,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button>
+    <button aria-label="Toggle navigation bar">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -170,35 +199,38 @@
   </div>
 </div>
 
-<nav class="site-nav">
-  
 
+
+
+<nav class="site-nav">
   
     <ul id="menu" class="menu">
       
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
+        
+          
+          <li class="menu-item menu-item-home menu-item-active">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
 
       
+      
     </ul>
+  
+
+  
+    
+
   
 
   
@@ -206,12 +238,20 @@
 
 
 
- </div>
+  
+
+
+
+</div>
     </header>
+
+    
+
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
+          
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
@@ -222,6 +262,8 @@
 
   
   
+  
+
   
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
@@ -248,11 +290,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/16/Django 使用celery的一些总结/" itemprop="url">Django 使用celery的一些总结</a></h1>
+                <a class="post-title-link" href="/2018/08/16/Django 使用celery的一些总结/" itemprop="url">
+                  Django 使用celery的一些总结
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -260,13 +312,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-16T19:45:14+08:00">
-                2018-08-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2018-08-16 19:45:14" itemprop="dateCreated datePublished" datetime="2018-08-16T19:45:14+08:00">2018-08-16</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:23:26" itemprop="dateModified" datetime="2018-04-16T20:23:26+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -308,6 +377,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -346,6 +418,8 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -370,11 +444,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/04/16/Django 数据库事务/" itemprop="url">Django 数据库事务</a></h1>
+                <a class="post-title-link" href="/2018/04/16/Django 数据库事务/" itemprop="url">
+                  Django 数据库事务
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -382,13 +466,18 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-16T19:45:14+08:00">
-                2018-04-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2018-04-16 19:45:14 / Modified: 20:23:28" itemprop="dateCreated datePublished" datetime="2018-04-16T19:45:14+08:00">2018-04-16</time>
             
 
             
+              
 
+              
             
           </span>
 
@@ -427,6 +516,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -465,6 +557,8 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -489,11 +583,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/04/16/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2018/04/16/hello-world/" itemprop="url">
+                  Hello World
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -501,11 +605,12 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-16T19:36:50+08:00">
-                2018-04-16
-              </time>
-            
 
+              
+                
+              
+
+              <time title="Created: 2018-04-16 19:36:50" itemprop="dateCreated datePublished" datetime="2018-04-16T19:36:50+08:00">2018-04-16</time>
             
 
             
@@ -555,6 +660,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -593,6 +701,8 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -617,11 +727,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/10/Pythonic 写法总结/" itemprop="url">Pythonic 写法总结</a></h1>
+                <a class="post-title-link" href="/2018/03/10/Pythonic 写法总结/" itemprop="url">
+                  Pythonic 写法总结
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -629,13 +749,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-10T19:45:14+08:00">
-                2018-03-10
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2018-03-10 19:45:14" itemprop="dateCreated datePublished" datetime="2018-03-10T19:45:14+08:00">2018-03-10</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:55:49" itemprop="dateModified" datetime="2018-04-16T20:55:49+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -697,6 +834,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -735,6 +875,8 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -759,11 +901,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/16/Python 的id, type, value/" itemprop="url">Python 的id, type, value</a></h1>
+                <a class="post-title-link" href="/2018/02/16/Python 的id, type, value/" itemprop="url">
+                  Python 的id, type, value
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -771,13 +923,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-16T19:45:14+08:00">
-                2018-02-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2018-02-16 19:45:14" itemprop="dateCreated datePublished" datetime="2018-02-16T19:45:14+08:00">2018-02-16</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:32:40" itemprop="dateModified" datetime="2018-04-16T20:32:40+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -817,6 +986,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -855,6 +1027,8 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -879,11 +1053,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/09/16/那些年, 社会教我做的人/" itemprop="url">那些年, 社会教我做的人</a></h1>
+                <a class="post-title-link" href="/2017/09/16/那些年, 社会教我做的人/" itemprop="url">
+                  那些年, 社会教我做的人
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -891,13 +1075,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-16T19:45:14+08:00">
-                2017-09-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2017-09-16 19:45:14" itemprop="dateCreated datePublished" datetime="2017-09-16T19:45:14+08:00">2017-09-16</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:26:19" itemprop="dateModified" datetime="2018-04-16T20:26:19+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -944,6 +1145,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -982,6 +1186,8 @@
   
   
 
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -1006,11 +1212,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/16/Flask 源码剖析/" itemprop="url">Flask 源码剖析</a></h1>
+                <a class="post-title-link" href="/2017/04/16/Flask 源码剖析/" itemprop="url">
+                  Flask 源码剖析
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -1018,13 +1234,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
-                2017-04-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2017-04-16 19:45:14" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">2017-04-16</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:23:25" itemprop="dateModified" datetime="2018-04-16T20:23:25+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -1064,147 +1297,9 @@
         
       
     </div>
-    
-    
-    
 
     
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
-                2017-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
-<ul>
-<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
-</ul>
-<ul>
-<li><p>新建一个Django的项目</p>
-</li>
-<li><p>编写测试环境的脚本 (develop下)</p>
-</li>
-<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
-</li>
-<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
-</li>
-<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
-<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
-<ul>
-<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
-</ul>
-<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
-
-          
-        
-      
-    </div>
     
     
     
@@ -1241,6 +1336,8 @@
 
   
   
+  
+
   
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
@@ -1267,11 +1364,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/16/2016年的读书总结/" itemprop="url">2016年的读书总结</a></h1>
+                <a class="post-title-link" href="/2017/04/16/2016年的读书总结/" itemprop="url">
+                  2016年的读书总结
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -1279,13 +1386,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
-                2017-04-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2017-04-16 19:45:14" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">2017-04-16</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:23:23" itemprop="dateModified" datetime="2018-04-16T20:23:23+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -1369,6 +1493,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -1407,6 +1534,181 @@
   
   
 
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">
+                  Django LiveServerTestCase
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-04-16 19:45:14" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">2017-04-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:23:24" itemprop="dateModified" datetime="2018-04-16T20:23:24+08:00">2018-04-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
+<ul>
+<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
+</ul>
+<ul>
+<li><p>新建一个Django的项目</p>
+</li>
+<li><p>编写测试环境的脚本 (develop下)</p>
+</li>
+<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
+</li>
+<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
+</li>
+<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
+<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
+<ul>
+<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
+</ul>
+<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
@@ -1431,11 +1733,21 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/03/16/Django 常用命令/" itemprop="url">Django 常用命令</a></h1>
+                <a class="post-title-link" href="/2017/03/16/Django 常用命令/" itemprop="url">
+                  Django 常用命令
+                </a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
           <span class="post-time">
+
+            
+            
+            
+
             
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -1443,13 +1755,30 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-16T19:45:14+08:00">
-                2017-03-16
-              </time>
+
+              
+                
+              
+
+              <time title="Created: 2017-03-16 19:45:14" itemprop="dateCreated datePublished" datetime="2017-03-16T19:45:14+08:00">2017-03-16</time>
             
 
             
+              
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-16 20:23:27" itemprop="dateModified" datetime="2018-04-16T20:23:27+08:00">2018-04-16</time>
+              
             
           </span>
 
@@ -1492,6 +1821,9 @@
         
       
     </div>
+
+    
+
     
     
     
@@ -1526,15 +1858,12 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
 
           </div>
-          
-
-
           
 
         </div>
@@ -1565,35 +1894,38 @@
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
+          
+            <nav class="site-state motion-element">
               
-                <a href="/archives/">
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
               
-                  <span class="site-state-item-count">27</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
             
-
-            
-
-            
-
-          </nav>
-
           
-
-          
-
-          
-          
-
-          
-          
-
           
 
         </div>
@@ -1614,16 +1946,20 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
-  <span class="with-love">
+  <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Sherry</span>
 
   
+
+  
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
 
 
 
@@ -1631,12 +1967,13 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.1.0</div>
 
 
 
 
         
+
 
 
 
@@ -1675,7 +2012,11 @@
 
 
 
-  
+
+
+
+
+
 
 
 
@@ -1695,16 +2036,6 @@
 
   
   
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
     <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   
 
@@ -1713,18 +2044,13 @@
     <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
   
 
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
 
   
 
 
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
 
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
 
 
 
@@ -1736,15 +2062,11 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
 
 
 
   
-
-
-  
-
 
 
 
@@ -1771,8 +2093,6 @@
 
 
 
-
-
   
 
 
@@ -1786,6 +2106,12 @@
   
 
   
+
+  
+  
+
+  
+
   
 
   
