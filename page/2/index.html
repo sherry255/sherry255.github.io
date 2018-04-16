@@ -7,8 +7,7 @@
     noSupport: 'The browser does not support'
   },
   localSearch: undefined
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Sherry</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">28</span></a></div></div></div><nav class="no-bg" id="nav" style="background-image: url(true)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Sherry's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">Sherry's Blog</div><div id="site-sub-title"></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item"><a class="article-title" href="/2017/04/16/Flask 源码剖析/">Flask 源码剖析</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16</time><div class="content"><p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
-</div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/04/16/Django LiveServerTestCase/">Django LiveServerTestCase</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16</time><div class="content"><p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Sherry</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">28</span></a></div></div></div><nav class="no-bg" id="nav" style="background-image: url(true)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Sherry's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">Sherry's Blog</div><div id="site-sub-title"></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item"><a class="article-title" href="/2017/04/16/Django LiveServerTestCase/">Django LiveServerTestCase</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16</time><div class="content"><p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
 <ul>
 <li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
 </ul>
@@ -30,6 +29,51 @@
 <li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
 </ul>
 <p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
+</div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/04/16/2016年的读书总结/">2016年的读书总结</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16</time><div class="content"><p>2016年大概买了40本书, 大部分都看了,当然还看了无数的电子书和网上的资料</p>
+<h1 id="技术类"><a href="#技术类" class="headerlink" title="技术类:"></a>技术类:</h1><ul>
+<li><p>Haskell 并行与并发编程:<br>Haskell的书我买了两本, 这本算是比较好的. 讲得很深入， 很遗憾，工作中没办法用到Haskell。</p>
+</li>
+<li><p>Haskell 函数式程序设计<br>买这本书时， 我已经在十一假期期间把 realHaskell 学了一半了, 这本书只是大概看了一下</p>
+</li>
+<li><p>Head First jQuery（中文版）<br>比较简单, 我只是消遣看看.</p>
+</li>
+<li><p>O’Reilly：Head First 设计模式（中文版）<br>看了一点, 没吸收掉吧 = =</p>
+</li>
+<li><p>数据结构与算法分析：C 语言描述（原书第2版）<br>很一般的书, 比算法导论差了很多</p>
+</li>
+<li><p>Redis 实战<br>这本书很有趣, 介绍了很多redis的实战用法.</p>
+</li>
+<li><p>MongoDB 应用设计模式<br>实战类的书都好评, 比较薄, 一会儿就看完了</p>
+</li>
+<li><p>Python Web 开发 测试驱动方法<br>学习了TDD, 但是应用的话, 还是要考虑实际情况. 对于大公司来说, TDD 是很好的保证质量的方式, 但是对于小公司来说, 可能会影响开发效率.</p>
+</li>
+<li><p>计算机科学丛书：深入理解计算机系统（原书第2版）<br>作为一个从硅的提纯到电路设计到通信原理到汇编到C到Python到web前端都接触过的人,我忽略了本书的汇编部分.<br>我觉得普通程序员看看这本书挺涨见识的, 但也仅仅是涨见识了.细节一定是在解决问题中学到的, 不可能通过看书感知.</p>
+</li>
+<li><p>程序员修炼之道：从小工到专家<br>这本书我非常喜欢, 比&lt;代码大全&gt;更精简, 值得放在枕边经常翻翻.</p>
+</li>
+<li><p>C++ Primer（中文版 第5版）<br>C++ 并没有学完 = =</p>
+</li>
+<li><p>JavaScript 高级程序设计<br>这本书堪称JS的经典吧. 写前端的时候一直在翻, 应该说还没完全掌握</p>
+</li>
+<li><p>人月神话<br>软件工程没有银弹</p>
+</li>
+<li><p>TCP/IP 详解卷1 协议<br>比较老了,照着书上的例子跑命令时很多对不上, 但是确实比什么《http权威指南》要好很多…</p>
+</li>
+<li><p>算法导论（原书第3版）/计算机科学丛书<br>非常好的算法书, 然而平时工作中不太用得到 = =</p>
+</li>
+<li><p>Python cookbook<br>难得一见的 Python 经典</p>
+</li>
+<li><p>代码大全<br>每次翻的时候都恍然大悟</p>
+</li>
+</ul>
+<h1 id="医学类"><a href="#医学类" class="headerlink" title="医学类:"></a>医学类:</h1><ul>
+<li><p>默克家庭医学手册<br>医学科普类书籍, 建议买给父母看, 可以让他们少上一些假的保健品的当吧 =</p>
+</li>
+<li><p>外科学,病理学,内科学<br>先啃完这三本, 没什么难度, 完全的死记硬背. 我学这些不是为了挣钱(目前来说这些知识应该不能挣钱). 当然也不是漫无目的地乱学.</p>
+</li>
+</ul>
+<h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
+<h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
 </div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/03/16/Django 常用命令/">Django 常用命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-16</time><div class="content"><p>查看log<br><figure class="highlight plain"><figcaption><span>-f</span><a href="/var/log/django/*```">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">杀死进程</span><br><span class="line">``` </span><br><span class="line">killall -9 python </span><br><span class="line">kill -9 pid(进程号)</span><br></pre></td></tr></table></figure></p>
 <p>查看当前运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps auxw | grep runserver</span><br></pre></td></tr></table></figure></p>
 <p>mysql的状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysqld status</span><br></pre></td></tr></table></figure></p>
@@ -41,6 +85,10 @@
 <li>hg pull (拉取代码)</li>
 <li>hg up (更新当前工作区代码)</li>
 </ul>
+</div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/01/30/关于我/">关于我</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-01-30</time><div class="content"><p>Python 后端，平时也写 JavaScript。</p>
+<p>热爱生活，也喜欢写代码。</p>
+<p>联系方式：<a href="mailto:xcmkya@gmail.com" target="_blank" rel="noopener">xcmkya@gmail.com</a></p>
+<p>Github：<a href="https://github.com/sherry255" target="_blank" rel="noopener">https://github.com/sherry255</a></p>
 </div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/01/30/各种Web框架比较/">各种Web框架比较</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-01-30</time><div class="content"><p>首先, 新框架的学习难度是很低的, 对于熟悉web基本原理的人来说,<br>同理， 精通一门语言之后， 再学习别的语言， 难度也不大。</p>
 <p>##Python<br>Python 的卖点大概有：</p>
 <ul>
@@ -54,10 +102,6 @@
 <p>###Bottle<br>　　我研究过几遍 Bottle 的源码, 相比Flask好懂太多, 研究源码的好处是了解了实现方式,比如很多人纠结的GET/POST哪个更安全什么的. Bottle的话, 源码上是看不出有什么区别的.</p>
 <p>###node.js<br>　　上次学了点node.js, 用express搭建博客. 不得不说, Express比Flask优秀太多了= =<br>　　语法层面上来说, JavaScript 是没有 Python 优秀的, 但是, JavaScript确实比 Python 有前途啊.<br>　　这就好比, 一个富人家的小孩, 虽然资质可能比不过某个穷人家的小孩, 长得不好看, 基因不好, 智商也不够高, 但是, 富人有足够多的资源和更好的环境来把他的小孩培养成一个更优质的人.<br>(JavaScript就是这样.自从它被钦定为浏览器唯一指定的官方脚本语言时, 它就出身名门了)</p>
 <p>###Express<br>学这个时, 我已经了解了三个Python web框架了, 难度基本在语言层面上, 确实蛮绕的. = =<br>应该继续好好学 JavaScript.</p>
-</div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/01/30/关于我/">关于我</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-01-30</time><div class="content"><p>Python 后端，平时也写 JavaScript。</p>
-<p>热爱生活，也喜欢写代码。</p>
-<p>联系方式：<a href="mailto:xcmkya@gmail.com" target="_blank" rel="noopener">xcmkya@gmail.com</a></p>
-<p>Github：<a href="https://github.com/sherry255" target="_blank" rel="noopener">https://github.com/sherry255</a></p>
 </div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/01/16/Localstorage 使用/">Localstorage 使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-01-16</time><div class="content"><p>前段时间想用electron做一个类似TODO的应用, 我平时的工作写后端比较多, 走了一些坑, 也学了一些东西, 以下是我学习到的localstorage的总结:</p>
 <p>localStorage 基本特点:<br>　　以键值对(Key-Value)的方式存储，永久存储，永不失效，除非手动删除</p>
 <p>浏览器各种存储方式比较<br>　　cookie(4k)<br>　　localStorage(5M)</p>

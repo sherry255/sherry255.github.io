@@ -13,7 +13,7 @@
 </div><hr></div><div class="recent-post-item"><a class="article-title" href="/2018/04/16/Usage/">No title</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-16</time><div class="content"></div><hr></div><div class="recent-post-item"><a class="article-title" href="/2018/04/16/Python的上下文管理器/">No title</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-16</time><div class="content"><hr>
 <p>title: Python的上下文管理器<br>date: 2016-04-16 19:45:14<br>tags:<br>—　</p>
 </div><hr></div><div class="recent-post-item"><a class="article-title" href="/2018/04/16/Pythonic写法总结/">No title</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-16</time><div class="content"><hr>
-<p>title: Pythonic写法总结<br>date: 2018-04-16 19:45:14<br>tags:<br>—　</p>
+<p>title: Pythonic写法总结<br>date: 2018-04-15 19:45:14<br>tags:<br>—　</p>
 <p>Python 这门语言的, 入门容易, 精通难, 难在语法糖吧. Python有很多trick, 可以让代码更优雅,高效,高质量.<br>　　2016年6~8月我周末都是在听一些公开课,在cs212上学了一些更Pythonic的写法:</p>
 <h2 id="找出一个列表中元素出现次数最多的元素"><a href="#找出一个列表中元素出现次数最多的元素" class="headerlink" title="找出一个列表中元素出现次数最多的元素:"></a>找出一个列表中元素出现次数最多的元素:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">1</span>]</span><br><span class="line"><span class="comment"># 统计a中每个元素出现的次数</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = &#123;i:a.count(i)  <span class="keyword">for</span> i <span class="keyword">in</span> set(a) &#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">&#123;<span class="number">1</span>: <span class="number">1</span>, <span class="number">2</span>: <span class="number">2</span>, <span class="number">3</span>: <span class="number">1</span>, <span class="number">4</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="comment"># 返回value 最大值的key</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>max(b, key=b.get)</span><br></pre></td></tr></table></figure>
 <h3 id="关于-Super"><a href="#关于-Super" class="headerlink" title="关于 Super"></a>关于 Super</h3><p>1,</p>
@@ -57,49 +57,5 @@
 <li>成人成事比技术难多了</li>
 <li>不讨论认识的人</li>
 </ul>
-</div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/04/16/2016年的读书总结/">2016年的读书总结</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16</time><div class="content"><p>2016年大概买了40本书, 大部分都看了,当然还看了无数的电子书和网上的资料</p>
-<h1 id="技术类"><a href="#技术类" class="headerlink" title="技术类:"></a>技术类:</h1><ul>
-<li><p>Haskell 并行与并发编程:<br>Haskell的书我买了两本, 这本算是比较好的. 讲得很深入， 很遗憾，工作中没办法用到Haskell。</p>
-</li>
-<li><p>Haskell 函数式程序设计<br>买这本书时， 我已经在十一假期期间把 realHaskell 学了一半了, 这本书只是大概看了一下</p>
-</li>
-<li><p>Head First jQuery（中文版）<br>比较简单, 我只是消遣看看.</p>
-</li>
-<li><p>O’Reilly：Head First 设计模式（中文版）<br>看了一点, 没吸收掉吧 = =</p>
-</li>
-<li><p>数据结构与算法分析：C 语言描述（原书第2版）<br>很一般的书, 比算法导论差了很多</p>
-</li>
-<li><p>Redis 实战<br>这本书很有趣, 介绍了很多redis的实战用法.</p>
-</li>
-<li><p>MongoDB 应用设计模式<br>实战类的书都好评, 比较薄, 一会儿就看完了</p>
-</li>
-<li><p>Python Web 开发 测试驱动方法<br>学习了TDD, 但是应用的话, 还是要考虑实际情况. 对于大公司来说, TDD 是很好的保证质量的方式, 但是对于小公司来说, 可能会影响开发效率.</p>
-</li>
-<li><p>计算机科学丛书：深入理解计算机系统（原书第2版）<br>作为一个从硅的提纯到电路设计到通信原理到汇编到C到Python到web前端都接触过的人,我忽略了本书的汇编部分.<br>我觉得普通程序员看看这本书挺涨见识的, 但也仅仅是涨见识了.细节一定是在解决问题中学到的, 不可能通过看书感知.</p>
-</li>
-<li><p>程序员修炼之道：从小工到专家<br>这本书我非常喜欢, 比&lt;代码大全&gt;更精简, 值得放在枕边经常翻翻.</p>
-</li>
-<li><p>C++ Primer（中文版 第5版）<br>C++ 并没有学完 = =</p>
-</li>
-<li><p>JavaScript 高级程序设计<br>这本书堪称JS的经典吧. 写前端的时候一直在翻, 应该说还没完全掌握</p>
-</li>
-<li><p>人月神话<br>软件工程没有银弹</p>
-</li>
-<li><p>TCP/IP 详解卷1 协议<br>比较老了,照着书上的例子跑命令时很多对不上, 但是确实比什么《http权威指南》要好很多…</p>
-</li>
-<li><p>算法导论（原书第3版）/计算机科学丛书<br>非常好的算法书, 然而平时工作中不太用得到 = =</p>
-</li>
-<li><p>Python cookbook<br>难得一见的 Python 经典</p>
-</li>
-<li><p>代码大全<br>每次翻的时候都恍然大悟</p>
-</li>
-</ul>
-<h1 id="医学类"><a href="#医学类" class="headerlink" title="医学类:"></a>医学类:</h1><ul>
-<li><p>默克家庭医学手册<br>医学科普类书籍, 建议买给父母看, 可以让他们少上一些假的保健品的当吧 =</p>
-</li>
-<li><p>外科学,病理学,内科学<br>先啃完这三本, 没什么难度, 完全的死记硬背. 我学这些不是为了挣钱(目前来说这些知识应该不能挣钱). 当然也不是漫无目的地乱学.</p>
-</li>
-</ul>
-<h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
-<h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
+</div><hr></div><div class="recent-post-item"><a class="article-title" href="/2017/04/16/Flask 源码剖析/">Flask 源码剖析</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16</time><div class="content"><p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
 </div><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2018 By Sherry</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.3"></script><script src="/js/fancybox.js?version=1.5.3"></script><script src="/js/sidebar.js?version=1.5.3"></script><script src="/js/copy.js?version=1.5.3"></script><script src="/js/fireworks.js?version=1.5.3"></script><script src="/js/transition.js?version=1.5.3"></script><script src="/js/scroll.js?version=1.5.3"></script><script src="/js/head.js?version=1.5.3"></script></body></html>
