@@ -239,6 +239,126 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/18/关于一些公开课的总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/18/关于一些公开课的总结/" itemprop="url">关于一些公开课的总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-18T01:49:15+08:00">
+                2018-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>CS61A :初学者<br>CS212: 进阶</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/18/关于https/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -360,7 +480,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/17/2017技术总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/17/2017技术总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sherry">
@@ -379,7 +499,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/04/17/2017技术总结/" itemprop="url">2017技术总结</a></h1>
+                <a class="post-title-link" href="/2018/03/17/2017技术总结/" itemprop="url">2017技术总结</a></h1>
         
 
         <div class="post-meta">
@@ -391,8 +511,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T18:54:31+08:00">
-                2018-04-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-17T18:54:31+08:00">
+                2018-03-17
               </time>
             
 
@@ -436,7 +556,7 @@
 <p>其中用到了celery docker rabbitmq redis flower，很多东西都是第一次使用。现在想来，其实也没这么难。都是直接看英文文档，文档里都说得很清楚。其中遇到了一些坑，也都解决了。</p>
 <p>一些思考：<br>1，celery并不这么优秀，虽然当时足够用了，但是感觉上没这么好。最好的方案应该是自己造轮子，但是考虑到当时的人力成本不那么够。<br>2，Python的并发并行主要使用 <code>thread</code> 和 <code>multiprocessing</code>。thread 因为GIL的原因并不这么好用。对于CPU消耗性的任务来说，只可能选 multiprocessing。<br>3，很多东西还是直接看英文文档就够了，中文翻译的大部分都是老旧的东西、翻译质量也很难保证。<br>4，Python这门语言的各种trick其实没啥意思，考虑到可读性的话其实用不用无所谓。</p>
 <p>TODO:<br>0, 去年帮前端写过一个vue上传组件。这让我感觉现今的流行框架实在是太恶心了，明明jq几行就能搞完的东西，竟然可以让一个做了好几年前端的同事debug两个礼拜找不出de不出来。我花了一天学vue，又在github上找了半天找到一个用到这个组件的项目拆了半天，又debug了半天才完成这个上传组件。现有的框架在设计上肯定有问题的，我现在说不好这种设计有什么问题，但是从用户的角度上来看，各种体验其实并没有这么好。</p>
-<p>1, 所以我觉得前端唯一一个让我感兴趣的部分就是富文本编辑器了。但是我实在是不知道该如何着手去做这个东西。所以就搁置了。T_T<br>2, devops还是不错的，提高了效率、节省了很多时间。应该大力推广才是。<br>3，我现在有兴趣的事情大概是朝着更难的方向去做吧。比如造个任务调度的轮子。<br>4，最后吐槽一下阿里云的各种产品一点都不友好啊，有的居然不支持Python3，有的各种bug，自己改包。。。。</p>
+<p>1, 前端唯一一个让我感兴趣的部分就是富文本编辑器了。但是我实在是不知道该如何着手去做这个东西。所以就搁置了。T_T<br>2, devops还是不错的，提高了效率、节省了很多时间。应该大力推广才是。<br>3，我现在有兴趣的事情大概是朝着更难的方向去做吧。比如造个任务调度的轮子。<br>4，最后吐槽一下阿里云的各种产品一点都不友好啊，有的居然不支持Python3，有的各种bug，自己改包。。。。</p>
 
           
         
@@ -1009,6 +1129,126 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Flask 源码剖析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/16/Flask 源码剖析/" itemprop="url">Flask 源码剖析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1102,126 +1342,6 @@
 <li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
 </ul>
 <p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Flask 源码剖析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/16/Flask 源码剖析/" itemprop="url">Flask 源码剖析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
-                2017-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
 
           
         
@@ -1421,129 +1541,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/16/Django 常用命令/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/16/Django 常用命令/" itemprop="url">Django 常用命令</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-16T19:45:14+08:00">
-                2017-03-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>查看log<br><figure class="highlight plain"><figcaption><span>-f</span><a href="/var/log/django/*```">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">杀死进程</span><br><span class="line">``` </span><br><span class="line">killall -9 python </span><br><span class="line">kill -9 pid(进程号)</span><br></pre></td></tr></table></figure></p>
-<p>查看当前运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps auxw | grep runserver</span><br></pre></td></tr></table></figure></p>
-<p>mysql的状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysqld status</span><br></pre></td></tr></table></figure></p>
-<p>关闭 nginx 的自启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chkconfig mysqld/nginx/gunicorn  on</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1594,7 +1591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
