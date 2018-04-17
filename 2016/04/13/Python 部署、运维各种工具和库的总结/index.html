@@ -200,16 +200,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
@@ -248,26 +238,22 @@
   
     <div class="site-search">
       
-  
-  <div class="algolia-popup popup search-popup">
-    <div class="algolia-search">
-      <div class="algolia-search-input-icon">
-        <i class="fa fa-search"></i>
-      </div>
-      <div class="algolia-search-input" id="algolia-search-input"></div>
-    </div>
-
-    <div class="algolia-results">
-      <div id="algolia-stats"></div>
-      <div id="algolia-hits"></div>
-      <div id="algolia-pagination" class="algolia-pagination"></div>
-    </div>
-
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
     <span class="popup-btn-close">
       <i class="fa fa-times-circle"></i>
     </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
   </div>
-
+  <div id="local-search-result"></div>
+</div>
 
 
 
@@ -392,8 +378,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/13/Python的上下文管理器/" rel="next" title="Python的上下文管理器">
-                <i class="fa fa-chevron-left"></i> Python的上下文管理器
+              <a href="/2016/01/30/各种数据库比较/" rel="next" title="各种数据库比较">
+                <i class="fa fa-chevron-left"></i> 各种数据库比较
               </a>
             
           </div>
@@ -402,8 +388,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/04/16/git 常见问题/" rel="prev" title="git 常见问题">
-                git 常见问题 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/04/13/Python的上下文管理器/" rel="prev" title="Python的上下文管理器">
+                Python的上下文管理器 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1019,19 +1005,6 @@
   </script>
 
 
-
-
-  
-  
-  
-  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
-
-  
-  
-  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
-  
-
-  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
 
 
 
