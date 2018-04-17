@@ -297,6 +297,131 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/17/2017技术总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/17/2017技术总结/" itemprop="url">2017技术总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T18:54:31+08:00">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>去年主要成就有两个, 一个是从0到1完成了公司项目的devops部分的搭建以及前后端分离（django+vue）方案的设计.(包括gitlab ci ansible 等工具的使用)<br>包括前端跨域问题的解决，前端开发环境跨域问题的解决等等。</p>
+<p>另外一个，是以一己之力搭建起了一个任务调度系统。期间换了n种方案，也曾经考虑过使用阿里云的函数计算。但最终考虑到可靠性的问题，放弃了。</p>
+<p>其中用到了celery docker rabbitmq redis flower，很多东西都是第一次使用。现在想来，其实也没这么难。都是直接看英文文档，文档里都说得很清楚。其中遇到了一些坑，也都解决了。</p>
+<p>一些思考：<br>1，celery并不这么优秀，虽然当时足够用了，但是感觉上没这么好。最好的方案应该是自己造轮子，但是考虑到当时的人力成本不那么够。<br>2，Python的并发并行主要使用 <code>thread</code> 和 <code>multiprocessing</code>。thread 因为GIL的原因并不这么好用。对于CPU消耗性的任务来说，只可能选 multiprocessing。<br>3，很多东西还是直接看英文文档就够了，中文翻译的大部分都是老旧的东西、翻译质量也很难保证。<br>4，Python这门语言的各种trick其实没啥意思，考虑到可读性的话其实用不用无所谓。</p>
+<p>TODO:<br>0, 去年帮前端写过一个vue上传组件。这让我感觉现今的流行框架实在是太恶心了，明明jq几行就能搞完的东西，竟然可以让一个做了好几年前端的同事debug两个礼拜找不出de不出来。我花了一天学vue，又在github上找了半天找到一个用到这个组件的项目拆了半天，又debug了半天才完成这个上传组件。现有的框架在设计上肯定有问题的，我现在说不好这种设计有什么问题，但是从用户的角度上来看，各种体验其实并没有这么好。</p>
+<p>1, 所以我觉得前端唯一一个让我感兴趣的部分就是富文本编辑器了。但是我实在是不知道该如何着手去做这个东西。所以就搁置了。T_T<br>2, devops还是不错的，提高了效率、节省了很多时间。应该大力推广才是。<br>3，我现在有兴趣的事情大概是朝着更难的方向去做吧。比如造个任务调度的轮子。<br>4，最后吐槽一下阿里云的各种产品一点都不友好啊，有的居然不支持Python3，有的各种bug，自己改包。。。。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/10/Pythonic 写法总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -821,6 +946,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/2016年的读书总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sherry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/16/2016年的读书总结/" itemprop="url">2016年的读书总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>2016年大概买了40本书, 大部分都看了,当然还看了无数的电子书和网上的资料</p>
+<h1 id="技术类"><a href="#技术类" class="headerlink" title="技术类:"></a>技术类:</h1><ul>
+<li><p>Haskell 并行与并发编程:<br>Haskell的书我买了两本, 这本算是比较好的. 讲得很深入， 很遗憾，工作中没办法用到Haskell。</p>
+</li>
+<li><p>Haskell 函数式程序设计<br>买这本书时， 我已经在十一假期期间把 realHaskell 学了一半了, 这本书只是大概看了一下</p>
+</li>
+<li><p>Head First jQuery（中文版）<br>比较简单, 我只是消遣看看.</p>
+</li>
+<li><p>O’Reilly：Head First 设计模式（中文版）<br>看了一点, 没吸收掉吧 = =</p>
+</li>
+<li><p>数据结构与算法分析：C 语言描述（原书第2版）<br>很一般的书, 比算法导论差了很多</p>
+</li>
+<li><p>Redis 实战<br>这本书很有趣, 介绍了很多redis的实战用法.</p>
+</li>
+<li><p>MongoDB 应用设计模式<br>实战类的书都好评, 比较薄, 一会儿就看完了</p>
+</li>
+<li><p>Python Web 开发 测试驱动方法<br>学习了TDD, 但是应用的话, 还是要考虑实际情况. 对于大公司来说, TDD 是很好的保证质量的方式, 但是对于小公司来说, 可能会影响开发效率.</p>
+</li>
+<li><p>计算机科学丛书：深入理解计算机系统（原书第2版）<br>作为一个从硅的提纯到电路设计到通信原理到汇编到C到Python到web前端都接触过的人,我忽略了本书的汇编部分.<br>我觉得普通程序员看看这本书挺涨见识的, 但也仅仅是涨见识了.细节一定是在解决问题中学到的, 不可能通过看书感知.</p>
+</li>
+<li><p>程序员修炼之道：从小工到专家<br>这本书我非常喜欢, 比&lt;代码大全&gt;更精简, 值得放在枕边经常翻翻.</p>
+</li>
+<li><p>C++ Primer（中文版 第5版）<br>C++ 并没有学完 = =</p>
+</li>
+<li><p>JavaScript 高级程序设计<br>这本书堪称JS的经典吧. 写前端的时候一直在翻, 应该说还没完全掌握</p>
+</li>
+<li><p>人月神话<br>软件工程没有银弹</p>
+</li>
+<li><p>TCP/IP 详解卷1 协议<br>比较老了,照着书上的例子跑命令时很多对不上, 但是确实比什么《http权威指南》要好很多…</p>
+</li>
+<li><p>算法导论（原书第3版）/计算机科学丛书<br>非常好的算法书, 然而平时工作中不太用得到 = =</p>
+</li>
+<li><p>Python cookbook<br>难得一见的 Python 经典</p>
+</li>
+<li><p>代码大全<br>每次翻的时候都恍然大悟</p>
+</li>
+</ul>
+<h1 id="医学类"><a href="#医学类" class="headerlink" title="医学类:"></a>医学类:</h1><ul>
+<li><p>默克家庭医学手册<br>医学科普类书籍, 建议买给父母看, 可以让他们少上一些假的保健品的当吧 =</p>
+</li>
+<li><p>外科学,病理学,内科学<br>先啃完这三本, 没什么难度, 完全的死记硬背. 我学这些不是为了挣钱(目前来说这些知识应该不能挣钱). 当然也不是漫无目的地乱学.</p>
+</li>
+</ul>
+<h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
+<h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1034,170 +1323,6 @@
         
           
             <p>以下是我研究的Flask源码的笔记:<br><a href="https://github.com/sherry255/flask_notes" target="_blank" rel="noopener">https://github.com/sherry255/flask_notes</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/2016年的读书总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/16/2016年的读书总结/" itemprop="url">2016年的读书总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T19:45:14+08:00">
-                2017-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>2016年大概买了40本书, 大部分都看了,当然还看了无数的电子书和网上的资料</p>
-<h1 id="技术类"><a href="#技术类" class="headerlink" title="技术类:"></a>技术类:</h1><ul>
-<li><p>Haskell 并行与并发编程:<br>Haskell的书我买了两本, 这本算是比较好的. 讲得很深入， 很遗憾，工作中没办法用到Haskell。</p>
-</li>
-<li><p>Haskell 函数式程序设计<br>买这本书时， 我已经在十一假期期间把 realHaskell 学了一半了, 这本书只是大概看了一下</p>
-</li>
-<li><p>Head First jQuery（中文版）<br>比较简单, 我只是消遣看看.</p>
-</li>
-<li><p>O’Reilly：Head First 设计模式（中文版）<br>看了一点, 没吸收掉吧 = =</p>
-</li>
-<li><p>数据结构与算法分析：C 语言描述（原书第2版）<br>很一般的书, 比算法导论差了很多</p>
-</li>
-<li><p>Redis 实战<br>这本书很有趣, 介绍了很多redis的实战用法.</p>
-</li>
-<li><p>MongoDB 应用设计模式<br>实战类的书都好评, 比较薄, 一会儿就看完了</p>
-</li>
-<li><p>Python Web 开发 测试驱动方法<br>学习了TDD, 但是应用的话, 还是要考虑实际情况. 对于大公司来说, TDD 是很好的保证质量的方式, 但是对于小公司来说, 可能会影响开发效率.</p>
-</li>
-<li><p>计算机科学丛书：深入理解计算机系统（原书第2版）<br>作为一个从硅的提纯到电路设计到通信原理到汇编到C到Python到web前端都接触过的人,我忽略了本书的汇编部分.<br>我觉得普通程序员看看这本书挺涨见识的, 但也仅仅是涨见识了.细节一定是在解决问题中学到的, 不可能通过看书感知.</p>
-</li>
-<li><p>程序员修炼之道：从小工到专家<br>这本书我非常喜欢, 比&lt;代码大全&gt;更精简, 值得放在枕边经常翻翻.</p>
-</li>
-<li><p>C++ Primer（中文版 第5版）<br>C++ 并没有学完 = =</p>
-</li>
-<li><p>JavaScript 高级程序设计<br>这本书堪称JS的经典吧. 写前端的时候一直在翻, 应该说还没完全掌握</p>
-</li>
-<li><p>人月神话<br>软件工程没有银弹</p>
-</li>
-<li><p>TCP/IP 详解卷1 协议<br>比较老了,照着书上的例子跑命令时很多对不上, 但是确实比什么《http权威指南》要好很多…</p>
-</li>
-<li><p>算法导论（原书第3版）/计算机科学丛书<br>非常好的算法书, 然而平时工作中不太用得到 = =</p>
-</li>
-<li><p>Python cookbook<br>难得一见的 Python 经典</p>
-</li>
-<li><p>代码大全<br>每次翻的时候都恍然大悟</p>
-</li>
-</ul>
-<h1 id="医学类"><a href="#医学类" class="headerlink" title="医学类:"></a>医学类:</h1><ul>
-<li><p>默克家庭医学手册<br>医学科普类书籍, 建议买给父母看, 可以让他们少上一些假的保健品的当吧 =</p>
-</li>
-<li><p>外科学,病理学,内科学<br>先啃完这三本, 没什么难度, 完全的死记硬背. 我学这些不是为了挣钱(目前来说这些知识应该不能挣钱). 当然也不是漫无目的地乱学.</p>
-</li>
-</ul>
-<h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
-<h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
 
           
         
@@ -1482,138 +1607,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/30/各种Web框架比较/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sherry">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/30/各种Web框架比较/" itemprop="url">各种Web框架比较</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-30T19:45:14+08:00">
-                2017-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>首先, 新框架的学习难度是很低的, 对于熟悉web基本原理的人来说,<br>同理， 精通一门语言之后， 再学习别的语言， 难度也不大。</p>
-<p>##Python<br>Python 的卖点大概有：</p>
-<ul>
-<li>自动化运维</li>
-<li>web 开发</li>
-<li>机器学习, 深度学习</li>
-<li>爬虫</li>
-</ul>
-<p>###Flask<br>　　我最先接触的web框架, 学这个时走了不少的坑, 总得来说是很优秀的, 看源码就知道了. 当然, Flask 学了很多 Django 的东西。</p>
-<p>###Django<br>　　工作中主要是用Django, 优点是确实感觉蛮规范的,Django ORM甩 Flask 的 SQLalchemy 几条街, 缺点是条条框框好多啊, 用多了感觉自己被束缚了, 虽然开发起来是超级快.</p>
-<p>###Bottle<br>　　我研究过几遍 Bottle 的源码, 相比Flask好懂太多, 研究源码的好处是了解了实现方式,比如很多人纠结的GET/POST哪个更安全什么的. Bottle的话, 源码上是看不出有什么区别的.</p>
-<p>###node.js<br>　　上次学了点node.js, 用express搭建博客. 不得不说, Express比Flask优秀太多了= =<br>　　语法层面上来说, JavaScript 是没有 Python 优秀的, 但是, JavaScript确实比 Python 有前途啊.<br>　　这就好比, 一个富人家的小孩, 虽然资质可能比不过某个穷人家的小孩, 长得不好看, 基因不好, 智商也不够高, 但是, 富人有足够多的资源和更好的环境来把他的小孩培养成一个更优质的人.<br>(JavaScript就是这样.自从它被钦定为浏览器唯一指定的官方脚本语言时, 它就出身名门了)</p>
-<p>###Express<br>学这个时, 我已经了解了三个Python web框架了, 难度基本在语言层面上, 确实蛮绕的. = =<br>应该继续好好学 JavaScript.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1664,7 +1657,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
