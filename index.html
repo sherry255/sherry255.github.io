@@ -1009,7 +1009,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/2016年的读书总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sherry">
@@ -1028,7 +1028,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/16/2016年的读书总结/" itemprop="url">2016年的读书总结</a></h1>
+                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
         
 
         <div class="post-meta">
@@ -1080,51 +1080,28 @@
       
         
           
-            <p>2016年大概买了40本书, 大部分都看了,当然还看了无数的电子书和网上的资料</p>
-<h1 id="技术类"><a href="#技术类" class="headerlink" title="技术类:"></a>技术类:</h1><ul>
-<li><p>Haskell 并行与并发编程:<br>Haskell的书我买了两本, 这本算是比较好的. 讲得很深入， 很遗憾，工作中没办法用到Haskell。</p>
+            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
+<ul>
+<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
+</ul>
+<ul>
+<li><p>新建一个Django的项目</p>
 </li>
-<li><p>Haskell 函数式程序设计<br>买这本书时， 我已经在十一假期期间把 realHaskell 学了一半了, 这本书只是大概看了一下</p>
+<li><p>编写测试环境的脚本 (develop下)</p>
 </li>
-<li><p>Head First jQuery（中文版）<br>比较简单, 我只是消遣看看.</p>
+<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
 </li>
-<li><p>O’Reilly：Head First 设计模式（中文版）<br>看了一点, 没吸收掉吧 = =</p>
+<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
 </li>
-<li><p>数据结构与算法分析：C 语言描述（原书第2版）<br>很一般的书, 比算法导论差了很多</p>
-</li>
-<li><p>Redis 实战<br>这本书很有趣, 介绍了很多redis的实战用法.</p>
-</li>
-<li><p>MongoDB 应用设计模式<br>实战类的书都好评, 比较薄, 一会儿就看完了</p>
-</li>
-<li><p>Python Web 开发 测试驱动方法<br>学习了TDD, 但是应用的话, 还是要考虑实际情况. 对于大公司来说, TDD 是很好的保证质量的方式, 但是对于小公司来说, 可能会影响开发效率.</p>
-</li>
-<li><p>计算机科学丛书：深入理解计算机系统（原书第2版）<br>作为一个从硅的提纯到电路设计到通信原理到汇编到C到Python到web前端都接触过的人,我忽略了本书的汇编部分.<br>我觉得普通程序员看看这本书挺涨见识的, 但也仅仅是涨见识了.细节一定是在解决问题中学到的, 不可能通过看书感知.</p>
-</li>
-<li><p>程序员修炼之道：从小工到专家<br>这本书我非常喜欢, 比&lt;代码大全&gt;更精简, 值得放在枕边经常翻翻.</p>
-</li>
-<li><p>C++ Primer（中文版 第5版）<br>C++ 并没有学完 = =</p>
-</li>
-<li><p>JavaScript 高级程序设计<br>这本书堪称JS的经典吧. 写前端的时候一直在翻, 应该说还没完全掌握</p>
-</li>
-<li><p>人月神话<br>软件工程没有银弹</p>
-</li>
-<li><p>TCP/IP 详解卷1 协议<br>比较老了,照着书上的例子跑命令时很多对不上, 但是确实比什么《http权威指南》要好很多…</p>
-</li>
-<li><p>算法导论（原书第3版）/计算机科学丛书<br>非常好的算法书, 然而平时工作中不太用得到 = =</p>
-</li>
-<li><p>Python cookbook<br>难得一见的 Python 经典</p>
-</li>
-<li><p>代码大全<br>每次翻的时候都恍然大悟</p>
+<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
+<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="医学类"><a href="#医学类" class="headerlink" title="医学类:"></a>医学类:</h1><ul>
-<li><p>默克家庭医学手册<br>医学科普类书籍, 建议买给父母看, 可以让他们少上一些假的保健品的当吧 =</p>
-</li>
-<li><p>外科学,病理学,内科学<br>先啃完这三本, 没什么难度, 完全的死记硬背. 我学这些不是为了挣钱(目前来说这些知识应该不能挣钱). 当然也不是漫无目的地乱学.</p>
-</li>
+<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
+<ul>
+<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
 </ul>
-<h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
-<h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
+<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
 
           
         
@@ -1293,7 +1270,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/Django LiveServerTestCase/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/16/2016年的读书总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sherry">
@@ -1312,7 +1289,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/16/Django LiveServerTestCase/" itemprop="url">Django LiveServerTestCase</a></h1>
+                <a class="post-title-link" href="/2017/04/16/2016年的读书总结/" itemprop="url">2016年的读书总结</a></h1>
         
 
         <div class="post-meta">
@@ -1364,28 +1341,51 @@
       
         
           
-            <p>使用Django LiveServerTestCase 和 Selenium 搭建自动化测试的流程:</p>
-<ul>
-<li>新建虚拟机<br>我用的 vmware + ubuntu16.04 的系统</li>
+            <p>2016年大概买了40本书, 大部分都看了,当然还看了无数的电子书和网上的资料</p>
+<h1 id="技术类"><a href="#技术类" class="headerlink" title="技术类:"></a>技术类:</h1><ul>
+<li><p>Haskell 并行与并发编程:<br>Haskell的书我买了两本, 这本算是比较好的. 讲得很深入， 很遗憾，工作中没办法用到Haskell。</p>
+</li>
+<li><p>Haskell 函数式程序设计<br>买这本书时， 我已经在十一假期期间把 realHaskell 学了一半了, 这本书只是大概看了一下</p>
+</li>
+<li><p>Head First jQuery（中文版）<br>比较简单, 我只是消遣看看.</p>
+</li>
+<li><p>O’Reilly：Head First 设计模式（中文版）<br>看了一点, 没吸收掉吧 = =</p>
+</li>
+<li><p>数据结构与算法分析：C 语言描述（原书第2版）<br>很一般的书, 比算法导论差了很多</p>
+</li>
+<li><p>Redis 实战<br>这本书很有趣, 介绍了很多redis的实战用法.</p>
+</li>
+<li><p>MongoDB 应用设计模式<br>实战类的书都好评, 比较薄, 一会儿就看完了</p>
+</li>
+<li><p>Python Web 开发 测试驱动方法<br>学习了TDD, 但是应用的话, 还是要考虑实际情况. 对于大公司来说, TDD 是很好的保证质量的方式, 但是对于小公司来说, 可能会影响开发效率.</p>
+</li>
+<li><p>计算机科学丛书：深入理解计算机系统（原书第2版）<br>作为一个从硅的提纯到电路设计到通信原理到汇编到C到Python到web前端都接触过的人,我忽略了本书的汇编部分.<br>我觉得普通程序员看看这本书挺涨见识的, 但也仅仅是涨见识了.细节一定是在解决问题中学到的, 不可能通过看书感知.</p>
+</li>
+<li><p>程序员修炼之道：从小工到专家<br>这本书我非常喜欢, 比&lt;代码大全&gt;更精简, 值得放在枕边经常翻翻.</p>
+</li>
+<li><p>C++ Primer（中文版 第5版）<br>C++ 并没有学完 = =</p>
+</li>
+<li><p>JavaScript 高级程序设计<br>这本书堪称JS的经典吧. 写前端的时候一直在翻, 应该说还没完全掌握</p>
+</li>
+<li><p>人月神话<br>软件工程没有银弹</p>
+</li>
+<li><p>TCP/IP 详解卷1 协议<br>比较老了,照着书上的例子跑命令时很多对不上, 但是确实比什么《http权威指南》要好很多…</p>
+</li>
+<li><p>算法导论（原书第3版）/计算机科学丛书<br>非常好的算法书, 然而平时工作中不太用得到 = =</p>
+</li>
+<li><p>Python cookbook<br>难得一见的 Python 经典</p>
+</li>
+<li><p>代码大全<br>每次翻的时候都恍然大悟</p>
+</li>
 </ul>
-<ul>
-<li><p>新建一个Django的项目</p>
+<h1 id="医学类"><a href="#医学类" class="headerlink" title="医学类:"></a>医学类:</h1><ul>
+<li><p>默克家庭医学手册<br>医学科普类书籍, 建议买给父母看, 可以让他们少上一些假的保健品的当吧 =</p>
 </li>
-<li><p>编写测试环境的脚本 (develop下)</p>
-</li>
-<li><p>windows主机测试环境的搭建 : selenium-server-standalone-3.3.1<br>(另外, Mac也要装)</p>
-</li>
-<li><p>测试的编写.(先在windows上跑通selenium,随便测试一个脚本, 参考官方文档给的demo. 然后在app的目录下编写测试, 比如我测试的是admin的登录,利用django给的demo, 自己做了一些修改. 改了host(换成windows的主机的host(cmd:ipconfig可以查到)))</p>
-</li>
-<li><p>在虚拟机跑通测试.<br>(利用桥接的方式连接主机, 先在windows上开启selenium-server, 在selenium-server-standalone-3.3.1文件所在的目录下shift右键打开命令行, 并跑以下命令:</p>
-<figure class="highlight java"><figcaption><span>-Dwebdriver.chrome.driver</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(备注: 因为这里需要在虚拟机里面使用remote方式连接主机(Windows)进行测试, 所以需要使用:</span><br><span class="line">```-Dwebdriver.chrome.driver=<span class="string">"C:\Program Files (x86)\chromedriver\chromedriver.exe"</span></span><br></pre></td></tr></table></figure>
+<li><p>外科学,病理学,内科学<br>先啃完这三本, 没什么难度, 完全的死记硬背. 我学这些不是为了挣钱(目前来说这些知识应该不能挣钱). 当然也不是漫无目的地乱学.</p>
 </li>
 </ul>
-<p>来指定chrome的路径, 如果需要测试多个浏览器, 则需要指定多个浏览器的地址. 可以写一个.bat文件来执行这个脚本. )<br>(备注2: 一开始怎么都连不上windows的主机, 经过大佬指点, 在java命令里加参数(-D), 瞬间霍然开朗, 沉舟侧畔千帆过, 柳暗花明又一村.谢谢大佬^_^)</p>
-<ul>
-<li>测试<br>Django 1.11 使用<code>python manage.py test</code> 就可以自动测试所有的test. 包括之前官方给的demo以及…</li>
-</ul>
-<p>至此: 终于跑通了liveservertestcase… 遇到了很多坑, 非常感谢Google以及某位大佬的提供的技术支持…</p>
+<h1 id="人文类"><a href="#人文类" class="headerlink" title="人文类:"></a>人文类:</h1><p>你的灯亮着吗-发现问题的真正所在<br>这一年我分析问题的能力大大提高(相比以前), 这本书的启发功不可没.<br>当然, 更重要的是: 一次次debug时对系统有了很好的把握. 尤其是熬夜解决难改的bug时. = =<br>以至于我后来爱上了改bug, 每当有同事有bug, 我都想上去帮人改好…</p>
+<h1 id="自卑与超越（经典完整译本）"><a href="#自卑与超越（经典完整译本）" class="headerlink" title="自卑与超越（经典完整译本）"></a>自卑与超越（经典完整译本）</h1><p>给我的启发是: 元认知对人的影响很大, 包括:思维方式, 心态等.<br>(抽空再读读)</p>
 
           
         
