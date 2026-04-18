@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon-cat.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AI,技术分析,Claude,架构," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文基于以下三份资料：  Claude Code v2.1.88 反混淆源码（sherry255&#x2F;civil-engineering-cloud-claude-code-source-v2.1.88，2026年4月初） anthropics&#x2F;claude-code 官方仓库 v2.1.88 tag 下的 plugin 文件 本地已安装的 Claude Code plugin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由">
+<meta property="og:url" content="http://yoursite.com/2026/04/15/claude-code-model-routing/index.html">
+<meta property="og:site_name" content="Sherry&#39;s Blog">
+<meta property="og:description" content="本文基于以下三份资料：  Claude Code v2.1.88 反混淆源码（sherry255&#x2F;civil-engineering-cloud-claude-code-source-v2.1.88，2026年4月初） anthropics&#x2F;claude-code 官方仓库 v2.1.88 tag 下的 plugin 文件 本地已安装的 Claude Code plugin">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-04-15T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T09:29:40.771Z">
+<meta property="article:author" content="Sherry">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Claude">
+<meta property="article:tag" content="技术分析">
+<meta property="article:tag" content="架构">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2026/04/15/claude-code-model-routing/"/>
+
+
+
+
+
+  <title>你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由 | Sherry's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sherry's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-catalog">
+          <a href="/catalog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            目录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rants">
+          <a href="/rants/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            吐槽
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            文章列表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2026/04/15/claude-code-model-routing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-15T10:00:00+08:00">
+                2026-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/" itemprop="url" rel="index">
+                    <span itemprop="name">agent</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/claude-code/" itemprop="url" rel="index">
+                    <span itemprop="name">claude-code</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文基于以下三份资料：</p>
+<ol>
+<li>Claude Code v2.1.88 反混淆源码（<a href="https://github.com/sherry255/civil-engineering-cloud-claude-code-source-v2.1.88">sherry255&#x2F;civil-engineering-cloud-claude-code-source-v2.1.88</a>，2026年4月初）</li>
+<li><a href="https://github.com/anthropics/claude-code">anthropics&#x2F;claude-code</a> 官方仓库 v2.1.88 tag 下的 plugin 文件</li>
+<li>本地已安装的 Claude Code plugin marketplace</li>
+</ol>
+<p>后续版本可能已有改动。文章经过一轮事实核对修订，subagent 路由这套机制本身在快速迭代，如发现与当前版本不符欢迎指正。</p>
+</blockquote>
+<p>起因是我在看 Claude Code 的 plugin 目录时，发现了三个看起来都叫”code review”的文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins/code-review/commands/code-review.md</span><br><span class="line">plugins/feature-dev/agents/code-reviewer.md</span><br><span class="line">plugins/pr-review-toolkit/agents/code-reviewer.md</span><br></pre></td></tr></table></figure>
+
+<p>想弄清楚这三个文件和底层源码之间是什么关系——md 里写的 <code>model: sonnet</code> 到底是怎么被执行的，谁说了算。顺着这条线挖下去，发现了一些有意思的事情。</p>
+<hr>
+<h2 id="一、三个文件是三种不同的东西"><a href="#一、三个文件是三种不同的东西" class="headerlink" title="一、三个文件是三种不同的东西"></a>一、三个文件是三种不同的东西</h2><h3 id="文件-A：slash-command（工作流编排-prompt）"><a href="#文件-A：slash-command（工作流编排-prompt）" class="headerlink" title="文件 A：slash command（工作流编排 prompt）"></a>文件 A：slash command（工作流编排 prompt）</h3><p><code>code-review/commands/code-review.md</code> 是你输入 <code>/code-review</code> 时触发的 slash command。严格来说，它不是”硬编码的工作流”，而是一段<strong>强引导的 prompt</strong>：命令正文被 <code>loadSkillsDir.ts</code> 加载后喂给主模型，主模型按正文里的指示去调用子 agent。不是编译期强制，是 LLM 按指令执行。</p>
+<p>v2.1.88 tag 下实际的步骤（来自 <a href="https://github.com/anthropics/claude-code/blob/v2.1.88/plugins/code-review/commands/code-review.md">官方仓库</a>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Step 1:  Haiku agent × 1  — 资格检查（PR 是否关闭/草稿/不需要 review 等）</span><br><span class="line">Step 2:  Haiku agent × 1  — 收集相关 CLAUDE.md 路径</span><br><span class="line">Step 3:  Sonnet agent × 1 — PR 摘要</span><br><span class="line">Step 4:  4 个并行 agent：</span><br><span class="line">           - Agent 1+2: Sonnet × 2（CLAUDE.md 合规检查）</span><br><span class="line">           - Agent 3:   Opus × 1（bug 扫描）</span><br><span class="line">           - Agent 4:   Opus × 1（逻辑/安全问题）</span><br><span class="line">Step 5:  每个 Step 4 发现的 issue 并行启动一个验证 subagent：</span><br><span class="line">           - bug 类 issue → Opus</span><br><span class="line">           - CLAUDE.md 类 issue → Sonnet</span><br><span class="line">Step 6:  过滤未通过验证的 issue</span><br><span class="line">Step 7:  输出摘要（有 --comment 才继续）</span><br><span class="line">Step 8-9: 组织并发内联评论</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，<strong>Opus 在这个流程里是参与的</strong>——step 4 的 bug agent 和 step 5 的 bug 验证都是 Opus，只是审阅维度被拆分成了”合规用 Sonnet、bug 用 Opus”。我之前写的”流程里没有一个子任务是 Opus”是错的，在此更正。</p>
+<p><strong>你的 <code>/model</code> 选择对这个流程的影响</strong>：命令正文里用”Launch a haiku agent”、”Launch 4 agents in parallel: … Opus bug agent”这种语言强引导主模型，主模型按指令调用 Agent 工具（源码里正式名是 <code>AgentTool</code>，旧名 <code>Task</code>，两者是同一个东西；下文统一写成 <strong>Agent&#x2F;Task 工具</strong> 避免混淆）并传对应的 <code>model</code> 参数。用户手动 <code>/model sonnet</code> 不会直接覆盖这些传参——因为 Agent&#x2F;Task 工具的 <code>model</code> 参数优先级高于父模型继承（见第二节的优先级表）。不过这不是”编译期写死”，理论上主模型可以违背指令，只是正常情况下它会遵守。</p>
+<h3 id="文件-B-和-C：subagent（被调用的积木）"><a href="#文件-B-和-C：subagent（被调用的积木）" class="headerlink" title="文件 B 和 C：subagent（被调用的积木）"></a>文件 B 和 C：subagent（被调用的积木）</h3><p>另外两个是 subagent，结构简单：接收代码 diff，返回 confidence ≥ 80 的 issue 列表。它们不是给用户直接触发的，是被别的 command 内部调用的。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>文件 B（feature-dev）</th>
+<th>文件 C（pr-review-toolkit）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模型</td>
+<td><code>model: sonnet</code></td>
+<td><code>model: opus</code></td>
+</tr>
+<tr>
+<td>触发时机</td>
+<td><code>/feature-dev</code> Phase 6，并行起 3 个做质量检查</td>
+<td><code>/pr-review-toolkit:review-pr</code> 命令正文里默认总会包含它</td>
+</tr>
+<tr>
+<td>使用节奏</td>
+<td>开发内循环，频繁</td>
+<td>PR 提交前，低频</td>
+</tr>
+</tbody></table>
+<p><strong>文件 A 和文件 B&#x2F;C 完全没有关系。</strong> <code>/code-review</code> Step 4 里的 4 个并行 agent（2 Sonnet + 2 Opus）是 inline 临时 agent，不是 code-reviewer subagent。三个文件只是名字相似，彼此独立。</p>
+<h3 id="为什么-B-和-C-各自带一份而不共用？"><a href="#为什么-B-和-C-各自带一份而不共用？" class="headerlink" title="为什么 B 和 C 各自带一份而不共用？"></a>为什么 B 和 C 各自带一份而不共用？</h3><p>Claude Code 的 plugin 系统<strong>其实支持跨包依赖</strong>——<code>src/utils/plugins/dependencyResolver.ts</code> 有完整的 <code>manifest.dependencies</code> 解析、依赖校验、跨 marketplace 依赖规则。所以说 plugin 系统”禁止跨包依赖”是错的，这是我之前的误读。</p>
+<p>但 feature-dev 和 pr-review-toolkit 的作者选择了<strong>各自带一份</strong> code-reviewer，可能的原因是：两个 plugin 的使用场景节奏不同，需要不同的模型默认值和 system prompt，直接复用会导致行为冲突；而且 plugin 作者之间没有协调，各写各的更简单。</p>
+<p>所以两份文件<strong>实际上有差异</strong>：</p>
+<ul>
+<li>feature-dev 的 <code>code-reviewer.md</code> 默认 <code>model: sonnet</code>，用于开发循环的快速检查</li>
+<li>pr-review-toolkit 的 <code>code-reviewer.md</code> 默认 <code>model: opus</code>，用于提交前的精细审阅</li>
+</ul>
+<p>内容大约 95% 相同，但 frontmatter 的 <code>model</code> 字段和 <code>description</code> 里的 “proactive use” 措辞不同。</p>
+<hr>
+<h2 id="二、md-文件里的-model-字段，在源码里怎么执行"><a href="#二、md-文件里的-model-字段，在源码里怎么执行" class="headerlink" title="二、md 文件里的 model 字段，在源码里怎么执行"></a>二、md 文件里的 model 字段，在源码里怎么执行</h2><p>这是我最想弄清楚的问题。</p>
+<p>源码在 <code>src/utils/model/agent.ts</code> 的 <code>getAgentModel()</code> 函数，优先级从高到低：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. CLAUDE_CODE_SUBAGENT_MODEL 环境变量（全局强制覆盖）</span><br><span class="line">2. Agent/Task 工具调用时显式传的 model 参数</span><br><span class="line">3. Agent 定义里的 model 字段（md frontmatter 或代码里写死）</span><br><span class="line">4. 默认：&#x27;inherit&#x27;，继承父 agent 的模型</span><br></pre></td></tr></table></figure>
+
+<p>所以 md 文件里写 <code>model: sonnet</code>，就是第 3 层。优先级不算高，可以被第 2 层（Agent&#x2F;Task 工具调用时的显式 <code>model</code> 参数）覆盖——这也是 <code>/code-review</code> 能做到”调用同一个 agent 类型但传不同模型”的机制。</p>
+<p>需要说明的是：Agent&#x2F;Task 工具的 <code>model</code> 参数<strong>允许每次调用时动态传入</strong>（<code>src/tools/AgentTool/AgentTool.tsx:86</code>），它的优先级高于 md frontmatter。主模型是否主动传参，取决于当前 prompt 有没有引导它这样做——比如 slash command 正文里明确写”Launch a haiku agent”时，主模型就会传 <code>model: haiku</code>。所以 md frontmatter 的模型设定<strong>不是板上钉钉</strong>，只是在没人覆盖时的默认值。</p>
+<p><strong>同族继承</strong>是一个细节：如果你选了 <code>claude-opus-4-6</code>，md 里写 <code>model: opus</code>，subagent 继承的是精确型号 <code>claude-opus-4-6</code>，而不是 provider 默认的 opus 版本。这防止了 Vertex&#x2F;Bedrock 用户意外降级。</p>
+<hr>
+<h2 id="三、md-文件是怎么被加载和调用的"><a href="#三、md-文件是怎么被加载和调用的" class="headerlink" title="三、md 文件是怎么被加载和调用的"></a>三、md 文件是怎么被加载和调用的</h2><p>只有理解了完整的加载和调用链，才能回答下一个关键问题：<strong>哪些 md 文件什么时候会被实际触发？</strong></p>
+<h3 id="加载链路"><a href="#加载链路" class="headerlink" title="加载链路"></a>加载链路</h3><p>启动时 Claude Code 扫描所有 plugin 的 <code>agents/</code> 目录，调用链如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">main.tsx:2029</span><br><span class="line">  → getAgentDefinitionsWithOverrides(currentCwd)</span><br><span class="line">  → loadPluginAgents()                             // src/utils/plugins/loadPluginAgents.ts:231-344</span><br><span class="line">    → loadAllPluginsCacheOnly()                    // 从 pluginLoader 拿到启用的 plugin 列表</span><br><span class="line">    → 遍历每个 plugin 的 agentsPath</span><br><span class="line">      → walkPluginMarkdown()                       // src/utils/plugins/walkPluginMarkdown.ts:21-69</span><br><span class="line">                                                   // 递归找所有 .md，记录 namespace 子路径</span><br><span class="line">        → loadAgentFromFile()                      // loadPluginAgents.ts:65-229</span><br><span class="line">          → fs.readFile + parseFrontmatter</span><br><span class="line">          → 组装 AgentDefinition 对象</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键：<code>agentType</code> 的命名规则</strong>（<code>loadPluginAgents.ts:89-90</code>）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nameParts = [pluginName, ...namespace, baseAgentName]</span><br><span class="line"><span class="keyword">const</span> agentType = nameParts.<span class="title function_">join</span>(<span class="string">&#x27;:&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>所以 <code>feature-dev/agents/code-reviewer.md</code> 加载后的 <code>agentType</code> 是 <code>feature-dev:code-reviewer</code>。两个 plugin 各自有 <code>code-reviewer.md</code> 时，因为 plugin 名前缀不同，agentType 不会冲突。</p>
+<h3 id="AgentDefinition-数据结构"><a href="#AgentDefinition-数据结构" class="headerlink" title="AgentDefinition 数据结构"></a>AgentDefinition 数据结构</h3><p>每个 md 文件加载后变成一个对象（<code>loadAgentsDir.ts:106-159</code>），核心字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>来源</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentType</code></td>
+<td>plugin名 + namespace + name</td>
+<td>精确匹配的 ID</td>
+</tr>
+<tr>
+<td><code>whenToUse</code></td>
+<td>frontmatter 的 <code>description</code></td>
+<td>给主 agent 看的”何时使用我”</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>frontmatter 的 <code>model</code></td>
+<td>subagent 用什么模型</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>frontmatter 的 <code>tools</code></td>
+<td>subagent 能用哪些工具</td>
+</tr>
+<tr>
+<td><code>getSystemPrompt</code></td>
+<td>md 正文（去掉 frontmatter）</td>
+<td>subagent 启动时的 system prompt</td>
+</tr>
+</tbody></table>
+<p>加载完后存在 <code>toolUseContext.options.agentDefinitions.activeAgents</code> 里，所有 Agent&#x2F;Task 工具调用都从这里查。</p>
+<h3 id="主-agent-怎么知道有哪些-subagent"><a href="#主-agent-怎么知道有哪些-subagent" class="headerlink" title="主 agent 怎么知道有哪些 subagent"></a>主 agent 怎么知道有哪些 subagent</h3><p>这是最关键的一步。源码在 <code>src/tools/AgentTool/prompt.ts:43-46</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">formatAgentLine</span>(<span class="params"><span class="attr">agent</span>: <span class="title class_">AgentDefinition</span></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`- <span class="subst">$&#123;agent.agentType&#125;</span>: <span class="subst">$&#123;agent.whenToUse&#125;</span> (Tools: <span class="subst">$&#123;toolsDescription&#125;</span>)`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每个 plugin agent 被拼成一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- feature-dev:code-reviewer: Reviews code for bugs, logic errors... (Tools: Glob, Grep, Read, ...)</span><br><span class="line">- pr-review-toolkit:code-reviewer: Use this agent when you need to review code... (Tools: ...)</span><br><span class="line">- pr-review-toolkit:silent-failure-hunter: ...</span><br></pre></td></tr></table></figure>
+
+<p>这些行会通过<strong>两条路径之一</strong>被主 agent 看到（具体走哪条由 feature flag 控制，见 <code>prompt.ts:190</code>、<code>attachments.ts:1490</code>）：</p>
+<ol>
+<li><strong>直接注入到 Agent&#x2F;Task 工具的 tool description 里</strong>——主 agent 在每次需要调用 Agent&#x2F;Task 工具时能看到这个完整列表</li>
+<li><strong>作为 <code>agent_listing_delta</code> attachment 单独发送</strong>——不放在 tool description，而是作为消息 attachment 传递给主 agent</li>
+</ol>
+<p>不管走哪条路径，最终效果相同：主 agent 能看到这个 agent 列表，并据此选择 <code>subagent_type</code> 参数。</p>
+<h3 id="主-agent-怎么决定调哪个"><a href="#主-agent-怎么决定调哪个" class="headerlink" title="主 agent 怎么决定调哪个"></a>主 agent 怎么决定调哪个</h3><p><strong>它读 description 做语义判断。</strong> 不是规则匹配，是 LLM 自己决定。</p>
+<p>主 agent 看到这一长串 agent 列表，根据当前用户的需求（”帮我审一下这段代码”），自己挑一个最合适的 <code>agentType</code>，然后传给 Agent&#x2F;Task 工具：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Agent</span>(&#123;</span><br><span class="line">  <span class="attr">subagent_type</span>: <span class="string">&quot;pr-review-toolkit:code-reviewer&quot;</span>,</span><br><span class="line">  <span class="attr">prompt</span>: <span class="string">&quot;...&quot;</span>,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>匹配是<strong>精确字符串相等</strong>（<code>AgentTool.tsx:345</code>）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> found = agents.<span class="title function_">find</span>(<span class="function"><span class="params">agent</span> =&gt;</span> agent.<span class="property">agentType</span> === effectiveType)</span><br></pre></td></tr></table></figure>
+
+<p>找不到就报错 <code>Agent type &#39;X&#39; not found</code>。</p>
+<h3 id="两条完全独立的触发路径"><a href="#两条完全独立的触发路径" class="headerlink" title="两条完全独立的触发路径"></a>两条完全独立的触发路径</h3><p>所以 plugin subagent 会在两种情况下被调用：</p>
+<p><strong>路径 A：slash command 内部显式调用</strong></p>
+<p>slash command 的 md 正文里写”用 X agent 做这件事”，主 agent 按指令调。比如 <code>/feature-dev</code> 的 Phase 6 写明：</p>
+<blockquote>
+<p>Launch 3 code-reviewer agents in parallel with different focuses</p>
+</blockquote>
+<p>主 agent 看到这条，去找 <code>feature-dev:code-reviewer</code>，调三次。</p>
+<p><strong>路径 B：主 agent 自主语义判断</strong></p>
+<p>没有 slash command，纯日常对话。你说”帮我看看这段代码有没有问题”，主 agent 看到 <code>pr-review-toolkit:code-reviewer</code> 的 description 写着”should be used proactively after writing or modifying code”，<strong>可能会</strong>决定调它——但也可能判断这个任务太简单，自己直接看就行。<strong>不需要你输入任何斜杠命令</strong>。</p>
+<p>这意味着：<strong>你装的 plugin 的 agents，其中一部分会被暴露到主 agent 的”工具列表”里</strong>。实际暴露前还会经过几层过滤（见 <code>loadAgentsDir.ts:359</code>、<code>attachments.ts:1503</code>）：</p>
+<ul>
+<li>MCP 依赖过滤：agent 声明依赖的 MCP 工具不可用时会被跳过</li>
+<li>权限 deny 规则：被 deny 列表禁用的 agent 不会出现在列表里</li>
+<li><code>allowedAgentTypes</code> 白名单：如果配置了白名单，只有白名单里的 agent 会被暴露</li>
+</ul>
+<p>通过过滤的 agent 会出现在主 agent 看到的列表里，主 agent 可能在你不知道的情况下调用它们——那个 agent 用什么模型，取决于 md frontmatter 和调用时传的 <code>model</code> 参数。</p>
+<h3 id="怎么追踪某次任务实际调了哪些-agent"><a href="#怎么追踪某次任务实际调了哪些-agent" class="headerlink" title="怎么追踪某次任务实际调了哪些 agent"></a>怎么追踪某次任务实际调了哪些 agent</h3><p>如果你想知道每次 Claude Code 实际调了哪些 subagent，最直接的方法是配一个 <code>PostToolUse</code> hook。PostToolUse hook 的输入是 stdin 的 JSON（不是环境变量），需要用 <code>jq</code> 读：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;PostToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agent|Task&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;jq -c &#x27;&#123;tool_name, subagent_type: (.tool_input.subagent_type // null), model: (.tool_input.model // null), prompt: (.tool_input.prompt // null)&#125;&#x27; &gt;&gt; /tmp/agent-calls.log&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样每次 Agent&#x2F;Task 调用都会记录 <code>tool_name</code>、<code>subagent_type</code>、<code>model</code>、<code>prompt</code>。特别是 <code>model</code> 字段——它会告诉你这次调用实际传了什么模型参数，和 frontmatter 默认值是否一致。</p>
+<hr>
+<h2 id="四、所有-plugin-subagent-的全貌"><a href="#四、所有-plugin-subagent-的全貌" class="headerlink" title="四、所有 plugin subagent 的全貌"></a>四、所有 plugin subagent 的全貌</h2><p>之前只看了三个 code-review 相关的 md，是因为搜关键词搜出来的。但实际上<strong>本地 <code>claude-plugins-official</code> marketplace 子树</strong>里有 <strong>19 个 subagent</strong>，分布在 7 个不同的 plugin 里。</p>
+<blockquote>
+<p>统计范围：<strong>仅限 <code>claude-plugins-official</code> 这一个官方 marketplace 的本地安装目录快照</strong>（路径 <code>~/.claude/plugins/marketplaces/claude-plugins-official/plugins/</code>）。如果你装了其他 marketplace（比如 <code>claude-plugins-community</code>），它们下的 subagent 不在本次统计内，数字会不一样。</p>
+<p>统计快照：2026-04-15。统计命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">find ~/.claude/plugins/marketplaces/claude-plugins-official/plugins -path <span class="string">&quot;*/agents/*.md&quot;</span> | <span class="keyword">while</span> <span class="built_in">read</span> f; <span class="keyword">do</span></span><br><span class="line">  model=$(grep <span class="string">&quot;^model:&quot;</span> <span class="string">&quot;<span class="variable">$f</span>&quot;</span> | <span class="built_in">head</span> -1 | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>)</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;model:-inherit&#125;</span>  |  <span class="variable">$f</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>官方 marketplace 还在持续更新，数字可能随时变化。</p>
+</blockquote>
+<p>把所有 <code>agents/*.md</code> 的 model 字段全部扒出来：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>数量</th>
+<th>哪些 agent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>硬编码 sonnet</strong></td>
+<td>6</td>
+<td><code>feature-dev:code-architect</code>、<code>feature-dev:code-explorer</code>、<code>feature-dev:code-reviewer</code>、<code>agent-sdk-dev:agent-sdk-verifier-py</code>、<code>agent-sdk-dev:agent-sdk-verifier-ts</code>、<code>plugin-dev:agent-creator</code></td>
+</tr>
+<tr>
+<td><strong>硬编码 opus</strong></td>
+<td>3</td>
+<td><code>pr-review-toolkit:code-reviewer</code>、<code>pr-review-toolkit:code-simplifier</code>、<code>code-simplifier:code-simplifier</code></td>
+</tr>
+<tr>
+<td><strong>inherit（继承主模型）</strong></td>
+<td>10</td>
+<td><code>hookify:conversation-analyzer</code>、<code>plugin-dev:plugin-validator</code>、<code>plugin-dev:skill-reviewer</code>、<code>pr-review-toolkit:comment-analyzer</code>、<code>pr-review-toolkit:pr-test-analyzer</code>、<code>pr-review-toolkit:silent-failure-hunter</code>、<code>pr-review-toolkit:type-design-analyzer</code>、<code>skill-creator:analyzer</code>、<code>skill-creator:comparator</code>、<code>skill-creator:grader</code></td>
+</tr>
+</tbody></table>
+<p><strong>几个观察</strong>：</p>
+<ol>
+<li><strong>feature-dev 整个 plugin 全是 Sonnet</strong>。只要被触发，feature-dev 的 subagent 默认跑 Sonnet（除非调用方传了 <code>model</code> 参数覆盖）。</li>
+<li><strong>pr-review-toolkit 是混合</strong>。核心的 <code>code-reviewer</code> 和 <code>code-simplifier</code> 是 Opus，其余四个分析器都是 inherit。</li>
+<li><strong>inherit 不是多数</strong>。10&#x2F;19 是 inherit，剩下 9 个在 frontmatter 里写了具体模型。</li>
+</ol>
+<p>这里要小心一个推论。<strong>“装 plugin 越多，<code>/model</code> 能影响的范围越小” 这个说法不严谨</strong>：</p>
+<ul>
+<li>首先，一个 agent 即使 frontmatter 写了具体 model，调用方仍然可以在 Agent&#x2F;Task 工具里传参覆盖</li>
+<li>其次，新装的 plugin 可能全是 inherit</li>
+<li>最后，很多 plugin agent 可能因为过滤或根本不被主 agent 选中，完全不影响实际路由</li>
+</ul>
+<p>更准确的说法是：<strong>你不容易预先知道”当我选 Opus 时，哪些子任务会用 Opus”</strong>——因为这取决于 plugin 作者在 md 里写的默认值 + 主 agent 当时的调用决策 + 调用时是否传了 <code>model</code> 覆盖参数。除非你开 hook 日志实际跑一遍，否则只能靠猜。</p>
+<hr>
+<h2 id="五、Explore-agent：外部用户和内部员工的不同待遇"><a href="#五、Explore-agent：外部用户和内部员工的不同待遇" class="headerlink" title="五、Explore agent：外部用户和内部员工的不同待遇"></a>五、Explore agent：外部用户和内部员工的不同待遇</h2><p>挖源码时发现了一个更有意思的地方。</p>
+<p><code>src/tools/AgentTool/built-in/exploreAgent.ts</code>，第 76-78 行：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Ants get inherit to use the main agent&#x27;s model; external users get haiku for speed</span></span><br><span class="line"><span class="comment">// Note: For ants, getAgentModel() checks tengu_explore_agent GrowthBook flag at runtime</span></span><br><span class="line"><span class="attr">model</span>: process.<span class="property">env</span>.<span class="property">USER_TYPE</span> === <span class="string">&#x27;ant&#x27;</span> ? <span class="string">&#x27;inherit&#x27;</span> : <span class="string">&#x27;haiku&#x27;</span>,</span><br></pre></td></tr></table></figure>
+
+<p><code>ant</code> 是 Anthropic 内部员工的简称——Anthropic 缩写成 ant。公司内部项目代号是 <strong>Tengu</strong>（天狗），源码里的 feature flag 大多以 <code>tengu_</code> 开头（比如 <code>tengu_amber_stoat</code>）。</p>
+<p><strong>要诚实地说明几件事</strong>：</p>
+<ol>
+<li><p>上面代码里的第二行注释说 “For ants, getAgentModel() checks tengu_explore_agent GrowthBook flag at runtime”，<strong>但我查了 <code>src/utils/model/agent.ts</code> 的 <code>getAgentModel()</code> 完整代码，没有任何对 <code>tengu_explore_agent</code> 的实际判断</strong>。这句话只是注释，不是验证过的实现。可能是注释忘了更新，也可能是运行时判断在别的地方。我之前把注释当作已验证的事实引用，不严谨。</p>
+</li>
+<li><p>同样要修正的是关于 <code>USER_TYPE</code> 的说法。<code>src/tools/REPLTool/constants.ts</code> 的注释说 “USER_TYPE is a build-time –define”，但这只针对 ant-native binary 的特定场景。源码里其他地方（比如 <code>src/tools.ts:214</code>）仍然直接运行时读 <code>process.env.USER_TYPE === &#39;ant&#39;</code> 来决定是否加载某些工具——也就是说 USER_TYPE <strong>同时存在编译时 define 和运行时读环境变量</strong>两条路径。我之前断言”运行时无法修改”是过头了。</p>
+</li>
+</ol>
+<p>那事实层面到底是什么？</p>
+<p><strong>可以确定的</strong>：在 v2.1.88 <code>exploreAgent.ts</code> 这一行，<code>process.env.USER_TYPE === &#39;ant&#39;</code> 是在模块定义时求值的（ES module 顶层），所以如果你拿到的二进制在启动时 <code>USER_TYPE</code> 不是 <code>&#39;ant&#39;</code>，这里就是 <code>&#39;haiku&#39;</code>。</p>
+<p><strong>不能确定的</strong>：是否存在某种运行时配置能绕开这里。你可以试着用 <code>USER_TYPE=ant claude</code> 启动看看 Explore agent 会不会变成 inherit——我没有实测过。</p>
+<p><strong>确定的底线</strong>：这行代码在两种 USER_TYPE 下行为不同，默认的外部发布构建里，Explore agent 的 <code>model</code> 字段是 <code>&#39;haiku&#39;</code>。</p>
+<ul>
+<li><strong><code>USER_TYPE === &#39;ant&#39;</code> 时</strong>：Explore agent 的 model 字段是 <code>&#39;inherit&#39;</code></li>
+<li><strong>默认（外部发布）</strong>：model 字段是 <code>&#39;haiku&#39;</code></li>
+</ul>
+<h3 id="这不意味着”搜代码一定用-Haiku”"><a href="#这不意味着”搜代码一定用-Haiku”" class="headerlink" title="这不意味着”搜代码一定用 Haiku”"></a>这不意味着”搜代码一定用 Haiku”</h3><p>需要澄清一个我之前写过头的地方。我之前说”Explore agent 是日常编码里最高频的 subagent——搜文件、找实现，背后全是它在跑”，这是错的。</p>
+<p>主 agent 本身就有 <code>Bash</code>、<code>Glob</code>、<code>Grep</code>、<code>FileRead</code> 这些工具（见 <code>src/tools.ts:195-220</code>），完全可以<strong>自己</strong>搜索代码，不一定要通过 Explore subagent。Explore 只是<strong>一个可选的委托对象</strong>，不是搜索的必经路径。</p>
+<p>主 agent 什么时候会选择 Explore？通常是：需要大范围探索、希望保护主上下文不被污染、或者明确知道要快速返回结果时。简单的”grep 一下这个字符串”，主 agent 大概率会自己用 Grep 工具做，不会委托。</p>
+<h3 id="怎么绕过-Explore-的-Haiku-硬编码"><a href="#怎么绕过-Explore-的-Haiku-硬编码" class="headerlink" title="怎么绕过 Explore 的 Haiku 硬编码"></a>怎么绕过 Explore 的 Haiku 硬编码</h3><p>两种方式：</p>
+<ol>
+<li><p><strong>全局覆盖（粗粒度）</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CLAUDE_CODE_SUBAGENT_MODEL=opus claude</span><br></pre></td></tr></table></figure>
+<p>或在 <code>settings.json</code> 里设 <code>env.CLAUDE_CODE_SUBAGENT_MODEL</code>。所有 subagent 强制 Opus，没有细粒度。</p>
+</li>
+<li><p><strong>Agent&#x2F;Task 工具调用时显式传 model（细粒度）</strong>：<br>Agent&#x2F;Task 工具 schema 允许传 <code>model: &#39;opus&#39; | &#39;sonnet&#39; | &#39;haiku&#39;</code>，优先级高于 agent frontmatter&#x2F;代码硬编码（见第二节优先级表）。但这需要主 agent 主动传参，你没法直接控制。</p>
+</li>
+</ol>
+<p>第 1 条是目前最稳妥的绕过方式。</p>
+<hr>
+<h2 id="六、把这些串起来"><a href="#六、把这些串起来" class="headerlink" title="六、把这些串起来"></a>六、把这些串起来</h2><p>从三个 md 文件出发，挖到的东西是：</p>
+<p><strong>md 文件是 Claude Code plugin 体系的”声明层”</strong>，用 frontmatter 的 <code>model</code> 字段声明这个 agent 用什么模型。源码的 <code>getAgentModel()</code> 是”执行层”，负责把声明翻译成实际的 API 调用模型，同时处理优先级覆盖、同族继承、跨平台前缀等逻辑。</p>
+<p>两层之间的关系是清晰的，md 里写什么基本就是什么——除非被更高优先级的机制覆盖。</p>
+<p>但有一类 agent 不走 md，而是在 TypeScript 代码里直接定义：内置 agent（Explore、Plan、general-purpose 等）。这些 agent 的模型设定在源码里写死，其中 Explore agent 在默认情况下对外部用户是 Haiku——不过它仍然可以被 <code>CLAUDE_CODE_SUBAGENT_MODEL</code> 环境变量、Agent&#x2F;Task 工具调用时的 <code>model</code> 参数、或用户&#x2F;项目&#x2F;策略层的同名 agent 文件覆盖（见第二节优先级表和第九节的 activeAgents 覆盖链）。</p>
+<p><strong>所以 <code>/model opus</code> 的实际影响范围是：</strong></p>
+<ul>
+<li>✅ 主对话（Claude 直接回答你的问题）</li>
+<li>✅ general-purpose agent（model 字段未设定，默认 inherit）</li>
+<li>✅ Plan agent（<code>model: &#39;inherit&#39;</code> 写死在代码里）</li>
+<li>✅ plugin subagent 里写了 <code>model: inherit</code> 或不写 model 的</li>
+<li>⚠️ Explore agent：默认外部构建下是 <code>&#39;haiku&#39;</code>，除非你跑 <code>USER_TYPE=ant</code> 或设 <code>CLAUDE_CODE_SUBAGENT_MODEL</code></li>
+<li>⚠️ <code>/code-review</code> slash command 里的子任务：正文用”Launch a haiku agent &#x2F; Opus bug agent”这种语言强引导主模型去传 <code>model</code> 参数。主模型通常会照做，但这是 prompt 引导不是编译期强制</li>
+<li>⚠️ plugin subagent 里写了具体模型的（<code>feature-dev:*</code> 是 sonnet，<code>pr-review-toolkit:code-reviewer</code> 是 opus 等）：这些是默认值，调用方可以传 <code>model</code> 参数覆盖</li>
+</ul>
+<p>你以为选了 Opus 就是全程 Opus。实际上，主 agent 是 Opus，但它干很多事情是通过委托完成的，委托出去的那部分用什么模型，取决于 plugin 作者、slash command 正文、和主 agent 当时的调用决策。</p>
+<hr>
+<h2 id="七、如何强制全程-Opus"><a href="#七、如何强制全程-Opus" class="headerlink" title="七、如何强制全程 Opus"></a>七、如何强制全程 Opus</h2><p>既然 <code>/model opus</code> 管不到 subagent，真正的解决方案是用优先级最高的环境变量——在 <code>~/.claude/settings.json</code> 里设：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;env&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;CLAUDE_CODE_SUBAGENT_MODEL&quot;</span><span class="punctuation">:</span> <span class="string">&quot;opus&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;opus&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>优先级关系</strong>：<code>CLAUDE_CODE_SUBAGENT_MODEL</code> 是源码里第一层判断，任何 md frontmatter 里写的 <code>model: sonnet</code>、代码里硬编码的 <code>model: haiku</code>，都会被它覆盖。</p>
+<p><strong>代价</strong>：无法细粒度控制。<code>/code-review</code> 里原本被指示用 Haiku 的资格检查、原本用 Sonnet 做 CLAUDE.md 合规检查的任务，全部会变成 Opus。如果你按 token 付费，成本会显著上升。如果是 Max 订阅，无所谓。</p>
+<p><strong>重启生效</strong>：<code>settings.json</code> 在 Claude Code 启动时读取，已经在跑的进程需要退出重启（<code>Ctrl+C</code> 后重新运行 <code>claude</code>）。</p>
+<hr>
+<h2 id="八、四种配置组合的完整对照"><a href="#八、四种配置组合的完整对照" class="headerlink" title="八、四种配置组合的完整对照"></a>八、四种配置组合的完整对照</h2><p>用户能控制的旋钮只有两个：<code>/model</code>（主对话模型）和 <code>CLAUDE_CODE_SUBAGENT_MODEL</code>（subagent 全局覆盖）。但用户不知道自己日常的每个操作背后触发的是哪个 agent。下面把两层都展开。</p>
+<h3 id="情况对照表"><a href="#情况对照表" class="headerlink" title="情况对照表"></a>情况对照表</h3><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>主对话</th>
+<th>Explore（搜代码&#x2F;找文件）</th>
+<th>general-purpose &#x2F; Plan</th>
+<th>feature-dev code-reviewer</th>
+<th>pr-review-toolkit code-reviewer</th>
+<th>&#x2F;code-review inline agents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>环境变量 opus + &#x2F;model opus</strong></td>
+<td>Opus</td>
+<td>Opus</td>
+<td>Opus</td>
+<td>Opus</td>
+<td>Opus</td>
+<td>全 Opus</td>
+</tr>
+<tr>
+<td><strong>环境变量 opus + &#x2F;model sonnet</strong></td>
+<td>Sonnet</td>
+<td>Opus</td>
+<td>Opus</td>
+<td>Opus</td>
+<td>Opus</td>
+<td>全 Opus</td>
+</tr>
+<tr>
+<td><strong>环境变量 sonnet + &#x2F;model opus</strong></td>
+<td>Opus</td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>全 Sonnet</td>
+</tr>
+<tr>
+<td><strong>环境变量 sonnet + &#x2F;model sonnet</strong></td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>Sonnet</td>
+<td>全 Sonnet</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>无环境变量时（默认）：Explore 的 model 字段是 haiku（外部构建），feature-dev subagent 默认 Sonnet，pr-review-toolkit 的 code-reviewer&#x2F;code-simplifier 默认 Opus，general-purpose&#x2F;Plan 默认 inherit 主模型。但这些都是”默认值”，调用方传的 <code>model</code> 参数会覆盖它们。</p>
+</blockquote>
+<h3 id="用户能感知的操作-→-可能触发什么"><a href="#用户能感知的操作-→-可能触发什么" class="headerlink" title="用户能感知的操作 → 可能触发什么"></a>用户能感知的操作 → 可能触发什么</h3><p>需要说明：主 agent 是否委托给 subagent，是它自己的决策。以下是”在主 agent 选择委托时，通常会调哪个 agent”——不是每次都一定发生。</p>
+<table>
+<thead>
+<tr>
+<th>你在做什么</th>
+<th>可能触发的 agent（也可能主 agent 自己处理）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>直接问 Claude 问题，它回答</td>
+<td>主对话（没有委托）</td>
+</tr>
+<tr>
+<td>让 Claude 搜文件、找实现</td>
+<td>主 agent 自己用 Grep&#x2F;Glob&#x2F;Read；只在大范围探索时才委托给 <strong>Explore</strong></td>
+</tr>
+<tr>
+<td>让 Claude 做复杂研究、跨文件分析</td>
+<td>可能委托给 <strong>general-purpose</strong></td>
+</tr>
+<tr>
+<td>让 Claude 制定实现方案</td>
+<td>可能委托给 <strong>Plan</strong></td>
+</tr>
+<tr>
+<td>用 <code>/feature-dev</code> 开发功能完成后的质量检查</td>
+<td>按 slash command 正文指示调 <strong>feature-dev:code-reviewer</strong> 若干个</td>
+</tr>
+<tr>
+<td>用 <code>/pr-review-toolkit:review-pr</code></td>
+<td><strong>pr-review-toolkit:code-reviewer</strong> + 其他专项 agent</td>
+</tr>
+<tr>
+<td>用 <code>/code-review</code> review GitHub PR</td>
+<td>Haiku×2（资格&#x2F;路径）+ Sonnet×3（摘要+CLAUDE.md 合规）+ Opus×2（bug 扫描&#x2F;逻辑问题）+ 可变数量的验证 subagent（bug 用 Opus、合规用 Sonnet）</td>
+</tr>
+</tbody></table>
+<h3 id="两个反直觉的组合"><a href="#两个反直觉的组合" class="headerlink" title="两个反直觉的组合"></a>两个反直觉的组合</h3><p><strong>情况2（环境变量 opus + &#x2F;model sonnet）</strong>：主对话是 Sonnet，但所有 subagent 跑 Opus。搜个文件比你直接问问题还贵。</p>
+<p><strong>情况3（环境变量 sonnet + &#x2F;model opus）</strong>：你选了 Opus 主对话，但所有委托出去的任务——包括 pr-review-toolkit 里本来写了 <code>model: opus</code> 的 code-reviewer——都被压到 Sonnet。主 agent 是好的，但干活的全是次一级的。</p>
+<hr>
+<h2 id="九、未展开的三个更深入口"><a href="#九、未展开的三个更深入口" class="headerlink" title="九、未展开的三个更深入口"></a>九、未展开的三个更深入口</h2><p>本文讲的是”模型路由”——声明层 md 和执行层 <code>getAgentModel()</code> 之间的关系。但 Claude Code 的真实调度架构还有几条本文没展开的线，下面只点到为止，细节留给后续文章。</p>
+<p><strong>1. <code>activeAgents</code> 的六层覆盖链</strong>（<code>src/tools/AgentTool/loadAgentsDir.ts:193</code>）</p>
+<p>主 agent 实际看到的不是”plugin 写了什么就是什么”，而是 built-in &#x2F; plugin &#x2F; userSettings &#x2F; projectSettings &#x2F; flagSettings &#x2F; policySettings 六层合并后的 <code>activeAgents</code>。后写的覆盖前写的——你可以在 <code>~/.claude/agents/</code> 放一个同名 agent 覆盖内置的 Explore，但企业策略层（policySettings）又可以反过来压你的用户层。不是”用户总能覆盖”，是”合并优先级”。</p>
+<p><strong>2. slash command frontmatter 里的 <code>model</code> 字段</strong>（<code>src/utils/processUserInput/processSlashCommand.tsx:864</code>）</p>
+<p>本文第一节讲的是”命令正文通过 prompt 引导子 agent 用什么模型”。但 slash command 的 frontmatter 自己还能带一个 <code>model</code> 字段——<code>processSlashCommand</code> 把它作为本次 query 的主轮模型返回。也就是说，一条 <code>/my-command</code> 可以在自己的 frontmatter 里写 <code>model: opus</code>，直接把这次对话切到 Opus，不经过 <code>/model</code>。这和 subagent 的模型是两层不同的东西：一个是”这条命令本身用什么模型跑”，一个是”命令里再委托出去的 agent 用什么模型”。</p>
+<p>配套还有一个 <code>disableModelInvocation</code>（<code>src/types/command.ts:189</code>），决定命令是否出现在主模型的 SkillTool 可调用列表里——也就是控制”主模型能不能自己想到这招”。这个属于能力暴露边界，不属于模型路由。</p>
+<p><strong>3. 隐式 fork subagent</strong>（<code>src/tools/AgentTool/forkSubagent.ts:47</code>）</p>
+<p>不是所有委托都走命名 subagent。当 Agent&#x2F;Task 调用的 <code>subagent_type</code> 为空且 fork 实验 flag 开启时，Claude Code 会合成一个 <code>FORK_AGENT</code>——继承父模型、继承父的完整工具池、权限冒泡回父终端，完全不读 plugin frontmatter，不在 <code>builtInAgents</code> 列表里。它的存在是为了 prompt cache 共享（父和 fork 子的 API 请求前缀字节一致）。这条路径绕开了本文第二到第五节讲的所有分析框架。</p>
+<p><strong>注意 fork 是 feature flag 驱动的</strong>，不是默认路径——大多数会话不会触发，但如果你开了 hook 日志看到 <code>subagent_type=null</code> 的 Task 调用，那就是它。</p>
+<hr>
+<p>合起来看，Claude Code 的委托架构不只是一套”模型路由”，它还有<strong>覆盖链</strong>（多源合并）、<strong>能力暴露边界</strong>（slash command 的 model + disableModelInvocation）、和<strong>隐式委托路径</strong>（fork）三层机制。本文只讲了路由这一层，剩下三条每一条都够写一篇。</p>
+<hr>
+<h2 id="附录：原始文件"><a href="#附录：原始文件" class="headerlink" title="附录：原始文件"></a>附录：原始文件</h2><h3 id="附录-A：三个-md-文件"><a href="#附录-A：三个-md-文件" class="headerlink" title="附录 A：三个 md 文件"></a>附录 A：三个 md 文件</h3><p><strong>A1. <code>plugins/code-review/commands/code-review.md</code></strong>（slash command，v2.1.88 官方仓库实际内容）</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">allowed-tools: Bash(gh issue view:<span class="emphasis">*), Bash(gh search:*</span>), Bash(gh issue list:<span class="emphasis">*), Bash(gh pr comment:*</span>), Bash(gh pr diff:<span class="emphasis">*), Bash(gh pr view:*</span>), Bash(gh pr list:<span class="emphasis">*), mcp<span class="strong">__github_inline_comment__</span>create_inline_comment</span></span><br><span class="line"><span class="emphasis">description: Code review a pull request</span></span><br><span class="line"><span class="emphasis">---</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">Provide a code review for the given pull request.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis"><span class="strong">**Agent assumptions (applies to all agents and subagents):**</span></span></span><br><span class="line"><span class="emphasis">- All tools are functional and will work without error.</span></span><br><span class="line"><span class="emphasis">- Only call a tool if it is required to complete the task.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">To do this, follow these steps precisely:</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">1. Launch a haiku agent to check if any of the following are true:</span></span><br><span class="line"><span class="emphasis">   - The pull request is closed</span></span><br><span class="line"><span class="emphasis">   - The pull request is a draft</span></span><br><span class="line"><span class="emphasis">   - The pull request does not need code review</span></span><br><span class="line"><span class="emphasis">   - Claude has already commented on this PR</span></span><br><span class="line"><span class="emphasis">   If any condition is true, stop and do not proceed.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">2. Launch a haiku agent to return a list of file paths (not their contents) for all relevant CLAUDE.md files.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">3. Launch a sonnet agent to view the pull request and return a summary of the changes.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">4. Launch 4 agents in parallel to independently review the changes:</span></span><br><span class="line"><span class="emphasis">   Agents 1 + 2: CLAUDE.md compliance sonnet agents (parallel)</span></span><br><span class="line"><span class="emphasis">   Agent 3: Opus bug agent (parallel with agent 4) — scan for obvious bugs in the diff</span></span><br><span class="line"><span class="emphasis">   Agent 4: Opus bug agent (parallel with agent 3) — security/logic issues in the changed code</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">5. For each issue found in step 4, launch parallel subagents to validate the issue.</span></span><br><span class="line"><span class="emphasis">   Use Opus subagents for bugs and logic issues, and sonnet agents for CLAUDE.md violations.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">6. Filter out any issues that were not validated in step 5.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">7. Output a summary of the review findings to the terminal.</span></span><br><span class="line"><span class="emphasis">   If `--comment` was NOT provided, stop here.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">8. (If --comment) Create a list of comments to leave.</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">9. (If --comment) Post inline comments for each issue.</span></span><br></pre></td></tr></table></figure>
+
+<p>完整内容见 <a href="https://github.com/anthropics/claude-code/blob/v2.1.88/plugins/code-review/commands/code-review.md">anthropics&#x2F;claude-code 仓库 v2.1.88 tag</a>。</p>
+<hr>
+<p><strong>A2. <code>plugins/feature-dev/agents/code-reviewer.md</code></strong>（subagent，Sonnet）</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">name: code-reviewer</span><br><span class="line">description: Reviews code for bugs, logic errors, security vulnerabilities, code quality issues, and adherence to project conventions, using confidence-based filtering to report only high-priority issues that truly matter</span><br><span class="line">tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput</span><br><span class="line">model: sonnet</span><br><span class="line"><span class="section">color: red</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">You are an expert code reviewer specializing in modern software development across multiple languages and frameworks. Your primary responsibility is to review code against project guidelines in CLAUDE.md with high precision to minimize false positives.</span><br><span class="line"></span><br><span class="line"><span class="section">## Review Scope</span></span><br><span class="line"></span><br><span class="line">By default, review unstaged changes from <span class="code">`git diff`</span>. The user may specify different files or scope to review.</span><br><span class="line"></span><br><span class="line"><span class="section">## Confidence Scoring</span></span><br><span class="line"></span><br><span class="line">Rate each potential issue on a scale from 0-100. Only report issues with confidence ≥ 80.</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>A3. <code>plugins/pr-review-toolkit/agents/code-reviewer.md</code></strong>（subagent，Opus）</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">name: code-reviewer</span><br><span class="line">description: Use this agent when you need to review code for adherence to project guidelines, style guides, and best practices. This agent should be used proactively after writing or modifying code, especially before committing changes or creating pull requests.</span><br><span class="line">model: opus</span><br><span class="line"><span class="section">color: green</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">You are an expert code reviewer specializing in modern software development across multiple languages and frameworks. Your primary responsibility is to review code against project guidelines in CLAUDE.md with high precision to minimize false positives.</span><br><span class="line"></span><br><span class="line"><span class="section">## Issue Confidence Scoring</span></span><br><span class="line"></span><br><span class="line">Rate each issue from 0-100. Only report issues with confidence ≥ 80.</span><br><span class="line"></span><br><span class="line">Group issues by severity (Critical: 90-100, Important: 80-89).</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="附录-B：源码引用（v2-1-88）"><a href="#附录-B：源码引用（v2-1-88）" class="headerlink" title="附录 B：源码引用（v2.1.88）"></a>附录 B：源码引用（v2.1.88）</h3><p><strong>B1. <code>src/tools/AgentTool/built-in/exploreAgent.ts</code></strong>（关键行）</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="attr">EXPLORE_AGENT</span>: <span class="title class_">BuiltInAgentDefinition</span> = &#123;</span><br><span class="line">  <span class="attr">agentType</span>: <span class="string">&#x27;Explore&#x27;</span>,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// Ants get inherit to use the main agent&#x27;s model; external users get haiku for speed</span></span><br><span class="line">  <span class="comment">// Note: For ants, getAgentModel() checks tengu_explore_agent GrowthBook flag at runtime</span></span><br><span class="line">  <span class="attr">model</span>: process.<span class="property">env</span>.<span class="property">USER_TYPE</span> === <span class="string">&#x27;ant&#x27;</span> ? <span class="string">&#x27;inherit&#x27;</span> : <span class="string">&#x27;haiku&#x27;</span>,</span><br><span class="line">  <span class="attr">omitClaudeMd</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">getSystemPrompt</span>: <span class="function">() =&gt;</span> <span class="title function_">getExploreSystemPrompt</span>(),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>B2. <code>src/utils/model/agent.ts</code></strong>（完整 <code>getAgentModel</code> 函数）</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Get the default subagent model. Returns &#x27;inherit&#x27; so subagents inherit</span></span><br><span class="line"><span class="comment"> * the model from the parent thread.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">getDefaultSubagentModel</span>(<span class="params"></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;inherit&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">getAgentModel</span>(<span class="params"></span></span><br><span class="line"><span class="params">  <span class="attr">agentModel</span>: <span class="built_in">string</span> | <span class="literal">undefined</span>,</span></span><br><span class="line"><span class="params">  <span class="attr">parentModel</span>: <span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">  <span class="attr">toolSpecifiedModel</span>?: <span class="title class_">ModelAlias</span>,</span></span><br><span class="line"><span class="params">  <span class="attr">permissionMode</span>?: <span class="title class_">PermissionMode</span>,</span></span><br><span class="line"><span class="params"></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">  <span class="comment">// 优先级 1：环境变量全局覆盖</span></span><br><span class="line">  <span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">CLAUDE_CODE_SUBAGENT_MODEL</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">parseUserSpecifiedModel</span>(process.<span class="property">env</span>.<span class="property">CLAUDE_CODE_SUBAGENT_MODEL</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 优先级 2：Agent/Task 工具调用时显式传的 model 参数</span></span><br><span class="line">  <span class="keyword">if</span> (toolSpecifiedModel) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">aliasMatchesParentTier</span>(toolSpecifiedModel, parentModel)) &#123;</span><br><span class="line">      <span class="keyword">return</span> parentModel</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> model = <span class="title function_">parseUserSpecifiedModel</span>(toolSpecifiedModel)</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">applyParentRegionPrefix</span>(model, toolSpecifiedModel)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> agentModelWithExp = agentModel ?? <span class="title function_">getDefaultSubagentModel</span>()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 优先级 3：agent 定义里的 model 字段，&#x27;inherit&#x27; 则继承父模型</span></span><br><span class="line">  <span class="keyword">if</span> (agentModelWithExp === <span class="string">&#x27;inherit&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">getRuntimeMainLoopModel</span>(&#123;</span><br><span class="line">      <span class="attr">permissionMode</span>: permissionMode ?? <span class="string">&#x27;default&#x27;</span>,</span><br><span class="line">      <span class="attr">mainLoopModel</span>: parentModel,</span><br><span class="line">      <span class="attr">exceeds200kTokens</span>: <span class="literal">false</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 同族继承：父是 opus-4-6，子写 model: opus，则继承精确型号而非 provider 默认值</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">aliasMatchesParentTier</span>(agentModelWithExp, parentModel)) &#123;</span><br><span class="line">    <span class="keyword">return</span> parentModel</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> model = <span class="title function_">parseUserSpecifiedModel</span>(agentModelWithExp)</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">applyParentRegionPrefix</span>(model, agentModelWithExp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>B3. <code>src/tools/REPLTool/constants.ts</code></strong>（USER_TYPE 说明）</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * USER_TYPE is a build-time --define, so the ant-native</span></span><br><span class="line"><span class="comment"> * binary would otherwise force REPL mode on every SDK subprocess regardless</span></span><br><span class="line"><span class="comment"> * of the env the caller passes.</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" rel="tag"># 技术分析</a>
+          
+            <a href="/tags/Claude/" rel="tag"># Claude</a>
+          
+            <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"># 架构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2026/04/14/agent-context-management-2026/" rel="next" title="2026年Agent上下文管理生态全景：从源码到架构决策">
+                <i class="fa fa-chevron-left"></i> 2026年Agent上下文管理生态全景：从源码到架构决策
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2026/04/15/claude-code-beyond-model-routing/" rel="prev" title="Claude Code 不只是 model routing：覆盖链、slash command 自带 model、隐式 fork">
+                Claude Code 不只是 model routing：覆盖链、slash command 自带 model、隐式 fork <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sherry255" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xcmkya@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、三个文件是三种不同的东西"><span class="nav-number">1.</span> <span class="nav-text">一、三个文件是三种不同的东西</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件-A：slash-command（工作流编排-prompt）"><span class="nav-number">1.1.</span> <span class="nav-text">文件 A：slash command（工作流编排 prompt）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件-B-和-C：subagent（被调用的积木）"><span class="nav-number">1.2.</span> <span class="nav-text">文件 B 和 C：subagent（被调用的积木）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么-B-和-C-各自带一份而不共用？"><span class="nav-number">1.3.</span> <span class="nav-text">为什么 B 和 C 各自带一份而不共用？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、md-文件里的-model-字段，在源码里怎么执行"><span class="nav-number">2.</span> <span class="nav-text">二、md 文件里的 model 字段，在源码里怎么执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、md-文件是怎么被加载和调用的"><span class="nav-number">3.</span> <span class="nav-text">三、md 文件是怎么被加载和调用的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载链路"><span class="nav-number">3.1.</span> <span class="nav-text">加载链路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AgentDefinition-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">AgentDefinition 数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主-agent-怎么知道有哪些-subagent"><span class="nav-number">3.3.</span> <span class="nav-text">主 agent 怎么知道有哪些 subagent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主-agent-怎么决定调哪个"><span class="nav-number">3.4.</span> <span class="nav-text">主 agent 怎么决定调哪个</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两条完全独立的触发路径"><span class="nav-number">3.5.</span> <span class="nav-text">两条完全独立的触发路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么追踪某次任务实际调了哪些-agent"><span class="nav-number">3.6.</span> <span class="nav-text">怎么追踪某次任务实际调了哪些 agent</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、所有-plugin-subagent-的全貌"><span class="nav-number">4.</span> <span class="nav-text">四、所有 plugin subagent 的全貌</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、Explore-agent：外部用户和内部员工的不同待遇"><span class="nav-number">5.</span> <span class="nav-text">五、Explore agent：外部用户和内部员工的不同待遇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#这不意味着”搜代码一定用-Haiku”"><span class="nav-number">5.1.</span> <span class="nav-text">这不意味着”搜代码一定用 Haiku”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么绕过-Explore-的-Haiku-硬编码"><span class="nav-number">5.2.</span> <span class="nav-text">怎么绕过 Explore 的 Haiku 硬编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、把这些串起来"><span class="nav-number">6.</span> <span class="nav-text">六、把这些串起来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、如何强制全程-Opus"><span class="nav-number">7.</span> <span class="nav-text">七、如何强制全程 Opus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八、四种配置组合的完整对照"><span class="nav-number">8.</span> <span class="nav-text">八、四种配置组合的完整对照</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#情况对照表"><span class="nav-number">8.1.</span> <span class="nav-text">情况对照表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户能感知的操作-→-可能触发什么"><span class="nav-number">8.2.</span> <span class="nav-text">用户能感知的操作 → 可能触发什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两个反直觉的组合"><span class="nav-number">8.3.</span> <span class="nav-text">两个反直觉的组合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九、未展开的三个更深入口"><span class="nav-number">9.</span> <span class="nav-text">九、未展开的三个更深入口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录：原始文件"><span class="nav-number">10.</span> <span class="nav-text">附录：原始文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#附录-A：三个-md-文件"><span class="nav-number">10.1.</span> <span class="nav-text">附录 A：三个 md 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附录-B：源码引用（v2-1-88）"><span class="nav-number">10.2.</span> <span class="nav-text">附录 B：源码引用（v2.1.88）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sherry</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

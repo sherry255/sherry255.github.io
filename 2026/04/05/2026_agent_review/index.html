@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon-cat.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AI,Agent,技术分析," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="2026 年 Agent 上下文管理：源码实证与架构建议 结论先行（TL;DR） 把“省 token”当目标会南辕北辙；目标应是“在长任务中少犯错”，token 节省只是副产品。 现成方案最易落地的组合是“语义组装 + 算法压缩”：先用 LCM（lossless-claw）挑对上下文，再用 Headroom 压冗余工具输出。但要把可逆取回（CCR）与结构化任务状态贯穿，否则准确率会掉。 OpenC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2026 年 Agent 上下文管理：源码实证与架构建议">
+<meta property="og:url" content="http://yoursite.com/2026/04/05/2026_agent_review/index.html">
+<meta property="og:site_name" content="Sherry&#39;s Blog">
+<meta property="og:description" content="2026 年 Agent 上下文管理：源码实证与架构建议 结论先行（TL;DR） 把“省 token”当目标会南辕北辙；目标应是“在长任务中少犯错”，token 节省只是副产品。 现成方案最易落地的组合是“语义组装 + 算法压缩”：先用 LCM（lossless-claw）挑对上下文，再用 Headroom 压冗余工具输出。但要把可逆取回（CCR）与结构化任务状态贯穿，否则准确率会掉。 OpenC">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-04-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T09:29:40.785Z">
+<meta property="article:author" content="Sherry">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="技术分析">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2026/04/05/2026_agent_review/"/>
+
+
+
+
+
+  <title>2026 年 Agent 上下文管理：源码实证与架构建议 | Sherry's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sherry's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-catalog">
+          <a href="/catalog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            目录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rants">
+          <a href="/rants/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            吐槽
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            文章列表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2026/04/05/2026_agent_review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2026 年 Agent 上下文管理：源码实证与架构建议</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-05T00:00:00+08:00">
+                2026-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/" itemprop="url" rel="index">
+                    <span itemprop="name">agent</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/context/" itemprop="url" rel="index">
+                    <span itemprop="name">context</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="2026-年-Agent-上下文管理：源码实证与架构建议"><a href="#2026-年-Agent-上下文管理：源码实证与架构建议" class="headerlink" title="2026 年 Agent 上下文管理：源码实证与架构建议"></a>2026 年 Agent 上下文管理：源码实证与架构建议</h1><ul>
+<li>结论先行（TL;DR）<ul>
+<li>把“省 token”当目标会南辕北辙；目标应是“在长任务中少犯错”，token 节省只是副产品。</li>
+<li>现成方案最易落地的组合是“语义组装 + 算法压缩”：先用 LCM（lossless-claw）挑对上下文，再用 Headroom 压冗余工具输出。但要把可逆取回（CCR）与结构化任务状态贯穿，否则准确率会掉。</li>
+<li>OpenClaw 默认 Legacy 引擎确实是“壳”，但内置了一套守护与补救机制；生态里已有 Headroom、context‑mode、LCM 的插件化路径，无需 fork 重写。</li>
+<li>Hermes 的压缩不是“固定 13.9k + 双调用”，而是一次结构化摘要，预算随上下文规模动态调整。</li>
+</ul>
+</li>
+</ul>
+<p>问题刻画</p>
+<ul>
+<li>约束：模型上下文上限；工具输出与检索回流导致会话爆炸；跨会话&#x2F;跨子任务串联要求“记得住状态而不是记得住过程”。</li>
+<li>错位：把“最高压缩比&#x2F;最少 token”当 KPI 会牺牲可用性（缺关键行、断工具结果配对、遗漏标识符等），更好的目标是“正确率、重试次数、任务完成率、返工率”。</li>
+</ul>
+<p>生态速写（源代码为证）</p>
+<ul>
+<li>OpenClaw（默认）<ul>
+<li>Legacy 引擎是“兼容壳”：<ul>
+<li>openclaw&#x2F;src&#x2F;context-engine&#x2F;legacy.ts:28 ingest() 返回 { ingested: false }</li>
+<li>openclaw&#x2F;src&#x2F;context-engine&#x2F;legacy.ts:38 assemble() 原样透传、estimatedTokens: 0</li>
+<li>openclaw&#x2F;src&#x2F;context-engine&#x2F;legacy.ts:79 compact() 委托给运行时 delegateCompactionToRuntime</li>
+</ul>
+</li>
+<li>压缩“固定比例 + 护栏”并存：<ul>
+<li>openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:16 BASE_CHUNK_RATIO&#x3D;0.4</li>
+<li>openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:17 MIN_CHUNK_RATIO&#x3D;0.15</li>
+<li>openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:18 SAFETY_MARGIN&#x3D;1.2</li>
+<li>同文件包含“按 token 份额切块、成对保留 tool 调用&#x2F;结果、摘要开销预算”等逻辑与重试补救</li>
+</ul>
+</li>
+<li>插件“排他 slot”：<ul>
+<li>openclaw&#x2F;src&#x2F;plugins&#x2F;slots.ts:12 kind→slot 映射（memory &#x2F; context-engine）</li>
+<li>openclaw&#x2F;src&#x2F;plugins&#x2F;slots.ts:76 applyExclusiveSlotSelection(…) 切换 slot 并禁用同类插件</li>
+</ul>
+</li>
+<li>任务状态不是“纯内存”：<ul>
+<li>运行时 Map：openclaw&#x2F;src&#x2F;tasks&#x2F;task-registry.ts:50</li>
+<li>可插拔持久化（默认 SQLite）：openclaw&#x2F;src&#x2F;tasks&#x2F;task-registry.store.ts:31</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>lossless‑claw（LCM）<ul>
+<li>架构解耦（SQLite&#x2F;FTS5 存储 + 语义组装 + 可扩展摘要），通过插件契约接入 OpenClaw：<ul>
+<li>lossless-claw&#x2F;src&#x2F;engine.ts:1199 LcmContextEngine implements ContextEngine</li>
+<li>依赖的是 openclaw&#x2F;plugin-sdk 契约而非零依赖：lossless-claw&#x2F;src&#x2F;engine.ts:19</li>
+<li>会话存储：lossless-claw&#x2F;src&#x2F;store&#x2F;conversation-store.ts:263</li>
+<li>语义检索：lossless-claw&#x2F;src&#x2F;retrieval.ts:124</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Headroom<ul>
+<li>JSON 工具输出智能压缩（SmartCrusher）、文本压缩（Kompress，可选 ML）、可逆取回（CCR）：<ul>
+<li>非 JSON 直通（不压）：headroom&#x2F;tests&#x2F;test_text_compressors.py:289</li>
+<li>CCR 工具名：headroom&#x2F;headroom&#x2F;ccr&#x2F;mcp_server.py:64</li>
+</ul>
+</li>
+<li>已有 OpenClaw 引擎插件（零 LLM、调用 compress()）：<ul>
+<li>headroom&#x2F;plugins&#x2F;openclaw&#x2F;src&#x2F;engine.ts:1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Hermes Agent<ul>
+<li>压缩预算动态，不是“固定 13.9k + 双调用”：<ul>
+<li>下限&#x2F;比例&#x2F;上限：hermes-agent&#x2F;agent&#x2F;context_compressor.py:39, :41, :43</li>
+<li>预算计算与上限约束：hermes-agent&#x2F;agent&#x2F;context_compressor.py:220–:225</li>
+<li>唯一 LLM 调用（结构化摘要，支持迭代更新）：hermes-agent&#x2F;agent&#x2F;context_compressor.py:404, :287</li>
+<li>低成本预处理（裁剪旧工具输出）：hermes-agent&#x2F;agent&#x2F;context_compressor.py:155</li>
+</ul>
+</li>
+<li>记忆 provider 可插拔，但“是否调用 LLM”取决于 provider 实现：<ul>
+<li>hermes-agent&#x2F;agent&#x2F;memory_provider.py:164</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>context‑mode<ul>
+<li>以“会话简历”跨压缩注入、计数与可观测：<ul>
+<li>计数：context-mode&#x2F;src&#x2F;session&#x2F;db.ts:84, :194</li>
+<li>before&#x2F;after_compaction 钩子 + resume 注入：context-mode&#x2F;src&#x2F;pi-extension.ts:297, :307, :265</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>发现与补正</p>
+<ul>
+<li>“OpenClaw 等于‘塞满再摘要’”并不全面<ul>
+<li>确有固定比例与 Legacy 默认，但生产路径包含分块、工具配对修复、摘要质量守卫、标识符保护、重试&#x2F;超时治理与“预压缩记忆冲洗”等演进；判词宜改为“默认策略偏朴素，但配备成体系护栏，可通过插件替换&#x2F;接管”。</li>
+</ul>
+</li>
+<li>“任务状态在内存 Map，测试强耦合”偏颇<ul>
+<li>TaskRegistry 提供持久化与 Observer 注入点，可替换为轻量 store，隔离测试（见上）。</li>
+</ul>
+</li>
+<li>“Headroom 压不动自然语言摘要”要加限定<ul>
+<li>SmartCrusher 针对 JSON，文本默认直通；但 Kompress 可对文本压缩（需 [ml] 额外依赖）。并且 CCR 让“可逆检索”成为安全阀。</li>
+</ul>
+</li>
+<li>“LCM 零 OpenClaw 依赖”应更严谨<ul>
+<li>是“契约依赖、实现解耦”，能在 OpenClaw 外独立复用，但仍以 plugin-sdk 类型做编译时契约绑定。</li>
+</ul>
+</li>
+</ul>
+<p>组合方案：Meta‑Engine 编排（LCM → Headroom）</p>
+<ul>
+<li>目标：既保留语义相关性（由 LCM 负责），又显著压掉冗长工具输出等结构化内容（由 Headroom 负责）；对纯对话场景自动旁路，避免过度压缩。</li>
+<li>编排要点<ul>
+<li>接口所有权：实现一个 ContextEngine，占住 context-engine slot。</li>
+<li>生命周期<ul>
+<li>assemble()：先调用 LCM assemble()，对输出消息做“工具输出占比估算”；若工具占比&gt;阈值（如 ≥50%），调用 Headroom compress()；否则直通 LCM 输出。</li>
+<li>compact()：传入 token 预算给 Headroom（RollingWindow + CCR），并透传&#x2F;保留 LCM 的摘要（避免对摘要再压缩）。</li>
+</ul>
+</li>
+<li>格式桥接<ul>
+<li>LCM&#x2F;Headroom 使用的消息格式（Agent&#x2F;OpenAI）互转：参考 headroom&#x2F;plugins&#x2F;openclaw&#x2F;src&#x2F;engine.ts:11 转换器思路。</li>
+<li>对“工具结果成对”保持：遵循 OpenClaw 分块配对逻辑避免“孤儿调用&#x2F;结果”（见 openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:117）。</li>
+</ul>
+</li>
+<li>可逆性&#x2F;取回<ul>
+<li>同步注入 CCR 工具使用说明，或在 system prompt 添加“若需要更多细节，调用 headroom_retrieve”提示，见 headroom&#x2F;headroom&#x2F;ccr&#x2F;mcp_server.py:64。</li>
+</ul>
+</li>
+<li>旁路策略<ul>
+<li>统计最近 N 条消息文本 token 比例、工具输出 token 比例与 JSON 可压缩度评分（可用样本规则先行），不满足门槛直接返回 LCM 结果。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>风险与对策<ul>
+<li>“摘要+压缩”双重丢失风险：禁止对摘要文本做 lossy 压缩；CCR 仅覆盖被压缩的原文，不覆盖摘要。</li>
+<li>桥接一致性：保持 tool_call_id&#x2F;tool_result 成对与顺序稳定，避免模型拒绝或工具注入失配。</li>
+<li>观测：记录 tokens_before&#x2F;after&#x2F;saved、错配修复次数、CCR 取回次数等，作为回归指标。</li>
+</ul>
+</li>
+</ul>
+<p>评价指标（建议用例）</p>
+<ul>
+<li>基础：token 节省（prompt_tokens）、压缩前后 API 错误率、继续对话“重复工作”比率。</li>
+<li>任务正确性代理：修 bug 类用例中“首次定位关键错误行”的命中率；代码生成用例中的“路径&#x2F;标识符保真率”。</li>
+<li>稳定性：工具调用-结果配对完整率，CCR 取回命中率与延迟。</li>
+</ul>
+<p>我会怎么实现（最小工作量）</p>
+<ul>
+<li>新建一个 context-engine 插件（占 slot）<ul>
+<li>复用 lossless-claw 作为子引擎生产 assemble 结果</li>
+<li>条件触发 headroom compress()（沿用 headroom&#x2F;plugins&#x2F;openclaw&#x2F;src&#x2F;engine.ts:1 里的 compress() 调用方式）</li>
+<li>旁路或失败一律回退到 LCM 输出；compact() 仅分发预算与记录观测</li>
+</ul>
+</li>
+<li>工期估计：~300–500 行 TypeScript（含桥接与指标），不改三方仓库</li>
+</ul>
+<p>证据清单（可点开核查）</p>
+<ul>
+<li>OpenClaw<ul>
+<li>openclaw&#x2F;src&#x2F;context-engine&#x2F;legacy.ts:28, openclaw&#x2F;src&#x2F;context-engine&#x2F;legacy.ts:38, openclaw&#x2F;src&#x2F;context-engine&#x2F;legacy.ts:79</li>
+<li>openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:16, openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:17, openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:18, openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:117, openclaw&#x2F;src&#x2F;agents&#x2F;compaction.ts:211</li>
+<li>openclaw&#x2F;src&#x2F;plugins&#x2F;slots.ts:12, openclaw&#x2F;src&#x2F;plugins&#x2F;slots.ts:76</li>
+<li>openclaw&#x2F;src&#x2F;tasks&#x2F;task-registry.ts:50, openclaw&#x2F;src&#x2F;tasks&#x2F;task-registry.store.ts:31</li>
+</ul>
+</li>
+<li>lossless‑claw<ul>
+<li>lossless-claw&#x2F;src&#x2F;engine.ts:1199, lossless-claw&#x2F;src&#x2F;engine.ts:19</li>
+<li>lossless-claw&#x2F;src&#x2F;store&#x2F;conversation-store.ts:263, lossless-claw&#x2F;src&#x2F;retrieval.ts:124</li>
+</ul>
+</li>
+<li>Headroom<ul>
+<li>headroom&#x2F;tests&#x2F;test_text_compressors.py:289</li>
+<li>headroom&#x2F;headroom&#x2F;ccr&#x2F;mcp_server.py:64</li>
+<li>headroom&#x2F;plugins&#x2F;openclaw&#x2F;src&#x2F;engine.ts:1</li>
+</ul>
+</li>
+<li>Hermes Agent<ul>
+<li>hermes-agent&#x2F;agent&#x2F;context_compressor.py:39, hermes-agent&#x2F;agent&#x2F;context_compressor.py:41, hermes-agent&#x2F;agent&#x2F;context_compressor.py:43</li>
+<li>hermes-agent&#x2F;agent&#x2F;context_compressor.py:220, hermes-agent&#x2F;agent&#x2F;context_compressor.py:225</li>
+<li>hermes-agent&#x2F;agent&#x2F;context_compressor.py:404, hermes-agent&#x2F;agent&#x2F;context_compressor.py:287, hermes-agent&#x2F;agent&#x2F;context_compressor.py:155</li>
+<li>hermes-agent&#x2F;agent&#x2F;memory_provider.py:164</li>
+</ul>
+</li>
+<li>context‑mode<ul>
+<li>context-mode&#x2F;src&#x2F;session&#x2F;db.ts:84, context-mode&#x2F;src&#x2F;session&#x2F;db.ts:194</li>
+<li>context-mode&#x2F;src&#x2F;pi-extension.ts:297, context-mode&#x2F;src&#x2F;pi-extension.ts:307, context-mode&#x2F;src&#x2F;pi-extension.ts:265</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/Agent/" rel="tag"># Agent</a>
+          
+            <a href="/tags/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" rel="tag"># 技术分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2026/04/04/2026%E5%B9%B4%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E7%94%9F%E6%80%81%E5%85%A8%E6%99%AF/" rel="next" title="2026年 Agent 上下文管理生态全景：从源码到架构决策">
+                <i class="fa fa-chevron-left"></i> 2026年 Agent 上下文管理生态全景：从源码到架构决策
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2026/04/11/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E7%84%A6%E8%99%91%E4%B8%8E%E4%B8%8D%E5%AE%8C%E7%BE%8E/" rel="prev" title="Anxiety and Imperfection in the Age of AI">
+                Anxiety and Imperfection in the Age of AI <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sherry255" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xcmkya@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2026-%E5%B9%B4-Agent-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%EF%BC%9A%E6%BA%90%E7%A0%81%E5%AE%9E%E8%AF%81%E4%B8%8E%E6%9E%B6%E6%9E%84%E5%BB%BA%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">2026 年 Agent 上下文管理：源码实证与架构建议</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sherry</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

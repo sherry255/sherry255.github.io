@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon-cat.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AI,技术分析,Claude,架构," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文是《你选了 Opus，但干活的是 Haiku》 的后续。上一篇只讲了”模型路由”一层——声明层 md 文件和执行层 getAgentModel() 之间的关系。这一篇挖它没展开的三条线：activeAgents 覆盖链、slash command 自带的 model 字段、以及隐式 fork 子线程。 本文所有引用基于 Claude Code v2.1.88 反混淆源码（sherry255&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Claude Code 不只是 model routing：覆盖链、slash command 自带 model、隐式 fork">
+<meta property="og:url" content="http://yoursite.com/2026/04/15/claude-code-beyond-model-routing/index.html">
+<meta property="og:site_name" content="Sherry&#39;s Blog">
+<meta property="og:description" content="本文是《你选了 Opus，但干活的是 Haiku》 的后续。上一篇只讲了”模型路由”一层——声明层 md 文件和执行层 getAgentModel() 之间的关系。这一篇挖它没展开的三条线：activeAgents 覆盖链、slash command 自带的 model 字段、以及隐式 fork 子线程。 本文所有引用基于 Claude Code v2.1.88 反混淆源码（sherry255&amp;">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-04-15T08:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T09:29:40.787Z">
+<meta property="article:author" content="Sherry">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Claude">
+<meta property="article:tag" content="技术分析">
+<meta property="article:tag" content="架构">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2026/04/15/claude-code-beyond-model-routing/"/>
+
+
+
+
+
+  <title>Claude Code 不只是 model routing：覆盖链、slash command 自带 model、隐式 fork | Sherry's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sherry's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-catalog">
+          <a href="/catalog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            目录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rants">
+          <a href="/rants/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            吐槽
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            文章列表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2026/04/15/claude-code-beyond-model-routing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Claude Code 不只是 model routing：覆盖链、slash command 自带 model、隐式 fork</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-15T16:00:00+08:00">
+                2026-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/" itemprop="url" rel="index">
+                    <span itemprop="name">agent</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/claude-code/" itemprop="url" rel="index">
+                    <span itemprop="name">claude-code</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文是<a href="/2026/04/15/claude-code-model-routing/">《你选了 Opus，但干活的是 Haiku》</a> 的后续。上一篇只讲了”模型路由”一层——声明层 md 文件和执行层 <code>getAgentModel()</code> 之间的关系。这一篇挖它没展开的三条线：<code>activeAgents</code> 覆盖链、slash command 自带的 <code>model</code> 字段、以及隐式 fork 子线程。</p>
+<p>本文所有引用基于 Claude Code v2.1.88 反混淆源码（<a href="https://github.com/sherry255/civil-engineering-cloud-claude-code-source-v2.1.88">sherry255&#x2F;civil-engineering-cloud-claude-code-source-v2.1.88</a>）。</p>
+</blockquote>
+<p>写完上一篇后，有个问题一直放不下。上一篇的整个论证框架是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">plugin md 里写的 model</span><br><span class="line">    ↓</span><br><span class="line">getAgentModel() 按优先级解析</span><br><span class="line">    ↓</span><br><span class="line">最终跑什么模型</span><br></pre></td></tr></table></figure>
+
+<p>这条主线对大多数 plugin subagent 都适用。但它有三个盲点。第一，主 agent 看到的 agent 列表根本不是”扫描 plugin 目录得到的”——它是一个多源合并的结果，plugin 只是其中一层。第二，slash command 的 frontmatter 里除了 <code>model</code> 字段可以引导子 agent，它还可以直接改<strong>本次 slash command 触发的 query 模型</strong>（只针对这一轮，不是永久切换会话）。第三，不是所有委托都走命名 subagent——有一条叫 fork 的隐藏路径完全绕开 plugin frontmatter 分析。</p>
+<p>这三条线都不属于”模型路由”的范畴，它们属于<strong>覆盖、暴露、委托</strong>这三个另外的维度。前一篇讲的是 Claude Code 作为”路由器”怎么工作，这一篇讲的是它作为一个完整调度系统的另外三个侧面。</p>
+<hr>
+<h2 id="一、activeAgents-的六层覆盖链"><a href="#一、activeAgents-的六层覆盖链" class="headerlink" title="一、activeAgents 的六层覆盖链"></a>一、<code>activeAgents</code> 的六层覆盖链</h2><h3 id="上一篇留的坑"><a href="#上一篇留的坑" class="headerlink" title="上一篇留的坑"></a>上一篇留的坑</h3><p>上一篇有一段说”plugin md 里写了 <code>model: sonnet</code>，就是 sonnet”，然后用 hook 日志去追踪实际调用。这个叙述暗示了一件事：plugin 文件的 frontmatter 是 agent 配置的最终来源。</p>
+<p>这个暗示是错的。</p>
+<h3 id="真相：六层合并"><a href="#真相：六层合并" class="headerlink" title="真相：六层合并"></a>真相：六层合并</h3><p><code>src/tools/AgentTool/loadAgentsDir.ts:193-221</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">getActiveAgentsFromList</span>(<span class="params"></span></span><br><span class="line"><span class="params">  <span class="attr">allAgents</span>: <span class="title class_">AgentDefinition</span>[],</span></span><br><span class="line"><span class="params"></span>): <span class="title class_">AgentDefinition</span>[] &#123;</span><br><span class="line">  <span class="keyword">const</span> builtInAgents = allAgents.<span class="title function_">filter</span>(<span class="function"><span class="params">a</span> =&gt;</span> a.<span class="property">source</span> === <span class="string">&#x27;built-in&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> pluginAgents = allAgents.<span class="title function_">filter</span>(<span class="function"><span class="params">a</span> =&gt;</span> a.<span class="property">source</span> === <span class="string">&#x27;plugin&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> userAgents = allAgents.<span class="title function_">filter</span>(<span class="function"><span class="params">a</span> =&gt;</span> a.<span class="property">source</span> === <span class="string">&#x27;userSettings&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> projectAgents = allAgents.<span class="title function_">filter</span>(<span class="function"><span class="params">a</span> =&gt;</span> a.<span class="property">source</span> === <span class="string">&#x27;projectSettings&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> managedAgents = allAgents.<span class="title function_">filter</span>(<span class="function"><span class="params">a</span> =&gt;</span> a.<span class="property">source</span> === <span class="string">&#x27;policySettings&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> flagAgents = allAgents.<span class="title function_">filter</span>(<span class="function"><span class="params">a</span> =&gt;</span> a.<span class="property">source</span> === <span class="string">&#x27;flagSettings&#x27;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> agentGroups = [</span><br><span class="line">    builtInAgents,</span><br><span class="line">    pluginAgents,</span><br><span class="line">    userAgents,</span><br><span class="line">    projectAgents,</span><br><span class="line">    flagAgents,</span><br><span class="line">    managedAgents,</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> agentMap = <span class="keyword">new</span> <span class="title class_">Map</span>&lt;<span class="built_in">string</span>, <span class="title class_">AgentDefinition</span>&gt;()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> agents <span class="keyword">of</span> agentGroups) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> agent <span class="keyword">of</span> agents) &#123;</span><br><span class="line">      agentMap.<span class="title function_">set</span>(agent.<span class="property">agentType</span>, agent)  <span class="comment">// 后写的覆盖前写的</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">Array</span>.<span class="title function_">from</span>(agentMap.<span class="title function_">values</span>())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>合并顺序，从<strong>先写</strong>到<strong>后写</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">built-in → plugin → userSettings → projectSettings → flagSettings → policySettings</span><br></pre></td></tr></table></figure>
+
+<p><code>Map.set()</code> 是后写的覆盖前写的。所以优先级是反过来的，从低到高：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">built-in  &lt;  plugin  &lt;  userSettings  &lt;  projectSettings  &lt;  flagSettings  &lt;  policySettings</span><br></pre></td></tr></table></figure>
+
+<p>也就是说：<strong>前提是同一个 <code>agentType</code> 在多层都存在定义，最终生效的是 policySettings 那一层</strong>——如果 policy 层没有这个 agent，它根本不参与合并，不会影响其他层的定义。</p>
+<h3 id="这意味着什么"><a href="#这意味着什么" class="headerlink" title="这意味着什么"></a>这意味着什么</h3><p><strong>场景 A：覆盖内置 Explore</strong></p>
+<p>上一篇讲过，built-in 层的 Explore agent 对外部用户是 <code>model: &#39;haiku&#39;</code>。但 built-in 是最低优先级。你可以在 <code>~/.claude/agents/Explore.md</code> 放一个同名 agent：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">name: Explore</span><br><span class="line">description: File/code search specialist for navigating codebases. Use this when you need to find files by patterns, search code for keywords, or answer questions about the codebase.</span><br><span class="line"><span class="section">model: opus</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">You are a file search specialist for Claude Code. You excel at thoroughly</span><br><span class="line">navigating and exploring codebases.</span><br><span class="line"></span><br><span class="line">Complete the user&#x27;s search request efficiently and report your findings clearly.</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意 <code>description</code> 字段是必须的</strong>。<code>parseAgentFromMarkdown()</code> 在缺 <code>name</code> 或 <code>description</code> 时会直接返回 null（<code>src/tools/AgentTool/loadAgentsDir.ts:549-561</code>），agent 不会被加载，也就不会出现在 <code>activeAgents</code> 里。没有 description 的 md 文件会被当作”co-located reference documentation” 静默跳过。</p>
+<p>这是 userSettings 层，优先级高于 built-in。合并后 <code>activeAgents.find(a =&gt; a.agentType === &#39;Explore&#39;)</code> 返回的是你这份，<code>model</code> 是 opus。</p>
+<p><strong>场景 B：项目级覆盖用户级</strong></p>
+<p>你在 <code>~/.claude/agents/</code> 放了一个自定义 <code>code-reviewer</code>，团队成员 A 觉得不合适，在项目 <code>.claude/agents/code-reviewer.md</code> 里再写了一份。同一台机器跑同一个项目时，生效的是项目级（projectSettings 优先级高于 userSettings）。</p>
+<p><strong>场景 C：企业策略反压用户</strong></p>
+<p><code>policySettings</code> 是最高优先级——企业 IT 可以下发一套 managed agent，<strong>强制覆盖</strong>用户和项目级别的所有自定义。这是企业部署里的控制点，不是用户绕得过的。</p>
+<h3 id="一个容易写歪的推论"><a href="#一个容易写歪的推论" class="headerlink" title="一个容易写歪的推论"></a>一个容易写歪的推论</h3><p><strong>不要把这写成”用户总能覆盖 plugin”</strong>。覆盖链是双向的：</p>
+<ul>
+<li>userSettings 能覆盖 plugin 和 built-in → 用户有自由</li>
+<li>policySettings 能覆盖 userSettings → 企业有控制</li>
+</ul>
+<p>所以”我只要在 <code>.claude/agents/</code> 里放一份就能搞定”只对个人用户成立。在企业环境下，IT 管理员下发的 policy agent 会反过来压你的用户层文件。</p>
+<h3 id="对模型路由的反向修正"><a href="#对模型路由的反向修正" class="headerlink" title="对模型路由的反向修正"></a>对模型路由的反向修正</h3><p>上一篇”情况对照表”里有一行叫 <code>Explore（搜代码/找文件）</code>。那一行<strong>严格说是”built-in 层的 Explore”</strong>——如果你自己写了一份 <code>~/.claude/agents/Explore.md</code>，表格里那一行对你无效，你看到的 Explore 是你自己那份。</p>
+<p>上一篇的 hook 日志建议也需要补充：如果你在 hook 日志里看到 <code>subagent_type=Explore</code>，那个 Explore 是最终合并后的版本。想知道它具体来自哪一层，需要看 <code>AgentDefinition.source</code> 字段，但 hook 只能拿到 tool_input，拿不到这个元数据。</p>
+<hr>
+<h2 id="二、slash-command-自带的-model-字段"><a href="#二、slash-command-自带的-model-字段" class="headerlink" title="二、slash command 自带的 model 字段"></a>二、slash command 自带的 <code>model</code> 字段</h2><h3 id="被忽略的路径"><a href="#被忽略的路径" class="headerlink" title="被忽略的路径"></a>被忽略的路径</h3><p>上一篇讲”slash command 是工作流编排 prompt”——命令正文用”Launch a haiku agent”这种语言引导主模型调用子 agent。所有分析都围绕”命令正文怎么影响子 agent”。</p>
+<p>但 slash command 的 frontmatter 本身还有一个 <code>model</code> 字段，<strong>决定这次 slash command 触发的本轮 query 用什么主模型</strong>——只针对这一轮，不是永久切换整个会话。</p>
+<h3 id="证据链"><a href="#证据链" class="headerlink" title="证据链"></a>证据链</h3><p>先看命令的类型定义，<code>src/types/command.ts</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> <span class="title class_">Command</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">model</span>?: <span class="title class_">ModelAlias</span> | <span class="built_in">string</span></span><br><span class="line">  <span class="attr">effort</span>?: <span class="title class_">EffortLevel</span></span><br><span class="line">  <span class="attr">disableModelInvocation</span>?: <span class="built_in">boolean</span></span><br><span class="line">  <span class="attr">userInvocable</span>?: <span class="built_in">boolean</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后看 <code>src/utils/processUserInput/processSlashCommand.tsx:908-920</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">  messages,</span><br><span class="line">  <span class="attr">shouldQuery</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">allowedTools</span>: additionalAllowedTools,</span><br><span class="line">  <span class="attr">model</span>: command.<span class="property">model</span>,     <span class="comment">// ← 这里</span></span><br><span class="line">  <span class="attr">effort</span>: command.<span class="property">effort</span>,</span><br><span class="line">  command</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>processSlashCommand</code> 处理完命令后，返回的对象里直接有 <code>model: command.model</code>。这个字段会被传给本次 query——<strong>也就是说，这次 slash command 触发的本轮 query 就跑命令 frontmatter 里写的那个模型</strong>。执行完这一轮后，下一轮对话会回到用户的 <code>/model</code> 设置，它不是永久的会话级切换。</p>
+<p>这不是”引导主模型去传参给子 agent”，这是<strong>在这一轮里换掉主模型本身</strong>。</p>
+<h3 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h3><p>假设你写了一个自定义命令 <code>~/.claude/commands/deep-review.md</code>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">description: 架构深度评审</span><br><span class="line">model: opus</span><br><span class="line"><span class="section">effort: high</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">对当前这段代码做一个深度架构评审，关注...</span><br></pre></td></tr></table></figure>
+
+<p>场景：你现在 <code>/model sonnet</code> 的状态，敲 <code>/deep-review</code>。</p>
+<ul>
+<li><code>/model</code> 选的是 Sonnet → 主对话默认是 Sonnet</li>
+<li>但 <code>/deep-review</code> 的 frontmatter 写了 <code>model: opus</code></li>
+<li><code>processSlashCommand</code> 返回 <code>model: &#39;opus&#39;</code> 给这次 query</li>
+<li><strong>这次 <code>/deep-review</code> 触发的这轮 query 跑 Opus</strong>，不管 <code>/model</code> 选的是什么</li>
+<li><strong><code>/deep-review</code> 执行完后，下一轮对话继续回到 <code>/model sonnet</code></strong>——frontmatter 的 model 字段只影响这一轮，不是会话级切换</li>
+</ul>
+<p>这是一条用户很容易忽略的路径。你以为改主模型只能靠 <code>/model</code>，其实 slash command 作者可以在 frontmatter 里替你切——哪怕只切一轮。</p>
+<h3 id="和上一篇的机制对比"><a href="#和上一篇的机制对比" class="headerlink" title="和上一篇的机制对比"></a>和上一篇的机制对比</h3><p>上一篇讲的 <code>/code-review</code> 是另一种情况。那个命令的 frontmatter 里<strong>没有</strong> <code>model</code> 字段，所以这一轮的主模型不变；但正文用”Launch a haiku agent &#x2F; Opus bug agent”引导主模型在调子 agent 时<strong>传对应的 <code>model</code> 参数</strong>。</p>
+<p>两条路径的层级是不同的：</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>作用对象</th>
+<th>源码位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>slash command frontmatter <code>model</code></td>
+<td><strong>本次命令触发的这一轮 query 的主模型</strong>（只针对本轮）</td>
+<td><code>processSlashCommand.tsx:864, 917</code></td>
+</tr>
+<tr>
+<td>slash command 正文里写 “Launch a haiku agent”</td>
+<td><strong>子 agent 的模型</strong>（通过引导主模型给 Agent&#x2F;Task 工具传 <code>model</code> 参数）</td>
+<td>无硬编码位置，是 prompt 引导</td>
+</tr>
+</tbody></table>
+<p>上一篇只讲了第二条。第一条是这次要补的。</p>
+<hr>
+<h2 id="三、disableModelInvocation：能力暴露边界"><a href="#三、disableModelInvocation：能力暴露边界" class="headerlink" title="三、disableModelInvocation：能力暴露边界"></a>三、<code>disableModelInvocation</code>：能力暴露边界</h2><h3 id="和-model-配套的另一个字段"><a href="#和-model-配套的另一个字段" class="headerlink" title="和 model 配套的另一个字段"></a>和 model 配套的另一个字段</h3><p>和 <code>command.model</code> 一起出现在 <code>Command</code> 类型里的，还有一个字段叫 <code>disableModelInvocation</code>（<code>src/types/command.ts:189</code>）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">disableModelInvocation</span>?: <span class="built_in">boolean</span>  <span class="comment">// Whether to disable this command from being invoked by models</span></span><br><span class="line"><span class="attr">userInvocable</span>?: <span class="built_in">boolean</span>           <span class="comment">// Whether users can invoke this skill by typing /skill-name</span></span><br></pre></td></tr></table></figure>
+
+<p>这两个字段控制两个完全独立的维度：</p>
+<ul>
+<li><code>userInvocable: true</code> → 用户在终端输入 <code>/xxx</code> 时可以触发</li>
+<li><code>disableModelInvocation: true</code> → 主模型<strong>不能</strong>通过 SkillTool 主动调用这个命令</li>
+</ul>
+<h3 id="四种组合"><a href="#四种组合" class="headerlink" title="四种组合"></a>四种组合</h3><p>这两个字段交叉组合出四种命令类型：</p>
+<table>
+<thead>
+<tr>
+<th><code>userInvocable</code></th>
+<th><code>disableModelInvocation</code></th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>true</code></td>
+<td><code>false</code></td>
+<td>正常 slash command：用户可调，模型也能主动想到用</td>
+</tr>
+<tr>
+<td><code>true</code></td>
+<td><code>true</code></td>
+<td>只允许人手触发：用户可调，但模型”不知道这个招式存在”</td>
+</tr>
+<tr>
+<td><code>false</code></td>
+<td><code>false</code></td>
+<td>只给模型用的内部命令：用户不可见，模型可主动调</td>
+</tr>
+<tr>
+<td><code>false</code></td>
+<td><code>true</code></td>
+<td>完全隐藏：两边都调不了（主要用于 legacy&#x2F;deprecated）</td>
+</tr>
+</tbody></table>
+<h3 id="实际例子：debug-和-batch"><a href="#实际例子：debug-和-batch" class="headerlink" title="实际例子：debug 和 batch"></a>实际例子：debug 和 batch</h3><p><code>src/skills/bundled/debug.ts:21-23</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// disableModelInvocation so that the user has to explicitly request it in</span></span><br><span class="line"><span class="comment">// the first place (since it&#x27;s a somewhat heavy/invasive action).</span></span><br><span class="line"><span class="attr">disableModelInvocation</span>: <span class="literal">true</span>,</span><br></pre></td></tr></table></figure>
+
+<p>注释说得很清楚：<strong>debug 这个技能需要用户显式请求，不能让模型主动发起</strong>。所以尽管 debug 在技能列表里存在，主模型的 SkillTool 列表里看不到它。</p>
+<p>同样的 <code>src/skills/bundled/batch.ts:109</code> 也是 <code>disableModelInvocation: true</code>。</p>
+<h3 id="为什么这不是”模型路由”"><a href="#为什么这不是”模型路由”" class="headerlink" title="为什么这不是”模型路由”"></a>为什么这不是”模型路由”</h3><p>这个机制决定的不是”调用时用什么模型”，而是<strong>模型在它的 SkillTool 可用列表里能看到什么</strong>。它控制的是 LLM 的”世界观”——你装的一个 plugin 可能带了 10 条命令，但其中 3 条标了 <code>disableModelInvocation: true</code>，主模型根本不知道那 3 条存在，自然也不会主动想到用。</p>
+<p>用上一篇的术语说，这是<strong>能力暴露边界</strong>，不是路由。但它和路由在行为上有相似的效果：用户觉得”某某命令为什么不触发？” 答案可能不是”路由错了”，而是”主模型从头就没看到这条命令”。</p>
+<p><code>src/tools/SkillTool/SkillTool.ts:412</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (foundCommand.<span class="property">disableModelInvocation</span>) &#123;</span><br><span class="line">  <span class="comment">// 报错，拒绝调用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用时还有一层保护——就算模型通过某种方式尝试调用一个 <code>disableModelInvocation: true</code> 的命令，SkillTool 会在执行前拒掉。</p>
+<hr>
+<h2 id="四、隐式-fork-subagent：绕开-frontmatter-分析的暗线"><a href="#四、隐式-fork-subagent：绕开-frontmatter-分析的暗线" class="headerlink" title="四、隐式 fork subagent：绕开 frontmatter 分析的暗线"></a>四、隐式 fork subagent：绕开 frontmatter 分析的暗线</h2><h3 id="不是所有委托都走命名-subagent"><a href="#不是所有委托都走命名-subagent" class="headerlink" title="不是所有委托都走命名 subagent"></a>不是所有委托都走命名 subagent</h3><p>前面所有分析都假设：主 agent 调 Agent&#x2F;Task 工具 → 传 <code>subagent_type</code> → 按 agentType 匹配 → 执行。</p>
+<p>但有一条路径 <code>subagent_type</code> 可以是空的。</p>
+<h3 id="Feature-gate"><a href="#Feature-gate" class="headerlink" title="Feature gate"></a>Feature gate</h3><p><code>src/tools/AgentTool/forkSubagent.ts:33-42</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Fork subagent feature gate.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * When enabled:</span></span><br><span class="line"><span class="comment"> * - `subagent_type` becomes optional on the Agent tool schema</span></span><br><span class="line"><span class="comment"> * - Omitting `subagent_type` triggers an implicit fork: the child inherits</span></span><br><span class="line"><span class="comment"> *   the parent&#x27;s full conversation context and system prompt</span></span><br><span class="line"><span class="comment"> * ...</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">isForkSubagentEnabled</span>(<span class="params"></span>): <span class="built_in">boolean</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">feature</span>(<span class="string">&#x27;FORK_SUBAGENT&#x27;</span>)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">isCoordinatorMode</span>()) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">getIsNonInteractiveSession</span>()) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>三个前提都满足才启用：</p>
+<ol>
+<li><code>FORK_SUBAGENT</code> feature flag 为 true（这是 build-time 或 GrowthBook 控制的实验标志）</li>
+<li>不在 coordinator 模式</li>
+<li>不在 non-interactive session（SDK 调用模式不算）</li>
+</ol>
+<p><strong>所以 fork 不是默认路径</strong>。大多数用户的大多数会话走的还是上一篇讲的”命名 subagent”路径。</p>
+<h3 id="合成-agent-定义"><a href="#合成-agent-定义" class="headerlink" title="合成 agent 定义"></a>合成 agent 定义</h3><p><code>src/tools/AgentTool/forkSubagent.ts:60-71</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="variable constant_">FORK_AGENT</span> = &#123;</span><br><span class="line">  <span class="attr">agentType</span>: <span class="variable constant_">FORK_SUBAGENT_TYPE</span>,  <span class="comment">// &#x27;fork&#x27;</span></span><br><span class="line">  <span class="attr">whenToUse</span>:</span><br><span class="line">    <span class="string">&#x27;Implicit fork — inherits full conversation context. Not selectable via subagent_type; triggered by omitting subagent_type when the fork experiment is active.&#x27;</span>,</span><br><span class="line">  <span class="attr">tools</span>: [<span class="string">&#x27;*&#x27;</span>],</span><br><span class="line">  <span class="attr">maxTurns</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">model</span>: <span class="string">&#x27;inherit&#x27;</span>,</span><br><span class="line">  <span class="attr">permissionMode</span>: <span class="string">&#x27;bubble&#x27;</span>,</span><br><span class="line">  <span class="attr">source</span>: <span class="string">&#x27;built-in&#x27;</span>,</span><br><span class="line">  <span class="attr">baseDir</span>: <span class="string">&#x27;built-in&#x27;</span>,</span><br><span class="line">  <span class="attr">getSystemPrompt</span>: <span class="function">() =&gt;</span> <span class="string">&#x27;&#x27;</span>,  <span class="comment">// 不使用，见下文</span></span><br><span class="line">&#125; <span class="keyword">satisfies</span> <span class="title class_">BuiltInAgentDefinition</span></span><br></pre></td></tr></table></figure>
+
+<p>几个关键字段：</p>
+<ul>
+<li><strong><code>agentType: &#39;fork&#39;</code></strong>：合成名字，用于 analytics 标记，不出现在用户可见的 agent 列表里</li>
+<li><strong><code>tools: [&#39;*&#39;]</code> with <code>useExactTools</code></strong>：fork 子进程获得<strong>父进程的完整工具池</strong>（字面相同，不是白名单）</li>
+<li><strong><code>model: &#39;inherit&#39;</code></strong>：继承父模型</li>
+<li><strong><code>permissionMode: &#39;bubble&#39;</code></strong>：权限请求冒泡回父终端，不是独立权限上下文</li>
+<li><strong><code>getSystemPrompt: () =&gt; &#39;&#39;</code></strong>：这个函数返回空字符串，因为 fork 子 agent 不重新渲染 system prompt——它<strong>字节复用父的 <code>renderedSystemPrompt</code></strong></li>
+</ul>
+<h3 id="为什么要这样设计"><a href="#为什么要这样设计" class="headerlink" title="为什么要这样设计"></a>为什么要这样设计</h3><p>注释里直接给了答案：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ... `tools: [&#x27;*&#x27;]` with `useExactTools` means the fork</span></span><br><span class="line"><span class="comment"> * child receives the parent&#x27;s exact tool pool (for cache-identical API</span></span><br><span class="line"><span class="comment"> * prefixes). `permissionMode: &#x27;bubble&#x27;` surfaces permission prompts to the</span></span><br><span class="line"><span class="comment"> * parent terminal. `model: &#x27;inherit&#x27;` keeps the parent&#x27;s model for context</span></span><br><span class="line"><span class="comment"> * length parity.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The getSystemPrompt here is unused: the fork path passes</span></span><br><span class="line"><span class="comment"> * `override.systemPrompt` with the parent&#x27;s already-rendered system prompt</span></span><br><span class="line"><span class="comment"> * bytes, threaded via `toolUseContext.renderedSystemPrompt`. Reconstructing</span></span><br><span class="line"><span class="comment"> * by re-calling getSystemPrompt() can diverge (GrowthBook cold→warm) and</span></span><br><span class="line"><span class="comment"> * bust the prompt cache; threading the rendered bytes is byte-exact.</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<p>核心目的是 <strong>prompt cache 共享</strong>。Anthropic 推理端对长 prompt 的计费和延迟优化依赖 prompt cache——如果两次请求的前缀字节完全一致，后一次就能命中缓存，省 token、降延迟。</p>
+<p>fork 路径要求父 agent 和 fork 子 agent 的 API 请求前缀<strong>字节完全一致</strong>。所以：</p>
+<ul>
+<li>工具池不能变 → <code>tools: [&#39;*&#39;]</code> 且字面复用</li>
+<li>system prompt 不能重新渲染 → 直接复用父的 bytes（GrowthBook cold→warm 会让 prompt 正文微妙变化）</li>
+<li>模型不能变 → <code>inherit</code></li>
+<li>上下文长度需要一致 → 继承父</li>
+</ul>
+<p>这条路径的存在是个<strong>成本优化 hack</strong>，不是一个通用的委托机制。</p>
+<h3 id="对上一篇的意义"><a href="#对上一篇的意义" class="headerlink" title="对上一篇的意义"></a>对上一篇的意义</h3><p>上一篇第三节画了主 agent 决策调用 subagent 的流程图，假设每次调用都要匹配 <code>agentType</code>。fork 路径<strong>完全不走这条流程</strong>：</p>
+<ul>
+<li>主 agent 调 Agent&#x2F;Task 工具，<code>subagent_type</code> 空</li>
+<li><code>isForkSubagentEnabled()</code> 返回 true</li>
+<li>走 fork 分支，<code>selectedAgent = FORK_AGENT</code>（见 <code>AgentTool.tsx:332-335</code>）</li>
+<li>不读任何 plugin frontmatter</li>
+<li>不在 <code>activeAgents</code> 列表里查找</li>
+<li>不经过 <code>getAgentModel()</code> 的 frontmatter 解析分支</li>
+<li>直接复用父的一切</li>
+</ul>
+<p>所以上一篇讲的模型路由机制，对 fork 路径<strong>是没有任何约束力的</strong>。fork 子 agent 永远继承父模型，永远拥有父的完整工具池，永远用父的 system prompt。</p>
+<h3 id="递归保护"><a href="#递归保护" class="headerlink" title="递归保护"></a>递归保护</h3><p>如果 fork 子 agent 再尝试调用 Agent&#x2F;Task 工具触发新的 fork 会怎样？</p>
+<p><code>src/tools/AgentTool/AgentTool.tsx:332-334</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (toolUseContext.<span class="property">options</span>.<span class="property">querySource</span> === <span class="string">`agent:builtin:<span class="subst">$&#123;FORK_AGENT.agentType&#125;</span>`</span> || <span class="title function_">isInForkChild</span>(toolUseContext.<span class="property">messages</span>)) &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Fork is not available inside a forked worker. Complete your task directly using your tools.&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>fork 子 agent 的工具池里<strong>保留着</strong> Agent 工具（为了 prompt cache 字节一致不能拿掉），所以需要在<strong>调用时</strong>运行时拒绝——防止无限递归 fork。</p>
+<h3 id="怎么在-hook-日志里识别-fork"><a href="#怎么在-hook-日志里识别-fork" class="headerlink" title="怎么在 hook 日志里识别 fork"></a>怎么在 hook 日志里识别 fork</h3><p>上一篇给的 hook 例子长这样：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;jq -c &#x27;&#123;tool_name, subagent_type: (.tool_input.subagent_type // null), model: (.tool_input.model // null), prompt: (.tool_input.prompt // null)&#125;&#x27; &gt;&gt; /tmp/agent-calls.log&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你看到一行 <code>subagent_type: null</code>，那就是 fork 路径被触发了。如果 <code>subagent_type</code> 是具体的 agentType 字符串（比如 <code>&quot;Explore&quot;</code> 或 <code>&quot;feature-dev:code-reviewer&quot;</code>），那是正常的命名 subagent 路径。</p>
+<hr>
+<h2 id="五、三条线合起来看"><a href="#五、三条线合起来看" class="headerlink" title="五、三条线合起来看"></a>五、三条线合起来看</h2><p>上一篇讲的是 Claude Code 作为<strong>模型路由器</strong>怎么工作。这一篇讲的是它作为<strong>完整调度系统</strong>的另外三个维度：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>关键机制</th>
+<th>控制点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>路由</strong>（上一篇）</td>
+<td><code>getAgentModel()</code> 优先级解析</td>
+<td><code>CLAUDE_CODE_SUBAGENT_MODEL</code>、Agent&#x2F;Task 工具 <code>model</code> 参数、md frontmatter</td>
+</tr>
+<tr>
+<td><strong>覆盖</strong></td>
+<td><code>activeAgents</code> 六层合并</td>
+<td><code>~/.claude/agents/</code>、<code>.claude/agents/</code>、policy settings</td>
+</tr>
+<tr>
+<td><strong>暴露</strong></td>
+<td>commands&#x2F;skills 的 <code>disableModelInvocation</code> 和 <code>userInvocable</code></td>
+<td>frontmatter 字段（Command&#x2F;Skill 层通用，不只是 slash command）</td>
+</tr>
+<tr>
+<td><strong>隐式委托</strong></td>
+<td>FORK_AGENT feature gate</td>
+<td><code>FORK_SUBAGENT</code> flag</td>
+</tr>
+</tbody></table>
+<p>四者的组合决定了<strong>你的某条指令最终跑在哪个模型上、由哪个 agent 执行、在哪个权限上下文里</strong>。单看任何一条都不够：</p>
+<ul>
+<li>单看路由：会忽略你自己的 <code>.claude/agents/</code> 文件对内置 agent 的覆盖</li>
+<li>单看覆盖：会忽略 slash command 的 frontmatter <code>model</code> 能在一轮对话里直接换主模型</li>
+<li>单看暴露：会忽略 fork 路径完全绕开整个分析框架</li>
+<li>单看委托：会忽略 policy settings 能反压用户自定义</li>
+</ul>
+<h3 id="实际应用：想精确控制-Opus-用在哪"><a href="#实际应用：想精确控制-Opus-用在哪" class="headerlink" title="实际应用：想精确控制 Opus 用在哪"></a>实际应用：想精确控制 Opus 用在哪</h3><p>如果你想在日常编码里让”高价值决策走 Opus、低价值搜索走 Haiku”，单靠 <code>/model opus</code> + <code>CLAUDE_CODE_SUBAGENT_MODEL</code> 做不到——因为这两个旋钮太粗。细粒度的控制需要：</p>
+<ol>
+<li><strong>把 built-in Explore 的默认行为显式挪到自己可控层</strong>：在 <code>~/.claude/agents/Explore.md</code> 写一份同名 agent（含必需的 <code>description</code> 字段），<code>model</code> 可以写 haiku、inherit、或任何你想要的值。默认外部构建下 built-in Explore 本来就是 Haiku，这一步不是为了”改”，而是为了<strong>显式化</strong>——把模型选择从一个不可见的编译时常量挪到一个可读可改的文件里，后续想调就能调。</li>
+<li><strong>用 <code>~/.claude/commands/</code> 写自定义 slash command</strong>，在特定命令的 frontmatter 里指定 <code>model: opus</code>——只有调用这条命令的这一轮才切到 Opus，后续对话自动回到 <code>/model</code> 设置</li>
+<li><strong>接受 fork 路径不受控</strong>——它总是继承父模型，你没办法让 fork 子 agent 跑和父不同的模型</li>
+</ol>
+<p>这三条配合起来才是”细粒度模型控制”，比单纯设 <code>CLAUDE_CODE_SUBAGENT_MODEL</code> 精确得多。</p>
+<hr>
+<h2 id="附录：源码引用"><a href="#附录：源码引用" class="headerlink" title="附录：源码引用"></a>附录：源码引用</h2><p><strong>A. <code>loadAgentsDir.ts:193-221</code></strong> —— <code>getActiveAgentsFromList</code> 合并逻辑<br><strong>B. <code>forkSubagent.ts:33-42</code></strong> —— <code>isForkSubagentEnabled</code> feature gate<br><strong>C. <code>forkSubagent.ts:60-71</code></strong> —— <code>FORK_AGENT</code> 合成定义<br><strong>D. <code>AgentTool.tsx:332-335</code></strong> —— fork 路径选择和递归保护<br><strong>E. <code>processSlashCommand.tsx:864, 917</code></strong> —— <code>command.model</code> 作为本次 query 的主模型返回（只影响这一轮 query，不是会话级切换）<br><strong>F. <code>types/command.ts:189</code></strong> —— <code>disableModelInvocation</code> 和 <code>userInvocable</code> 定义<br><strong>G. <code>SkillTool.ts:412</code></strong> —— 调用时对 <code>disableModelInvocation</code> 的拒绝检查<br><strong>H. <code>skills/bundled/debug.ts:21-23</code></strong> —— 实际应用 <code>disableModelInvocation: true</code> 的例子</p>
+<hr>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>写完上一篇时我以为 Claude Code 的模型调度已经讲清楚了。读完这三条线之后才意识到：模型路由只是台面上那一层，底下还压着覆盖、暴露、隐式委托三个维度。</p>
+<p>如果把 Claude Code 的调度架构画成一个图，会是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">用户指令</span><br><span class="line">    ↓</span><br><span class="line">slash command 的 frontmatter model ──┐</span><br><span class="line">                                     ├── 决定本轮 query 的主模型</span><br><span class="line">`/model` 设置 ──────────────────────┘  （command 的 model 只影响这一轮，</span><br><span class="line">                                        之后回到 `/model` 设置）</span><br><span class="line">    ↓</span><br><span class="line">主 agent 执行</span><br><span class="line">    ↓</span><br><span class="line">主 agent 决定是否委托</span><br><span class="line">    ↓</span><br><span class="line">  ┌─→ 命名 subagent（传 subagent_type）</span><br><span class="line">  │       ↓</span><br><span class="line">  │   activeAgents 合并后查找（built-in/plugin/user/project/flag/policy）</span><br><span class="line">  │       ↓</span><br><span class="line">  │   getAgentModel() 解析（env var / tool param / frontmatter / inherit）</span><br><span class="line">  │       ↓</span><br><span class="line">  │   执行</span><br><span class="line">  │</span><br><span class="line">  └─→ 隐式 fork（不传 subagent_type，且 flag 开启）</span><br><span class="line">          ↓</span><br><span class="line">      FORK_AGENT 字节复用父</span><br><span class="line">          ↓</span><br><span class="line">      执行</span><br></pre></td></tr></table></figure>
+
+<p>你能控制的旋钮只有左上那几个（主 agent 和 slash command 层）。一旦进入委托分支，后续走哪条路径、用什么模型，取决于 plugin 作者、Anthropic 工程师、feature flag 组合的一连串决策。</p>
+<p><strong>“我选了 Opus，实际用什么模型”</strong> 这个问题的完整答案，不是一句话，是一个需要看四个维度的矩阵。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" rel="tag"># 技术分析</a>
+          
+            <a href="/tags/Claude/" rel="tag"># Claude</a>
+          
+            <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"># 架构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2026/04/15/claude-code-model-routing/" rel="next" title="你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由">
+                <i class="fa fa-chevron-left"></i> 你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sherry255" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xcmkya@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、activeAgents-的六层覆盖链"><span class="nav-number">1.</span> <span class="nav-text">一、activeAgents 的六层覆盖链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#上一篇留的坑"><span class="nav-number">1.1.</span> <span class="nav-text">上一篇留的坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#真相：六层合并"><span class="nav-number">1.2.</span> <span class="nav-text">真相：六层合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#这意味着什么"><span class="nav-number">1.3.</span> <span class="nav-text">这意味着什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个容易写歪的推论"><span class="nav-number">1.4.</span> <span class="nav-text">一个容易写歪的推论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对模型路由的反向修正"><span class="nav-number">1.5.</span> <span class="nav-text">对模型路由的反向修正</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、slash-command-自带的-model-字段"><span class="nav-number">2.</span> <span class="nav-text">二、slash command 自带的 model 字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#被忽略的路径"><span class="nav-number">2.1.</span> <span class="nav-text">被忽略的路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证据链"><span class="nav-number">2.2.</span> <span class="nav-text">证据链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个例子"><span class="nav-number">2.3.</span> <span class="nav-text">一个例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和上一篇的机制对比"><span class="nav-number">2.4.</span> <span class="nav-text">和上一篇的机制对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、disableModelInvocation：能力暴露边界"><span class="nav-number">3.</span> <span class="nav-text">三、disableModelInvocation：能力暴露边界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#和-model-配套的另一个字段"><span class="nav-number">3.1.</span> <span class="nav-text">和 model 配套的另一个字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四种组合"><span class="nav-number">3.2.</span> <span class="nav-text">四种组合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际例子：debug-和-batch"><span class="nav-number">3.3.</span> <span class="nav-text">实际例子：debug 和 batch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么这不是”模型路由”"><span class="nav-number">3.4.</span> <span class="nav-text">为什么这不是”模型路由”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、隐式-fork-subagent：绕开-frontmatter-分析的暗线"><span class="nav-number">4.</span> <span class="nav-text">四、隐式 fork subagent：绕开 frontmatter 分析的暗线</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不是所有委托都走命名-subagent"><span class="nav-number">4.1.</span> <span class="nav-text">不是所有委托都走命名 subagent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Feature-gate"><span class="nav-number">4.2.</span> <span class="nav-text">Feature gate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合成-agent-定义"><span class="nav-number">4.3.</span> <span class="nav-text">合成 agent 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要这样设计"><span class="nav-number">4.4.</span> <span class="nav-text">为什么要这样设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对上一篇的意义"><span class="nav-number">4.5.</span> <span class="nav-text">对上一篇的意义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#递归保护"><span class="nav-number">4.6.</span> <span class="nav-text">递归保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么在-hook-日志里识别-fork"><span class="nav-number">4.7.</span> <span class="nav-text">怎么在 hook 日志里识别 fork</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、三条线合起来看"><span class="nav-number">5.</span> <span class="nav-text">五、三条线合起来看</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实际应用：想精确控制-Opus-用在哪"><span class="nav-number">5.1.</span> <span class="nav-text">实际应用：想精确控制 Opus 用在哪</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录：源码引用"><span class="nav-number">6.</span> <span class="nav-text">附录：源码引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">7.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sherry</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

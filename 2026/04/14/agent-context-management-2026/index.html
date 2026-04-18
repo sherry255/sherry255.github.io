@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon-cat.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AI,Agent,技术分析,架构," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="2026年Agent上下文管理生态全景：从源码到架构决策一项基于源码阅读的实证性技术调研  摘要：本文对2026年4月Agent上下文管理（context management）领域的主要开源项目进行了源码级分析。调研覆盖了10个项目，共阅读约30万行源码，涉及TypeScript、Python、Go三种语言。通过对比各项目的架构设计、核心算法、接口耦合度和工程成熟度，本文得出结论：该领域已进入增">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2026年Agent上下文管理生态全景：从源码到架构决策">
+<meta property="og:url" content="http://yoursite.com/2026/04/14/agent-context-management-2026/index.html">
+<meta property="og:site_name" content="Sherry&#39;s Blog">
+<meta property="og:description" content="2026年Agent上下文管理生态全景：从源码到架构决策一项基于源码阅读的实证性技术调研  摘要：本文对2026年4月Agent上下文管理（context management）领域的主要开源项目进行了源码级分析。调研覆盖了10个项目，共阅读约30万行源码，涉及TypeScript、Python、Go三种语言。通过对比各项目的架构设计、核心算法、接口耦合度和工程成熟度，本文得出结论：该领域已进入增">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-04-14T05:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T09:29:40.766Z">
+<meta property="article:author" content="Sherry">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="技术分析">
+<meta property="article:tag" content="架构">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2026/04/14/agent-context-management-2026/"/>
+
+
+
+
+
+  <title>2026年Agent上下文管理生态全景：从源码到架构决策 | Sherry's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sherry's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-catalog">
+          <a href="/catalog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            目录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rants">
+          <a href="/rants/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            吐槽
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            文章列表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2026/04/14/agent-context-management-2026/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2026年Agent上下文管理生态全景：从源码到架构决策</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-14T13:00:00+08:00">
+                2026-04-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/" itemprop="url" rel="index">
+                    <span itemprop="name">agent</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/agent/context/" itemprop="url" rel="index">
+                    <span itemprop="name">context</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="2026年Agent上下文管理生态全景：从源码到架构决策"><a href="#2026年Agent上下文管理生态全景：从源码到架构决策" class="headerlink" title="2026年Agent上下文管理生态全景：从源码到架构决策"></a>2026年Agent上下文管理生态全景：从源码到架构决策</h1><p><strong>一项基于源码阅读的实证性技术调研</strong></p>
+<blockquote>
+<p><strong>摘要</strong>：本文对2026年4月Agent上下文管理（context management）领域的主要开源项目进行了源码级分析。调研覆盖了10个项目，共阅读约30万行源码，涉及TypeScript、Python、Go三种语言。通过对比各项目的架构设计、核心算法、接口耦合度和工程成熟度，本文得出结论：该领域已进入增量创新阶段，不存在可行的从0到1的独立项目方向。本文所有技术判断均基于对源码的直接阅读，每个关键论断附有文件路径和行号引用。</p>
+</blockquote>
+<hr>
+<h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><h3 id="1-1-研究动机"><a href="#1-1-研究动机" class="headerlink" title="1.1 研究动机"></a>1.1 研究动机</h3><p>Agent系统在长时运行（long-running）场景中面临上下文窗口管理的核心挑战：对话历史、工具调用结果、任务状态的累积增长与有限的context window之间存在根本矛盾。本研究旨在回答一个实际问题：<strong>在2026年4月的技术生态中，是否存在一个值得从0到1构建的独立项目方向？</strong></p>
+<h3 id="1-2-方法论"><a href="#1-2-方法论" class="headerlink" title="1.2 方法论"></a>1.2 方法论</h3><p>本研究采用<strong>源码阅读</strong>（source code reading）作为主要调研方法，而非依赖文档、README或博客文章。具体做法：</p>
+<ol>
+<li>克隆目标项目的完整仓库到本地</li>
+<li>从入口文件出发，沿调用链阅读核心实现</li>
+<li>记录关键架构决策的具体文件位置（<code>file:line</code>格式）</li>
+<li>对比不同项目在相同问题域的设计选择</li>
+</ol>
+<h3 id="1-3-调研范围"><a href="#1-3-调研范围" class="headerlink" title="1.3 调研范围"></a>1.3 调研范围</h3><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>项目</th>
+<th>语言</th>
+<th>核心代码量</th>
+<th>阅读深度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>宿主平台</td>
+<td>OpenClaw</td>
+<td>TypeScript</td>
+<td>350k+ star主仓库</td>
+<td>ContextEngine接口、Registry、压缩管线</td>
+</tr>
+<tr>
+<td>ContextEngine插件</td>
+<td>lossless-claw</td>
+<td>TypeScript</td>
+<td>~23,000行</td>
+<td>全部核心模块</td>
+</tr>
+<tr>
+<td>ContextEngine插件</td>
+<td>Headroom</td>
+<td>Python</td>
+<td>~211,000行</td>
+<td>压缩管线、SmartCrusher、plugin层</td>
+</tr>
+<tr>
+<td>工具插件</td>
+<td>context-mode</td>
+<td>TypeScript</td>
+<td>plugin manifest + benchmark</td>
+<td>Manifest验证、工具定义</td>
+</tr>
+<tr>
+<td>ContextEngine插件</td>
+<td>OpenViking</td>
+<td>TypeScript</td>
+<td>plugin manifest + examples</td>
+<td>Manifest验证、能力声明</td>
+</tr>
+<tr>
+<td>独立agent</td>
+<td>Hermes Agent</td>
+<td>Python</td>
+<td>~10,000行（run_agent.py）</td>
+<td>context_compressor.py全部</td>
+</tr>
+<tr>
+<td>记忆框架</td>
+<td>Mem0</td>
+<td>Python</td>
+<td>~2,600行核心</td>
+<td>Memory类、MemoryGraph类</td>
+</tr>
+<tr>
+<td>记忆框架</td>
+<td>Letta&#x2F;MemGPT</td>
+<td>Python</td>
+<td>~32,000行核心模块</td>
+<td>Agent主循环、三层记忆工具、Summarizer</td>
+</tr>
+<tr>
+<td>记忆框架</td>
+<td>Zep</td>
+<td>Go</td>
+<td>~7,900行legacy代码</td>
+<td>全部store&#x2F;model&#x2F;graphiti层</td>
+</tr>
+<tr>
+<td>MCP工具</td>
+<td>ContextVault</td>
+<td>TypeScript</td>
+<td>~1,500行</td>
+<td>Server、VaultManager、IndexManager</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="2-宿主平台分析：OpenClaw-ContextEngine接口"><a href="#2-宿主平台分析：OpenClaw-ContextEngine接口" class="headerlink" title="2 宿主平台分析：OpenClaw ContextEngine接口"></a>2 宿主平台分析：OpenClaw ContextEngine接口</h2><p>OpenClaw是当前最广泛使用的AI编码agent平台（350k+ GitHub stars）。其v2026.3.7版本引入了可插拔的ContextEngine接口，成为上下文管理插件的主要竞争平台。</p>
+<h3 id="2-1-ContextEngine接口定义"><a href="#2-1-ContextEngine接口定义" class="headerlink" title="2.1 ContextEngine接口定义"></a>2.1 ContextEngine接口定义</h3><p>ContextEngine的完整生命周期合约定义于 <code>src/context-engine/types.ts</code>[^1]，包含以下方法：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">ContextEngine</span> &#123;</span><br><span class="line">  <span class="title function_">bootstrap</span>(<span class="attr">ctx</span>: <span class="title class_">RuntimeContext</span>): <span class="title class_">Promise</span>&lt;<span class="built_in">void</span>&gt;;</span><br><span class="line">  <span class="title function_">ingest</span>(<span class="attr">entry</span>: <span class="title class_">AgentMessage</span>, <span class="attr">ctx</span>: <span class="title class_">RuntimeContext</span>): <span class="title class_">Promise</span>&lt;<span class="title class_">IngestResult</span>&gt;;</span><br><span class="line">  <span class="title function_">assemble</span>(<span class="attr">ctx</span>: <span class="title class_">AssembleContext</span>): <span class="title class_">Promise</span>&lt;<span class="title class_">AssembleResult</span>&gt;;</span><br><span class="line">  <span class="title function_">compact</span>(<span class="attr">ctx</span>: <span class="title class_">CompactContext</span>): <span class="title class_">Promise</span>&lt;<span class="title class_">CompactResult</span>&gt;;</span><br><span class="line">  afterTurn?(<span class="attr">ctx</span>: <span class="title class_">RuntimeContext</span>): <span class="title class_">Promise</span>&lt;<span class="built_in">void</span>&gt;;</span><br><span class="line">  maintain?(<span class="attr">ctx</span>: <span class="title class_">RuntimeContext</span>): <span class="title class_">Promise</span>&lt;<span class="built_in">void</span>&gt;;</span><br><span class="line">  prepareSubagentSpawn?(<span class="attr">ctx</span>: <span class="title class_">SubagentSpawnContext</span>): <span class="title class_">Promise</span>&lt;<span class="title class_">SubagentPrepareResult</span>&gt;;</span><br><span class="line">  onSubagentEnded?(<span class="attr">ctx</span>: <span class="title class_">SubagentEndedContext</span>): <span class="title class_">Promise</span>&lt;<span class="built_in">void</span>&gt;;</span><br><span class="line">  dispose?(): <span class="title class_">Promise</span>&lt;<span class="built_in">void</span>&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键设计决策：</p>
+<ul>
+<li><strong><code>ownsCompaction?: boolean</code></strong>（<code>types.ts:51</code>）：引擎可以声明自己拥有压缩逻辑，阻止runtime的自动压缩</li>
+<li><strong><code>runtimeContext.rewriteTranscriptEntries()</code></strong>（<code>types.ts:93-95</code>）：提供安全的transcript重写通道</li>
+<li><strong><code>systemPromptAddition?: string</code></strong>（<code>AssembleResult</code>，<code>types.ts:11</code>）：允许引擎向system prompt注入内容</li>
+</ul>
+<h3 id="2-2-排他性Slot系统"><a href="#2-2-排他性Slot系统" class="headerlink" title="2.2 排他性Slot系统"></a>2.2 排他性Slot系统</h3><p><code>src/plugins/slots.ts</code>[^2] 定义了两个排他性slot：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="variable constant_">SLOT_BY_KIND</span> = &#123;</span><br><span class="line">  <span class="attr">memory</span>: <span class="string">&quot;memory&quot;</span>,</span><br><span class="line">  <span class="string">&quot;context-engine&quot;</span>: <span class="string">&quot;contextEngine&quot;</span>,</span><br><span class="line">&#125;;  <span class="comment">// slots.ts:12-15</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">DEFAULT_SLOT_BY_KEY</span> = &#123;</span><br><span class="line">  <span class="attr">memory</span>: <span class="string">&quot;memory-core&quot;</span>,</span><br><span class="line">  <span class="attr">contextEngine</span>: <span class="string">&quot;legacy&quot;</span>,</span><br><span class="line">&#125;;  <span class="comment">// slots.ts:17-20</span></span><br></pre></td></tr></table></figure>
+
+<p><code>applyExclusiveSlotSelection()</code>（<code>slots.ts:76-162</code>）实现winner-takes-all语义：当一个插件占据slot，其他同类插件被自动禁用。</p>
+<p><strong>架构含义</strong>：这意味着lossless-claw、Headroom和任何其他ContextEngine插件<strong>无法同时作为独立插件共存</strong>。如果要组合多个引擎的能力，必须构建一个meta-engine占据唯一的contextEngine slot，内部编排子引擎逻辑。</p>
+<h3 id="2-3-LegacyContextEngine：默认实现的空壳"><a href="#2-3-LegacyContextEngine：默认实现的空壳" class="headerlink" title="2.3 LegacyContextEngine：默认实现的空壳"></a>2.3 LegacyContextEngine：默认实现的空壳</h3><p><code>src/context-engine/legacy.ts</code>[^3] 实现了默认的LegacyContextEngine：</p>
+<ul>
+<li><code>ingest()</code> → 返回 <code>{ ingested: false }</code>，纯no-op（<code>legacy.ts:~35</code>）</li>
+<li><code>assemble()</code> → 原样透传消息，<code>estimatedTokens: 0</code>（<code>legacy.ts:~45</code>）</li>
+<li><code>compact()</code> → 委托给 <code>delegateCompactionToRuntime()</code>（<code>legacy.ts:~55</code>，调用 <code>delegate.ts:16-63</code>）</li>
+</ul>
+<p>真正的压缩逻辑在 <code>src/agents/compaction.ts</code>，硬编码了 <code>BASE_CHUNK_RATIO = 0.4</code>、<code>MIN_CHUNK_RATIO = 0.15</code>、<code>SAFETY_MARGIN = 1.2</code>——不可配置、不可组合。</p>
+<h3 id="2-4-五个架构缺陷"><a href="#2-4-五个架构缺陷" class="headerlink" title="2.4 五个架构缺陷"></a>2.4 五个架构缺陷</h3><p><strong>缺陷1：压缩是纯reactive的</strong>。<code>run.ts</code>中的auto-compaction只在API返回context overflow error之后才触发，tool-use循环中没有pre-prompt的context size检查。Issue #24800记录了session从196K涨到200K后永久卡死的案例。</p>
+<p><strong>缺陷2：safeguard模式默认开启但静默失败</strong>。<code>src/config/defaults.ts:368</code>设置 <code>mode: &quot;safeguard&quot;</code>[^4]。180K+ token时产生 <code>&quot;Summary unavailable due to context limits&quot;</code>，上下文直接丢失，无警告。</p>
+<p><strong>缺陷3：两套hook系统不互通</strong>。<code>src/hooks/internal-hooks.ts</code> 的 <code>triggerInternalHook()</code> 和 <code>src/plugins/hooks.ts</code> 的 <code>hookRunner.runSessionEnd()</code> 是独立系统。session-memory hook只监听 <code>command:new</code> 和 <code>command:reset</code>（<code>src/hooks/bundled/session-memory/handler.ts:55-57</code>[^5]），不监听 <code>session_end</code>。</p>
+<p><strong>缺陷4：compaction后token计数归零</strong>。<code>clearStaleAssistantUsageOnSessionMessages()</code>（<code>src/agents/pi-embedded-subscribe.handlers.compaction.ts:115-132</code>[^6]）清除所有assistant message的usage数据，而非只清除compaction之前的。</p>
+<p><strong>缺陷5：Registry是God Object</strong>。<code>src/plugins/registry.ts</code> 管理20+种注册类型（工具、hooks、CLI、HTTP路由、speech、媒体、channel、gateway、memory、contextEngine等），单文件混合认证、slot分配、provider冲突解决。</p>
+<hr>
+<h2 id="3-ContextEngine插件生态"><a href="#3-ContextEngine插件生态" class="headerlink" title="3 ContextEngine插件生态"></a>3 ContextEngine插件生态</h2><h3 id="3-1-lossless-claw：DAG无损压缩"><a href="#3-1-lossless-claw：DAG无损压缩" class="headerlink" title="3.1 lossless-claw：DAG无损压缩"></a>3.1 lossless-claw：DAG无损压缩</h3><p><strong>仓库</strong>：<code>Martian-Engineering/lossless-claw</code><br><strong>代码量</strong>：~23,000行TypeScript<br><strong>核心架构</strong>：DAG-based conversation summarization with incremental compaction</p>
+<h4 id="3-1-1-依赖注入设计"><a href="#3-1-1-依赖注入设计" class="headerlink" title="3.1.1 依赖注入设计"></a>3.1.1 依赖注入设计</h4><p><code>LcmContextEngine</code> 类（<code>src/engine.ts:1199</code>[^7]）通过 <code>LcmDependencies</code> 接口（<code>src/types.ts:105-165</code>[^8]）获取所有外部能力：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> <span class="title class_">LcmDependencies</span> &#123;</span><br><span class="line">  <span class="attr">config</span>: <span class="title class_">LcmConfig</span>;</span><br><span class="line">  <span class="attr">complete</span>: <span class="title class_">CompleteFn</span>;             <span class="comment">// LLM调用</span></span><br><span class="line">  <span class="attr">callGateway</span>: <span class="title class_">CallGatewayFn</span>;       <span class="comment">// Gateway RPC</span></span><br><span class="line">  <span class="attr">resolveModel</span>: <span class="title class_">ResolveModelFn</span>;     <span class="comment">// 模型解析</span></span><br><span class="line">  <span class="attr">getApiKey</span>: <span class="title class_">GetApiKeyFn</span>;           <span class="comment">// 密钥获取</span></span><br><span class="line">  <span class="attr">requireApiKey</span>: <span class="title class_">RequireApiKeyFn</span>;</span><br><span class="line">  <span class="attr">parseAgentSessionKey</span>: <span class="title class_">ParseAgentSessionKeyFn</span>;</span><br><span class="line">  <span class="attr">isSubagentSessionKey</span>: <span class="title class_">IsSubagentSessionKeyFn</span>;</span><br><span class="line">  <span class="attr">normalizeAgentId</span>: <span class="function">(<span class="params"><span class="attr">id</span>?: <span class="built_in">string</span></span>) =&gt;</span> <span class="built_in">string</span>;</span><br><span class="line">  <span class="attr">log</span>: &#123; info, warn, error, debug &#125;;</span><br><span class="line">  <span class="comment">// ... 更多</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>engine.ts零OpenClaw import</strong>——核心逻辑链完全独立：</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>文件</th>
+<th>职责</th>
+<th>OpenClaw耦合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>存储层</td>
+<td><code>conversation-store.ts</code>, <code>summary-store.ts</code></td>
+<td>纯SQLite读写</td>
+<td>无</td>
+</tr>
+<tr>
+<td>压缩引擎</td>
+<td><code>compaction.ts</code></td>
+<td>摘要生成与DAG构建</td>
+<td>仅通过<code>CompleteFn</code>类型</td>
+</tr>
+<tr>
+<td>组装器</td>
+<td><code>assembler.ts</code></td>
+<td>上下文装配</td>
+<td>仅type推导</td>
+</tr>
+<tr>
+<td>检索</td>
+<td><code>retrieval.ts</code></td>
+<td>FTS5全文搜索</td>
+<td>无</td>
+</tr>
+<tr>
+<td>插件胶水</td>
+<td><code>plugin/index.ts</code></td>
+<td>390行注册逻辑</td>
+<td>完全耦合</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-2-上下文组装算法"><a href="#3-1-2-上下文组装算法" class="headerlink" title="3.1.2 上下文组装算法"></a>3.1.2 上下文组装算法</h4><p><code>ContextAssembler.assemble()</code>（<code>src/assembler.ts:886-1059</code>[^9]）的核心流程：</p>
+<ol>
+<li>从SQLite获取所有context items（消息 + 摘要），按ordinal排序</li>
+<li>将每个item解析为 <code>AgentMessage</code>（获取底层消息或摘要记录）</li>
+<li>将items分为<strong>可驱逐前缀</strong>和<strong>受保护的fresh tail</strong>（默认64条消息，<code>src/db/config.ts:255</code>[^10]）</li>
+<li>如果超出token budget，从最旧的非fresh items开始丢弃</li>
+<li>当prompt可用时，使用<strong>BM25-lite相关性评分</strong>决定保留优先级</li>
+<li>摘要格式化为XML：<code>&lt;summary id=&quot;...&quot; kind=&quot;leaf&quot; depth=&quot;0&quot;&gt;...</code></li>
+</ol>
+<p>返回结果包含 <code>messages</code>、<code>estimatedTokens</code>、<code>systemPromptAddition</code>和详细统计。</p>
+<h4 id="3-1-3-压缩配置"><a href="#3-1-3-压缩配置" class="headerlink" title="3.1.3 压缩配置"></a>3.1.3 压缩配置</h4><p><code>CompactionConfig</code>（<code>src/compaction.ts:33</code>[^11]）提供精细的压缩参数：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> <span class="title class_">CompactionConfig</span> &#123;</span><br><span class="line">  <span class="attr">contextThreshold</span>: <span class="built_in">number</span>;      <span class="comment">// 默认0.75（budget的75%触发压缩）</span></span><br><span class="line">  <span class="attr">freshTailCount</span>: <span class="built_in">number</span>;        <span class="comment">// 默认64（保护的最新消息数）</span></span><br><span class="line">  <span class="attr">leafMinFanout</span>: <span class="built_in">number</span>;         <span class="comment">// depth-0摘要最少数量才触发condensation</span></span><br><span class="line">  <span class="attr">condensedMinFanout</span>: <span class="built_in">number</span>;    <span class="comment">// depth&gt;=1摘要condensation最少数量</span></span><br><span class="line">  <span class="attr">leafChunkTokens</span>: <span class="built_in">number</span>;       <span class="comment">// 叶节点chunk的目标token数</span></span><br><span class="line">  <span class="attr">leafTargetTokens</span>: <span class="built_in">number</span>;      <span class="comment">// 叶节点摘要目标长度</span></span><br><span class="line">  <span class="attr">condensedTargetTokens</span>: <span class="built_in">number</span>; <span class="comment">// 聚合摘要目标长度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>支持四种压缩级别：<code>&quot;normal&quot; | &quot;aggressive&quot; | &quot;fallback&quot; | &quot;capped&quot;</code>。</p>
+<h4 id="3-1-4-插件注册"><a href="#3-1-4-插件注册" class="headerlink" title="3.1.4 插件注册"></a>3.1.4 插件注册</h4><p><code>src/plugin/index.ts</code>[^12] 执行以下注册：</p>
+<ul>
+<li><code>api.registerContextEngine(&quot;lossless-claw&quot;, ...)</code> 和 <code>api.registerContextEngine(&quot;default&quot;, ...)</code>——同时注册为命名引擎和默认引擎</li>
+<li><code>api.registerTool()</code> × 4：<code>describe</code>（查看摘要树）、<code>expand</code>（展开摘要为原始消息）、<code>expand-query</code>（按查询展开）、<code>grep</code>（全文搜索）</li>
+<li><code>api.on(&quot;before_reset&quot;)</code>、<code>api.on(&quot;session_end&quot;)</code>：生命周期事件监听</li>
+<li><code>api.registerCommand()</code>：CLI命令注册</li>
+</ul>
+<p><strong>工程判断</strong>：lossless-claw是调研范围内架构最干净的项目。其核心可以通过约100-150行adapter代码独立于OpenClaw使用，只需构造满足<code>LcmDependencies</code>接口的依赖对象。</p>
+<hr>
+<h3 id="3-2-Headroom：内容感知压缩管线"><a href="#3-2-Headroom：内容感知压缩管线" class="headerlink" title="3.2 Headroom：内容感知压缩管线"></a>3.2 Headroom：内容感知压缩管线</h3><p><strong>仓库</strong>：<code>chopratejas/headroom</code><br><strong>代码量</strong>：~211,000行Python（465个.py文件）<br><strong>核心架构</strong>：内容类型路由 + 统计驱动的压缩策略</p>
+<h4 id="3-2-1-压缩管线"><a href="#3-2-1-压缩管线" class="headerlink" title="3.2.1 压缩管线"></a>3.2.1 压缩管线</h4><p><code>headroom/transforms/pipeline.py:70-125</code>[^13] 定义了默认的三级管线：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CacheAligner → ContentRouter → IntelligentContextManager</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>CacheAligner</strong>：prompt cache前缀稳定化，确保缓存字节前缀在turn间保持不变</li>
+<li><strong>ContentRouter</strong>：基于内容类型的智能路由（<code>pipeline.py:81-89</code>）：<ul>
+<li>JSON数组 → SmartCrusher</li>
+<li>纯文本 → Kompress（ML-based）</li>
+<li>代码 → CodeCompressor（AST-aware）</li>
+<li>日志 → LogCompressor</li>
+<li>搜索结果 → SearchCompressor</li>
+<li>HTML → HTMLExtractor</li>
+</ul>
+</li>
+<li><strong>IntelligentContextManager</strong>：语义感知的上下文管理，策略链为 <code>COMPRESS_FIRST → SUMMARIZE → DROP_BY_SCORE</code>（<code>pipeline.py:116-119</code>）</li>
+</ul>
+<p>降级路径（<code>pipeline.py:91-123</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ContentRouter 不可用 → SmartCrusher（仅JSON）</span><br><span class="line">SmartCrusher 不可用 → ToolCrusher（固定规则）</span><br><span class="line">IntelligentContextManager 不可用 → RollingWindow（基于位置的滚动窗口）</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-2-SmartCrusher：统计驱动的JSON压缩"><a href="#3-2-2-SmartCrusher：统计驱动的JSON压缩" class="headerlink" title="3.2.2 SmartCrusher：统计驱动的JSON压缩"></a>3.2.2 SmartCrusher：统计驱动的JSON压缩</h4><p><code>headroom/transforms/smart_crusher.py</code>[^14]（3,657行）是Headroom的核心创新：</p>
+<p>文件头部的docstring明确了scope（<code>smart_crusher.py:1-46</code>）：</p>
+<blockquote>
+<p>“SCOPE: SmartCrusher handles JSON arrays of ANY type — dicts, strings, numbers, mixed types, and nested arrays. Non-JSON content (plain text, search results, logs, code, diffs) passes through UNCHANGED.”</p>
+</blockquote>
+<blockquote>
+<p>“SCHEMA-PRESERVING: Output contains only items from the original array. No wrappers, no generated text, no metadata keys.”</p>
+</blockquote>
+<p>关键安全保证：</p>
+<ul>
+<li>First K + Last K items始终保留（K是自适应的，基于Kneedle算法，非硬编码）</li>
+<li>错误条目（包含’error’、’exception’、’failed’、’critical’）永远不丢弃</li>
+<li>异常数值（&gt;2 std）始终保留</li>
+<li>变化点（change points）附近的items被保护</li>
+<li>基于RelevanceScorer的高相关性items保留（ML-powered或BM25-based）</li>
+</ul>
+<p>支持的JSON类型（<code>smart_crusher.py:25-31</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>压缩策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dict数组</td>
+<td>完整统计分析 + 自适应K（Kneedle）</td>
+</tr>
+<tr>
+<td>字符串数组</td>
+<td>去重 + 自适应采样 + 错误保留</td>
+</tr>
+<tr>
+<td>数值数组</td>
+<td>统计摘要 + 异常&#x2F;变化点保留</td>
+</tr>
+<tr>
+<td>混合类型数组</td>
+<td>按类型分组，各组独立压缩</td>
+</tr>
+<tr>
+<td>扁平对象（多key）</td>
+<td>Key级别自适应采样</td>
+</tr>
+<tr>
+<td>嵌套对象</td>
+<td>递归压缩内部数组&#x2F;对象</td>
+</tr>
+</tbody></table>
+<h4 id="3-2-3-OpenClaw集成"><a href="#3-2-3-OpenClaw集成" class="headerlink" title="3.2.3 OpenClaw集成"></a>3.2.3 OpenClaw集成</h4><p><code>plugins/openclaw/src/engine.ts</code>（240行）实现了 <code>HeadroomContextEngine</code>：</p>
+<ul>
+<li>声明 <code>ownsCompaction: true</code></li>
+<li><code>assemble()</code> 将 <code>AgentMessage</code> 转为OpenAI格式 → 调用 <code>compress()</code> → 转回</li>
+<li><code>compact()</code> 本质上是no-op（”applies on next assemble()”）</li>
+<li>通过 <code>import { compress } from &quot;headroom-ai&quot;</code> 调用Python库（HTTP proxy方式）</li>
+</ul>
+<p><strong>engine.ts同样零OpenClaw import</strong>——核心压缩逻辑完全在Python库中。</p>
+<hr>
+<h3 id="3-3-context-mode：MCP工具方案"><a href="#3-3-context-mode：MCP工具方案" class="headerlink" title="3.3 context-mode：MCP工具方案"></a>3.3 context-mode：MCP工具方案</h3><p><strong>仓库</strong>：<code>mksglu/context-mode</code></p>
+<p>关键发现：context-mode的manifest（<code>openclaw.plugin.json</code>）声明 <code>&quot;kind&quot;: &quot;tool&quot;</code>[^15]——<strong>它不是ContextEngine插件</strong>。它通过MCP tools（<code>ctx_execute_file</code>、<code>ctx_index</code>、<code>ctx_search</code>）提供功能，不参与ContextEngine的assemble&#x2F;compact生命周期。</p>
+<p>BENCHMARK.md声明整体节省率为<strong>96%</strong>[^16]（非98%），主要针对tool output场景。</p>
+<h3 id="3-4-OpenViking：长期记忆"><a href="#3-4-OpenViking：长期记忆" class="headerlink" title="3.4 OpenViking：长期记忆"></a>3.4 OpenViking：长期记忆</h3><p><strong>仓库</strong>：<code>volcengine/OpenViking</code>（字节跳动）</p>
+<p>manifest（<code>examples/openclaw-plugin/openclaw.plugin.json</code>）确认 <code>&quot;kind&quot;: &quot;context-engine&quot;</code>[^17]。声明了完整的assemble&#x2F;afterTurn&#x2F;compact生命周期实现。功能包括：autoCapture、autoRecall、bypassSessionPatterns、commitTokenThreshold。</p>
+<hr>
+<h2 id="4-记忆框架：源码级分析"><a href="#4-记忆框架：源码级分析" class="headerlink" title="4 记忆框架：源码级分析"></a>4 记忆框架：源码级分析</h2><h3 id="4-1-Mem0：LLM-in-the-loop的记忆CRUD"><a href="#4-1-Mem0：LLM-in-the-loop的记忆CRUD" class="headerlink" title="4.1 Mem0：LLM-in-the-loop的记忆CRUD"></a>4.1 Mem0：LLM-in-the-loop的记忆CRUD</h3><p><strong>仓库</strong>：<code>mem0ai/mem0</code>（48k stars）<br><strong>核心文件</strong>：<code>mem0/memory/main.py</code>（2,597行）、<code>mem0/memory/graph_memory.py</code>（744行）</p>
+<h4 id="4-1-1-架构概述"><a href="#4-1-1-架构概述" class="headerlink" title="4.1.1 架构概述"></a>4.1.1 架构概述</h4><p>Mem0的核心类 <code>Memory</code>（<code>main.py:258</code>[^18]）包含一个vector store和一个可选的graph store（Neo4j），两条路径通过 <code>ThreadPoolExecutor</code> 并行执行。</p>
+<h4 id="4-1-2-add-方法调用链"><a href="#4-1-2-add-方法调用链" class="headerlink" title="4.1.2 add() 方法调用链"></a>4.1.2 <code>add()</code> 方法调用链</h4><p><code>Memory.add()</code>（<code>main.py:383</code>[^19]）的真实执行流程：</p>
+<ol>
+<li><strong>LLM提取facts</strong>：发送一次LLM调用（tool call模式），让模型从输入文本中抽取结构化记忆条目</li>
+<li><strong>搜索已有记忆</strong>：对每个抽取的fact做vector search，找到相似的已有记忆</li>
+<li><strong>LLM决策</strong>：再发一次LLM调用，让模型对每条记忆做ADD&#x2F;UPDATE&#x2F;DELETE决策</li>
+<li><strong>执行存储操作</strong>：根据决策写入vector store</li>
+</ol>
+<p>如果启用了graph store，步骤4还会并行执行 <code>_add_to_graph()</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.py - Memory.add() 内部</span></span><br><span class="line"><span class="keyword">with</span> concurrent.futures.ThreadPoolExecutor() <span class="keyword">as</span> executor:</span><br><span class="line">    future1 = executor.submit(<span class="variable language_">self</span>._add_to_vector_store, ...)</span><br><span class="line">    future2 = executor.submit(<span class="variable language_">self</span>._add_to_graph, ...)</span><br></pre></td></tr></table></figure>
+
+<p><strong>一次 <code>memory.add()</code> 最少需要2次LLM调用</strong>（fact提取 + 决策），启用graph后增加到5次。</p>
+<h4 id="4-1-3-Graph-Memory实现"><a href="#4-1-3-Graph-Memory实现" class="headerlink" title="4.1.3 Graph Memory实现"></a>4.1.3 Graph Memory实现</h4><p><code>MemoryGraph</code>类（<code>graph_memory.py:29</code>[^20]）使用 <code>langchain_neo4j.Neo4jGraph</code> 做图存储。</p>
+<p><code>add()</code>方法（<code>graph_memory.py:76</code>[^21]）的调用链：</p>
+<ol>
+<li><code>_retrieve_nodes_from_data()</code>（<code>graph_memory.py:219</code>）— LLM tool call提取实体和类型</li>
+<li><code>_establish_nodes_relations_from_data()</code>（<code>graph_memory.py:252</code>）— LLM tool call建立实体间关系</li>
+<li><code>_search_graph_db()</code>（<code>graph_memory.py:294</code>）— 对每个实体做embedding cosine相似度搜索：</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># graph_memory.py:312</span></span><br><span class="line">cypher_query = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">MATCH (n <span class="subst">&#123;self.node_label&#125;</span> &#123;&#123;<span class="subst">&#123;node_props_str&#125;</span>&#125;&#125;)</span></span><br><span class="line"><span class="string">WHERE n.embedding IS NOT NULL</span></span><br><span class="line"><span class="string">WITH n, round(2 * vector.similarity.cosine(n.embedding, $n_embedding) - 1, 4) AS similarity</span></span><br><span class="line"><span class="string">WHERE similarity &gt;= $threshold</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><code>_get_delete_entities_from_search_output()</code>（<code>graph_memory.py:347</code>）— LLM tool call决定删除</li>
+<li>执行删除和新增</li>
+</ol>
+<p><strong>图的删除是软删除</strong>（<code>graph_memory.py:423-428</code>[^22]）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET r.valid = false, r.invalidated_at = datetime()</span><br></pre></td></tr></table></figure>
+
+<p>这保留了关系的时间线，支持temporal reasoning。</p>
+<p><strong>搜索实现</strong>（<code>graph_memory.py:96-130</code>[^23]）使用BM25重排序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rank_bm25 <span class="keyword">import</span> BM25Okapi</span><br><span class="line">bm25 = BM25Okapi(search_outputs_sequence)</span><br><span class="line">tokenized_query = query.split(<span class="string">&quot; &quot;</span>)</span><br><span class="line">reranked_results = bm25.get_top_n(tokenized_query, search_outputs_sequence, n=<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-4-架构局限"><a href="#4-1-4-架构局限" class="headerlink" title="4.1.4 架构局限"></a>4.1.4 架构局限</h4><p>Mem0是一个”记忆数据库”，不是”上下文引擎”。它<strong>不感知token budget、不做context压缩、不参与prompt组装</strong>。开发者需要自己将Mem0的检索结果手动塞进prompt。这与OpenClaw的ContextEngine插件、lossless-claw的assembler是完全不同的抽象层次。</p>
+<hr>
+<h3 id="4-2-Letta-MemGPT：Agent-as-OS的三层记忆"><a href="#4-2-Letta-MemGPT：Agent-as-OS的三层记忆" class="headerlink" title="4.2 Letta&#x2F;MemGPT：Agent-as-OS的三层记忆"></a>4.2 Letta&#x2F;MemGPT：Agent-as-OS的三层记忆</h3><p><strong>仓库</strong>：<code>letta-ai/letta</code><br><strong>核心文件</strong>：<code>letta/agents/letta_agent.py</code>（1,983行）、<code>letta/functions/function_sets/base.py</code>、<code>letta/schemas/block.py</code>、<code>letta/schemas/memory.py</code>、<code>letta/services/summarizer/summarizer.py</code></p>
+<h4 id="4-2-1-设计哲学"><a href="#4-2-1-设计哲学" class="headerlink" title="4.2.1 设计哲学"></a>4.2.1 设计哲学</h4><p>Letta的架构思想是<strong>把Agent当OS、把记忆当文件系统</strong>。三层记忆是三种不同的”内存地址空间”，Agent通过function calling（tool call）自主决策何时读写哪一层。</p>
+<h4 id="4-2-2-第一层：Core-Memory（Block系统）"><a href="#4-2-2-第一层：Core-Memory（Block系统）" class="headerlink" title="4.2.2 第一层：Core Memory（Block系统）"></a>4.2.2 第一层：Core Memory（Block系统）</h4><p><code>Block</code>类（<code>schemas/block.py:67</code>[^24]）是LLM上下文窗口内的一块可写区域：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>(<span class="title class_ inherited__">BaseBlock</span>):</span><br><span class="line">    value: <span class="built_in">str</span> = Field(..., description=<span class="string">&quot;Value of the block.&quot;</span>)</span><br><span class="line">    limit: <span class="built_in">int</span> = Field(CORE_MEMORY_BLOCK_CHAR_LIMIT, ...)</span><br><span class="line">    label: <span class="type">Optional</span>[<span class="built_in">str</span>] = Field(<span class="literal">None</span>, description=<span class="string">&quot;Label of the block&quot;</span>)</span><br><span class="line">    read_only: <span class="built_in">bool</span> = Field(<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p>预置两个Block：<code>Human</code>（<code>block.py:117</code>，label&#x3D;”human”）和 <code>Persona</code>（label&#x3D;”persona”）。</p>
+<p>Agent通过以下tool call修改Block：</p>
+<ul>
+<li><strong><code>core_memory_append(agent_state, label, content)</code></strong>（<code>base.py:246</code>[^25]）：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">current_value = <span class="built_in">str</span>(agent_state.memory.get_block(label).value)</span><br><span class="line">new_value = current_value + <span class="string">&quot;\n&quot;</span> + <span class="built_in">str</span>(content)</span><br><span class="line">agent_state.memory.update_block_value(label=label, value=new_value)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>core_memory_replace(agent_state, label, old_content, new_content)</code></strong>（<code>base.py:263</code>[^26]）：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">current_value = <span class="built_in">str</span>(agent_state.memory.get_block(label).value)</span><br><span class="line"><span class="keyword">if</span> old_content <span class="keyword">not</span> <span class="keyword">in</span> current_value:</span><br><span class="line">    <span class="keyword">raise</span> ValueError(<span class="string">f&quot;Old content &#x27;<span class="subst">&#123;old_content&#125;</span>&#x27; not found in memory block &#x27;<span class="subst">&#123;label&#125;</span>&#x27;&quot;</span>)</span><br><span class="line">new_value = current_value.replace(<span class="built_in">str</span>(old_content), <span class="built_in">str</span>(new_content))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong><code>rethink_memory(agent_state, new_memory, target_block_label)</code></strong>（<code>base.py:283</code>）：整体重写Block</p>
+</li>
+<li><p><strong><code>memory(agent_state, command, ...)</code></strong>（<code>base.py:10</code>[^27]）：类文件系统操作（create&#x2F;str_replace&#x2F;insert&#x2F;delete&#x2F;rename）。函数体是 <code>raise NotImplementedError</code>——实际路由在server端。</p>
+</li>
+</ul>
+<p>关键区别：<strong>这些是tool定义，Agent通过function calling自主决策写什么</strong>。不是自动提取，是Agent-driven的记忆管理。</p>
+<h4 id="4-2-3-第二层：Archival-Memory（向量搜索）"><a href="#4-2-3-第二层：Archival-Memory（向量搜索）" class="headerlink" title="4.2.3 第二层：Archival Memory（向量搜索）"></a>4.2.3 第二层：Archival Memory（向量搜索）</h4><p><code>archival_memory_insert(self, content, tags)</code>（<code>base.py:164</code>[^28]）和 <code>archival_memory_search(self, query, tags, tag_match_mode, top_k, start_datetime, end_datetime)</code>（<code>base.py:194</code>[^29]）。</p>
+<p>两个函数体都是 <code>raise NotImplementedError(&quot;This should never be invoked directly.&quot;)</code>——实际执行由Agent框架在tool call时路由到Passage store（PostgreSQL + 向量索引）。函数签名和docstring是给LLM看的，真正的存储逻辑在server端。</p>
+<h4 id="4-2-4-第三层：Recall-Memory（消息搜索）"><a href="#4-2-4-第三层：Recall-Memory（消息搜索）" class="headerlink" title="4.2.4 第三层：Recall Memory（消息搜索）"></a>4.2.4 第三层：Recall Memory（消息搜索）</h4><p><code>conversation_search(self, query, roles, limit, start_date, end_date)</code>（<code>base.py:87</code>[^30]）是真正实现的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">messages = <span class="variable language_">self</span>.message_manager.list_messages_for_agent(</span><br><span class="line">    agent_id=<span class="variable language_">self</span>.agent_state.<span class="built_in">id</span>,</span><br><span class="line">    actor=<span class="variable language_">self</span>.user,</span><br><span class="line">    query_text=query,</span><br><span class="line">    roles=roles, limit=limit,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>使用hybrid search（文本 + 语义），支持按role、时间范围过滤。</p>
+<h4 id="4-2-5-Agent主循环"><a href="#4-2-5-Agent主循环" class="headerlink" title="4.2.5 Agent主循环"></a>4.2.5 Agent主循环</h4><p><code>LettaAgent.step()</code>（<code>letta_agent.py:174</code>[^31]）→ <code>_step()</code> → 循环（最多<code>max_steps</code>轮）：</p>
+<ol>
+<li><code>_build_and_request_from_llm()</code>（<code>letta_agent.py:328</code>）— 组装上下文 + LLM调用</li>
+<li>解析response的tool call</li>
+<li><code>_handle_ai_response()</code>（<code>letta_agent.py:1714</code>）— 执行tool call</li>
+</ol>
+<p>Agent通过<strong>强制tool calling</strong>驱动（<code>letta_agent.py:360-362</code>[^32]）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> response.choices[<span class="number">0</span>].message.tool_calls:</span><br><span class="line">    stop_reason = LettaStopReason(stop_reason=StopReasonType.no_tool_call.value)</span><br><span class="line">    <span class="keyword">raise</span> ValueError(<span class="string">&quot;No tool calls found in response, model must make a tool call&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>每轮必须产出tool call，否则报错。这意味着<strong>每一轮交互都是一次完整的LLM调用</strong>，即使只是写一条记忆。</p>
+<h4 id="4-2-6-Summarization实现"><a href="#4-2-6-Summarization实现" class="headerlink" title="4.2.6 Summarization实现"></a>4.2.6 Summarization实现</h4><p><code>Summarizer</code>类（<code>summarizer/summarizer.py:36</code>[^33]）支持两种模式（<code>enums.py</code>[^34]）：</p>
+<p><strong>模式一：STATIC_MESSAGE_BUFFER</strong>（<code>summarizer.py:244-300</code>[^35]）</p>
+<p>固定buffer。当 <code>len(all_in_context_messages) &gt; message_buffer_limit</code> 时，丢弃最旧消息，保留最近 <code>message_buffer_min</code> 条。如果有summarizer agent，异步触发背景摘要。</p>
+<p><strong>模式二：PARTIAL_EVICT_MESSAGE_BUFFER</strong>（<code>summarizer.py:136-242</code>[^36]）</p>
+<p>原始MemGPT方案。按比例（默认30%，<code>partial_evict_summarizer_percentage</code>，<code>summarizer.py:49</code>）驱逐最旧消息，用一次LLM调用生成摘要（<code>simple_summary()</code>，<code>summarizer.py:188</code>），插入到 <code>context[1]</code> 位置（system_message后的第一条）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># summarizer.py:241-242</span></span><br><span class="line">updated_in_context_messages = all_in_context_messages[assistant_message_index:]</span><br><span class="line"><span class="keyword">return</span> [all_in_context_messages[<span class="number">0</span>], summary_message_obj, *updated_in_context_messages], <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>关键观察</strong>：摘要触发是<strong>message数量驱动</strong>的（<code>message_buffer_limit</code>），不是token数量驱动的。这与现代大模型的context window管理方式脱节——不同消息的token数差异可达100x（一条简单回复 vs 一个大型tool output）。</p>
+<h4 id="4-2-7-ContextWindowOverview"><a href="#4-2-7-ContextWindowOverview" class="headerlink" title="4.2.7 ContextWindowOverview"></a>4.2.7 ContextWindowOverview</h4><p><code>schemas/memory.py</code>[^37] 定义了 <code>ContextWindowOverview</code>，包含四种记忆的统计：</p>
+<ul>
+<li><code>core_memory</code>：当前Block内容和token数</li>
+<li><code>archival_memory</code>：passages总数</li>
+<li><code>recall_memory</code>：messages总数</li>
+<li><code>summary_memory</code>：最近的摘要（如有）</li>
+</ul>
+<h4 id="4-2-8-架构评价"><a href="#4-2-8-架构评价" class="headerlink" title="4.2.8 架构评价"></a>4.2.8 架构评价</h4><ul>
+<li>概念完整度最高（三层 + Agent自主管理），但<strong>每层都需要LLM调用</strong>，延迟和成本累积很快</li>
+<li>Core Memory的”Agent自主写”模式对system prompt的prompt engineering要求极高</li>
+<li>Summarizer按message数量触发，不感知实际token使用</li>
+<li>Archival和Recall的存储实现在server端（ORM + PostgreSQL），client SDK拿到的是间接接口</li>
+</ul>
+<hr>
+<h3 id="4-3-Zep：从Go服务器到Graphiti-HTTP壳"><a href="#4-3-Zep：从Go服务器到Graphiti-HTTP壳" class="headerlink" title="4.3 Zep：从Go服务器到Graphiti HTTP壳"></a>4.3 Zep：从Go服务器到Graphiti HTTP壳</h3><p><strong>仓库</strong>：<code>getzep/zep</code>（25k stars）<br><strong>核心文件</strong>：<code>legacy/src/store/memory_ce.go</code>、<code>legacy/src/lib/graphiti/service_ce.go</code>（300行）、<code>legacy/src/store/memory_common.go</code>、<code>legacy/src/store/message_common.go</code>（547行）</p>
+<h4 id="4-3-1-项目现状"><a href="#4-3-1-项目现状" class="headerlink" title="4.3.1 项目现状"></a>4.3.1 项目现状</h4><p>Zep分为两个阶段：</p>
+<ul>
+<li><strong>阶段一（开源Go服务器）</strong>：包含消息存储、NER、摘要、嵌入、搜索的完整记忆服务</li>
+<li><strong>阶段二（当前）</strong>：开源代码移入 <code>legacy/</code> 目录，核心产品变为<strong>Zep Cloud</strong>（闭源SaaS）。当前仓库的README（<code>README.md:56-58</code>[^38]）明确说明：</li>
+</ul>
+<blockquote>
+<p>“Note: This repository is currently a work in progress. This repository contains examples, integrations, and tools…”</p>
+</blockquote>
+<h4 id="4-3-2-CE版核心：Graphiti-HTTP-Client"><a href="#4-3-2-CE版核心：Graphiti-HTTP-Client" class="headerlink" title="4.3.2 CE版核心：Graphiti HTTP Client"></a>4.3.2 CE版核心：Graphiti HTTP Client</h4><p>读了legacy代码后的关键发现：<strong>即使是”完整的”Go服务器，CE版的记忆逻辑也只是一个Graphiti HTTP客户端</strong>。</p>
+<p><code>memory_ce.go</code>[^39] 的 <code>_get()</code> 方法（第15-57行）：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(dao *memoryDAO)</span></span> _get(ctx context.Context, session *models.Session,</span><br><span class="line">    messages []models.Message, _ models.MemoryFilterOptions) (*models.Memory, <span class="type">error</span>) &#123;</span><br><span class="line">    mForRetrieval := messages</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(messages) &gt; maxMessagesForFactRetrieval &#123;  <span class="comment">// maxMessagesForFactRetrieval = 4</span></span><br><span class="line">        mForRetrieval = messages[<span class="built_in">len</span>(messages)-maxMessagesForFactRetrieval:]</span><br><span class="line">    &#125;</span><br><span class="line">    memory, err := graphiti.I().GetMemory(ctx, graphiti.GetMemoryRequest&#123;</span><br><span class="line">        GroupID:  groupID,</span><br><span class="line">        MaxFacts: <span class="number">5</span>,</span><br><span class="line">        Messages: mForRetrieval,</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// ...转换Graphiti返回的facts为本地Fact结构</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>_initializeProcessingMemory()</code>（<code>memory_ce.go:59-72</code>[^40]）同样只是HTTP POST：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(dao *memoryDAO)</span></span> _initializeProcessingMemory(...) <span class="type">error</span> &#123;</span><br><span class="line">    err := graphiti.I().PutMemory(ctx, session.SessionID, memoryMessages.Messages, <span class="literal">true</span>)</span><br><span class="line">    <span class="keyword">if</span> session.UserID != <span class="literal">nil</span> &#123;</span><br><span class="line">        err = graphiti.I().PutMemory(ctx, *session.UserID, memoryMessages.Messages, <span class="literal">true</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-3-Graphiti服务接口"><a href="#4-3-3-Graphiti服务接口" class="headerlink" title="4.3.3 Graphiti服务接口"></a>4.3.3 Graphiti服务接口</h4><p><code>graphiti/service_ce.go</code>[^41] 定义的 <code>Service</code> 接口（第80行）全是HTTP调用：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Service <span class="keyword">interface</span> &#123;</span><br><span class="line">    GetMemory(ctx context.Context, payload GetMemoryRequest) (*GetMemoryResponse, <span class="type">error</span>)</span><br><span class="line">    PutMemory(ctx context.Context, groupID <span class="type">string</span>, messages []models.Message, ...) <span class="type">error</span></span><br><span class="line">    Search(ctx context.Context, payload SearchRequest) (*SearchResponse, <span class="type">error</span>)</span><br><span class="line">    AddNode(ctx context.Context, payload AddNodeRequest) <span class="type">error</span></span><br><span class="line">    GetFact(ctx context.Context, factUUID uuid.UUID) (*Fact, <span class="type">error</span>)</span><br><span class="line">    DeleteFact(ctx context.Context, factUUID uuid.UUID) <span class="type">error</span></span><br><span class="line">    DeleteGroup(ctx context.Context, groupID <span class="type">string</span>) <span class="type">error</span></span><br><span class="line">    DeleteMessage(ctx context.Context, messageUUID uuid.UUID) <span class="type">error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每个方法内部都是 <code>s.newRequest(ctx, method, path, body)</code> + <code>s.doRequest(req, &amp;resp)</code>——标准HTTP client模式（<code>service_ce.go:118-165</code>）。</p>
+<p>Graphiti本身是一个独立的Python temporal knowledge graph框架（同为Zep团队的开源项目），支持<code>valid_at</code>&#x2F;<code>invalid_at</code>时间戳的关系管理。Zep CE只是它的一个Go包装层。</p>
+<h4 id="4-3-4-消息存储"><a href="#4-3-4-消息存储" class="headerlink" title="4.3.4 消息存储"></a>4.3.4 消息存储</h4><p><code>message_common.go</code>[^42] 使用PostgreSQL（<code>bun</code> ORM）。<code>GetLastN()</code>（<code>message_common.go:135-184</code>）按ID倒序取N条消息。metadata更新支持JSON merge + advisory lock防并发（<code>message_common.go:394-451</code>）。</p>
+<h4 id="4-3-5-数据模型"><a href="#4-3-5-数据模型" class="headerlink" title="4.3.5 数据模型"></a>4.3.5 数据模型</h4><p><code>Memory</code>（<code>models/memory_common.go:86-92</code>[^43]）：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MemoryCommon <span class="keyword">struct</span> &#123;</span><br><span class="line">    Messages      []Message      <span class="string">`json:&quot;messages&quot;`</span></span><br><span class="line">    RelevantFacts []Fact         <span class="string">`json:&quot;relevant_facts&quot;`</span></span><br><span class="line">    Metadata      <span class="keyword">map</span>[<span class="type">string</span>]any <span class="string">`json:&quot;metadata,omitempty&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Fact</code>（<code>models/fact_common.go</code>[^44]）：只有UUID、CreatedAt、Fact（字符串）、Rating（可选浮点）。</p>
+<p><code>Session</code>（<code>models/session_common.go:10-22</code>[^45]）：标准会话模型，含SessionID、UserID、Metadata、时间戳。</p>
+<h4 id="4-3-6-架构评价"><a href="#4-3-6-架构评价" class="headerlink" title="4.3.6 架构评价"></a>4.3.6 架构评价</h4><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>实现情况</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>知识图谱</td>
+<td>❌ 无自有实现，全部委托外部Graphiti服务</td>
+</tr>
+<tr>
+<td>会话摘要</td>
+<td>❌ GetMemory只返回最后N条消息 + 最多5个facts</td>
+</tr>
+<tr>
+<td>Token budget管理</td>
+<td>❌ 完全不存在</td>
+</tr>
+<tr>
+<td>Context压缩</td>
+<td>❌ 完全不存在</td>
+</tr>
+<tr>
+<td>消息搜索</td>
+<td>❌ 无embedding、无FTS，只有Graphiti代理搜索</td>
+</tr>
+<tr>
+<td>消息存储</td>
+<td>✅ PostgreSQL CRUD</td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：评估Zep的真实能力边界需要去读 <code>getzep/graphiti</code> 仓库的Python代码，不是这个Go服务器。Go服务器只是一个REST API壳 + PostgreSQL消息CRUD + Graphiti HTTP client。</p>
+<hr>
+<h3 id="4-4-ContextVault：Markdown文件系统-MCP工具"><a href="#4-4-ContextVault：Markdown文件系统-MCP工具" class="headerlink" title="4.4 ContextVault：Markdown文件系统 + MCP工具"></a>4.4 ContextVault：Markdown文件系统 + MCP工具</h3><p><strong>仓库</strong>：<code>ahmadzein/ContextVault</code><br><strong>核心文件</strong>：<code>contextvault-mcp/src/vault/manager.ts</code>（493行）、<code>contextvault-mcp/src/vault/index-manager.ts</code>（452行）、<code>contextvault-mcp/src/vault/types.ts</code></p>
+<h4 id="4-4-1-本质"><a href="#4-4-1-本质" class="headerlink" title="4.4.1 本质"></a>4.4.1 本质</h4><p>ContextVault<strong>不是</strong>context压缩框架或记忆管理系统。它是一个<strong>MCP server</strong>，把知识存在本地markdown文件里，通过MCP tools让AI助手读写这些文件。</p>
+<h4 id="4-4-2-存储模型"><a href="#4-4-2-存储模型" class="headerlink" title="4.4.2 存储模型"></a>4.4.2 存储模型</h4><p><code>VaultSettings</code>（<code>types.ts:3-12</code>[^46]）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> <span class="title class_">VaultSettings</span> &#123;</span><br><span class="line">  <span class="attr">mode</span>: <span class="string">&#x27;local&#x27;</span> | <span class="string">&#x27;global&#x27;</span> | <span class="string">&#x27;full&#x27;</span>;</span><br><span class="line">  <span class="attr">enforcement</span>: <span class="string">&#x27;light&#x27;</span> | <span class="string">&#x27;balanced&#x27;</span> | <span class="string">&#x27;strict&#x27;</span>;</span><br><span class="line">  <span class="attr">limits</span>: &#123;</span><br><span class="line">    <span class="attr">max_global_docs</span>: <span class="built_in">number</span>;     <span class="comment">// 默认50</span></span><br><span class="line">    <span class="attr">max_project_docs</span>: <span class="built_in">number</span>;    <span class="comment">// 默认50</span></span><br><span class="line">    <span class="attr">max_doc_lines</span>: <span class="built_in">number</span>;       <span class="comment">// 默认100</span></span><br><span class="line">    <span class="attr">max_summary_words</span>: <span class="built_in">number</span>;   <span class="comment">// 默认15</span></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两个tier：global（<code>~/.contextvault/</code>）和project（<code>./.contextvault/</code>）。每个tier有一个 <code>index.md</code>（markdown表格做索引）和若干 <code>P001_*.md</code> &#x2F; <code>G001_*.md</code> 文件。</p>
+<p><code>VaultManager</code>（<code>manager.ts</code>[^47]）核心操作都是 <code>fs.readFileSync</code> &#x2F; <code>fs.writeFileSync</code>。没有数据库、没有向量索引、没有embedding。</p>
+<h4 id="4-4-3-搜索实现"><a href="#4-4-3-搜索实现" class="headerlink" title="4.4.3 搜索实现"></a>4.4.3 搜索实现</h4><p><code>IndexManager.search()</code>（<code>index-manager.ts:346-363</code>[^48]）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">search</span>(<span class="attr">query</span>: <span class="built_in">string</span>): <span class="title class_">IndexEntry</span>[] &#123;</span><br><span class="line">  <span class="keyword">const</span> entries = <span class="variable language_">this</span>.<span class="title function_">parseEntries</span>();</span><br><span class="line">  <span class="keyword">const</span> queryTerms = queryLower.<span class="title function_">split</span>(<span class="regexp">/\s+/</span>);</span><br><span class="line">  <span class="keyword">return</span> entries</span><br><span class="line">    .<span class="title function_">map</span>(<span class="function"><span class="params">entry</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> text = <span class="string">`<span class="subst">$&#123;entry.id&#125;</span> <span class="subst">$&#123;entry.topic&#125;</span> <span class="subst">$&#123;entry.summary&#125;</span>`</span>.<span class="title function_">toLowerCase</span>();</span><br><span class="line">      <span class="keyword">let</span> score = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">const</span> term <span class="keyword">of</span> queryTerms) &#123;</span><br><span class="line">        <span class="keyword">if</span> (text.<span class="title function_">includes</span>(term)) score++;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> &#123; entry, score &#125;;</span><br><span class="line">    &#125;)</span><br><span class="line">    .<span class="title function_">filter</span>(<span class="function"><span class="params">r</span> =&gt;</span> r.<span class="property">score</span> &gt; <span class="number">0</span>)</span><br><span class="line">    .<span class="title function_">sort</span>(<span class="function">(<span class="params">a, b</span>) =&gt;</span> b.<span class="property">score</span> - a.<span class="property">score</span>)</span><br><span class="line">    .<span class="title function_">map</span>(<span class="function"><span class="params">r</span> =&gt;</span> r.<span class="property">entry</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>搜索范围是index.md中每条entry的topic和summary（各15个词以内）。<strong>不搜索文档正文</strong>。这是纯关键词匹配，不是语义搜索。</p>
+<h4 id="4-4-4-Enforcement机制"><a href="#4-4-4-Enforcement机制" class="headerlink" title="4.4.4 Enforcement机制"></a>4.4.4 Enforcement机制</h4><p><code>VaultManager</code>跟踪agent的编辑次数和探索范围（<code>manager.ts:195-372</code>[^49]）。当编辑超过阈值（balanced模式：8次编辑 + 2个文件），在tool response末尾追加reminder：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">getEnforcementReminder</span>(): <span class="built_in">string</span> | <span class="literal">null</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (editCount &gt;= editThreshold &amp;&amp; filesEdited.<span class="property">size</span> &gt;= fileThreshold) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`\n\n---\n**ContextVault Reminder:** You&#x27;ve made <span class="subst">$&#123;editCount&#125;</span> edits </span></span><br><span class="line"><span class="string">    across <span class="subst">$&#123;filesEdited.size&#125;</span> files without documenting...`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个<strong>行为nudge</strong>系统，不是自动化的context管理。</p>
+<h4 id="4-4-5-文档模板"><a href="#4-4-5-文档模板" class="headerlink" title="4.4.5 文档模板"></a>4.4.5 文档模板</h4><p><code>generateDocContent()</code>（<code>manager.ts:376-440</code>[^50]）根据类型生成不同的markdown结构：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>模板结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>error</td>
+<td>Error &#x2F; Root Cause &#x2F; Solution &#x2F; Prevention</td>
+</tr>
+<tr>
+<td>decision</td>
+<td>Decision &#x2F; Options Considered &#x2F; Reasoning &#x2F; Trade-offs</td>
+</tr>
+<tr>
+<td>plan</td>
+<td>Goal &#x2F; Steps &#x2F; Status</td>
+</tr>
+<tr>
+<td>handoff</td>
+<td>Completed &#x2F; In Progress &#x2F; Next Steps</td>
+</tr>
+<tr>
+<td>intel</td>
+<td>Area Explored &#x2F; Findings</td>
+</tr>
+<tr>
+<td>explain</td>
+<td>Concept &#x2F; Explanation</td>
+</tr>
+</tbody></table>
+<h4 id="4-4-6-20-MCP-Tools"><a href="#4-4-6-20-MCP-Tools" class="headerlink" title="4.4.6 20+ MCP Tools"></a>4.4.6 20+ MCP Tools</h4><p>通过 <code>ContextVaultServer</code>（<code>server.ts:35</code>[^51]）注册：<code>ctx_init</code>、<code>ctx_doc</code>、<code>ctx_error</code>、<code>ctx_decision</code>、<code>ctx_search</code>、<code>ctx_read</code>、<code>ctx_plan</code>、<code>ctx_handoff</code>、<code>ctx_bootstrap</code>、<code>ctx_changelog</code>、<code>ctx_quiz</code>、<code>ctx_review</code>、<code>ctx_share</code>、<code>ctx_archive</code>、<code>ctx_import</code>、<code>ctx_upgrade</code>等。</p>
+<h4 id="4-4-7-架构评价"><a href="#4-4-7-架构评价" class="headerlink" title="4.4.7 架构评价"></a>4.4.7 架构评价</h4><p>ContextVault解决的是”session间知识持久化”问题——确保AI在新会话中能访问到之前积累的知识。它不应被归类为”上下文管理”或”记忆框架”，更准确的定位是<strong>AI笔记本工具</strong>。其真正价值在于结构化的文档模板和行为nudge机制，而非技术上的context management创新。</p>
+<hr>
+<h2 id="5-独立Agent分析"><a href="#5-独立Agent分析" class="headerlink" title="5 独立Agent分析"></a>5 独立Agent分析</h2><h3 id="5-1-Hermes-Agent：单次LLM调用的上下文压缩"><a href="#5-1-Hermes-Agent：单次LLM调用的上下文压缩" class="headerlink" title="5.1 Hermes Agent：单次LLM调用的上下文压缩"></a>5.1 Hermes Agent：单次LLM调用的上下文压缩</h3><p><strong>仓库</strong>：<code>NousResearch/hermes-agent</code><br><strong>核心文件</strong>：<code>agent/context_compressor.py</code>（745行）、<code>run_agent.py</code>（9,660行）</p>
+<p><code>ContextCompressor.compress()</code>（<code>context_compressor.py:612-745</code>[^52]）的流程：</p>
+<ol>
+<li>修剪旧的tool results（保留结构但截断内容）</li>
+<li>确定压缩边界（哪些消息需要摘要）</li>
+<li>生成摘要——<strong>仅1次LLM调用</strong>（<code>_generate_summary()</code>内部，<code>context_compressor.py:404</code>）</li>
+<li>组装压缩后的context</li>
+</ol>
+<p><strong>工程特征</strong>：<code>run_agent.py</code>是一个9,660行的单文件脚本，不是模块化的类结构。这使得复用或集成Hermes的上下文管理逻辑非常困难。</p>
+<hr>
+<h2 id="6-跨项目比较与分析"><a href="#6-跨项目比较与分析" class="headerlink" title="6 跨项目比较与分析"></a>6 跨项目比较与分析</h2><h3 id="6-1-分类学"><a href="#6-1-分类学" class="headerlink" title="6.1 分类学"></a>6.1 分类学</h3><p>本文调研的项目可以按<strong>问题域</strong>分为四类：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>解决什么</th>
+<th>代表项目</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>上下文引擎</strong></td>
+<td>管理LLM context window的完整生命周期（ingest&#x2F;assemble&#x2F;compact）</td>
+<td>lossless-claw, Headroom, OpenViking</td>
+</tr>
+<tr>
+<td><strong>记忆数据库</strong></td>
+<td>存储和检索跨session的记忆&#x2F;知识</td>
+<td>Mem0, Letta&#x2F;MemGPT</td>
+</tr>
+<tr>
+<td><strong>记忆服务</strong></td>
+<td>提供hosted的记忆&#x2F;知识图谱API</td>
+<td>Zep (Cloud)</td>
+</tr>
+<tr>
+<td><strong>知识持久化</strong></td>
+<td>在session间保存结构化文档</td>
+<td>ContextVault</td>
+</tr>
+</tbody></table>
+<p>这四类解决的是上下文管理栈的不同层次，<strong>不是竞品关系</strong>。</p>
+<h3 id="6-2-LLM调用开销对比"><a href="#6-2-LLM调用开销对比" class="headerlink" title="6.2 LLM调用开销对比"></a>6.2 LLM调用开销对比</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>一次记忆写入的LLM调用数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lossless-claw</td>
+<td>1</td>
+<td>compact时一次summarization call</td>
+</tr>
+<tr>
+<td>Headroom</td>
+<td>0</td>
+<td>纯算法压缩（ML模型是本地的，非LLM API）</td>
+</tr>
+<tr>
+<td>Mem0</td>
+<td>2-5</td>
+<td>2次（vector path） + 3次（graph path额外）</td>
+</tr>
+<tr>
+<td>Letta&#x2F;MemGPT</td>
+<td>1+</td>
+<td>每次tool call是一轮LLM交互</td>
+</tr>
+<tr>
+<td>Hermes Agent</td>
+<td>1</td>
+<td>单次summary call</td>
+</tr>
+<tr>
+<td>ContextVault</td>
+<td>0</td>
+<td>纯文件读写</td>
+</tr>
+</tbody></table>
+<h3 id="6-3-token-budget感知"><a href="#6-3-token-budget感知" class="headerlink" title="6.3 token budget感知"></a>6.3 token budget感知</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>感知token budget</th>
+<th>主动压缩</th>
+<th>压缩触发方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lossless-claw</td>
+<td>✅ <code>contextThreshold: 0.75</code></td>
+<td>✅ budget 75%时自动触发</td>
+<td>Token比例</td>
+</tr>
+<tr>
+<td>Headroom</td>
+<td>✅ IntelligentContextManager</td>
+<td>✅ 管线自动执行</td>
+<td>Token数量</td>
+</tr>
+<tr>
+<td>OpenClaw默认</td>
+<td>❌</td>
+<td>❌ 仅在API overflow后reactive</td>
+<td>错误触发</td>
+</tr>
+<tr>
+<td>Mem0</td>
+<td>❌</td>
+<td>❌</td>
+<td>N&#x2F;A（不参与context组装）</td>
+</tr>
+<tr>
+<td>Letta&#x2F;MemGPT</td>
+<td>部分</td>
+<td>✅</td>
+<td>Message数量（非token）</td>
+</tr>
+<tr>
+<td>Zep CE</td>
+<td>❌</td>
+<td>❌</td>
+<td>N&#x2F;A</td>
+</tr>
+<tr>
+<td>ContextVault</td>
+<td>❌</td>
+<td>❌</td>
+<td>N&#x2F;A</td>
+</tr>
+</tbody></table>
+<h3 id="6-4-耦合度与可复用性"><a href="#6-4-耦合度与可复用性" class="headerlink" title="6.4 耦合度与可复用性"></a>6.4 耦合度与可复用性</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>与宿主平台耦合度</th>
+<th>独立复用所需adapter代码量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lossless-claw engine.ts</td>
+<td>零import</td>
+<td>~100-150行（构造LcmDependencies）</td>
+</tr>
+<tr>
+<td>Headroom核心</td>
+<td>零import</td>
+<td>~50行（Python库直接import）</td>
+</tr>
+<tr>
+<td>Letta三层记忆</td>
+<td>深度耦合（server端ORM）</td>
+<td>不可行（需要整个server）</td>
+</tr>
+<tr>
+<td>Mem0 Memory类</td>
+<td>松耦合</td>
+<td>~20行（直接pip install）</td>
+</tr>
+<tr>
+<td>Zep CE</td>
+<td>依赖外部Graphiti服务</td>
+<td>不可行（需要部署Graphiti）</td>
+</tr>
+<tr>
+<td>ContextVault</td>
+<td>MCP标准接口</td>
+<td>~10行（MCP client配置）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-Meta-Engine可行性分析"><a href="#7-Meta-Engine可行性分析" class="headerlink" title="7 Meta-Engine可行性分析"></a>7 Meta-Engine可行性分析</h2><h3 id="7-1-动机"><a href="#7-1-动机" class="headerlink" title="7.1 动机"></a>7.1 动机</h3><p>既然lossless-claw和Headroom的核心逻辑都可以独立于OpenClaw使用，是否可以构建一个meta-engine组合两者的能力？</p>
+<h3 id="7-2-技术可行性"><a href="#7-2-技术可行性" class="headerlink" title="7.2 技术可行性"></a>7.2 技术可行性</h3><p><strong>可行</strong>。预计~500行代码：</p>
+<ol>
+<li>占据OpenClaw的contextEngine slot</li>
+<li>内部实例化lossless-claw的 <code>LcmContextEngine</code>（需要构造 <code>LcmDependencies</code>）</li>
+<li>在 <code>assemble()</code> 的输出上运行Headroom的 <code>compress()</code> 管线</li>
+<li>将lossless-claw的结构化摘要（XML格式）与Headroom的tool output压缩组合</li>
+</ol>
+<h3 id="7-3-价值分析"><a href="#7-3-价值分析" class="headerlink" title="7.3 价值分析"></a>7.3 价值分析</h3><p>lossless-claw的assembler输出包含两类内容：</p>
+<ol>
+<li><strong>摘要</strong>（<code>&lt;summary&gt;</code> XML节点）——已经是压缩后的文本，Headroom再压缩的边际收益极低</li>
+<li><strong>Fresh tail原始消息</strong>（默认64条）——其中tool output部分可以被Headroom的SmartCrusher有效压缩</li>
+</ol>
+<p>因此组合价值<strong>仅限于fresh tail中的tool output部分</strong>——对tool-heavy的编码场景有意义，但对纯对话、写作等场景价值有限。</p>
+<h3 id="7-4-战略结论"><a href="#7-4-战略结论" class="headerlink" title="7.4 战略结论"></a>7.4 战略结论</h3><p>技术上可行，但战略上不成立：</p>
+<ul>
+<li>目标用户群窄（仅tool-heavy场景受益）</li>
+<li>两个上游项目都在活跃开发，维护成本高</li>
+<li>OpenClaw自身也在改进默认压缩（reactive → proactive的issue已被讨论）</li>
+</ul>
+<hr>
+<h2 id="8-为什么最终放弃找独立项目方向"><a href="#8-为什么最终放弃找独立项目方向" class="headerlink" title="8 为什么最终放弃找独立项目方向"></a>8 为什么最终放弃找独立项目方向</h2><h3 id="8-1-排除矩阵"><a href="#8-1-排除矩阵" class="headerlink" title="8.1 排除矩阵"></a>8.1 排除矩阵</h3><table>
+<thead>
+<tr>
+<th>方向</th>
+<th>排除原因</th>
+<th>源码证据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通用压缩中间件</td>
+<td>Headroom已做（211k行Python，Apache 2.0）</td>
+<td><code>headroom/transforms/pipeline.py</code></td>
+</tr>
+<tr>
+<td>记忆存储框架</td>
+<td>Mem0（48k星，AWS集成）、Letta（三层架构）已做</td>
+<td><code>mem0/memory/main.py</code>, <code>letta/functions/function_sets/base.py</code></td>
+</tr>
+<tr>
+<td>独立任务状态管理</td>
+<td>天生与agent框架深度耦合</td>
+<td>OpenClaw <code>src/tasks/task-registry.ts</code>内存Map</td>
+</tr>
+<tr>
+<td>OpenClaw ContextEngine实现</td>
+<td>lossless-claw&#x2F;Headroom&#x2F;OpenViking&#x2F;context-mode已做</td>
+<td>各项目manifest和engine.ts</td>
+</tr>
+<tr>
+<td>Memory OS</td>
+<td>Letta概念完整，MemOS&#x2F;MemoryOS学术实现已有</td>
+<td><code>letta/schemas/memory.py</code></td>
+</tr>
+<tr>
+<td>编码agent特化</td>
+<td>Claude Code&#x2F;Cursor&#x2F;Windsurf定义了体验天花板</td>
+<td>N&#x2F;A（市场判断）</td>
+</tr>
+<tr>
+<td>Meta-engine</td>
+<td>仅对tool-heavy场景有价值（§7）</td>
+<td>lossless-claw assembler + Headroom SmartCrusher分析</td>
+</tr>
+<tr>
+<td>知识持久化工具</td>
+<td>ContextVault已做（MCP标准接口）</td>
+<td><code>contextvault-mcp/src/vault/manager.ts</code></td>
+</tr>
+</tbody></table>
+<h3 id="8-2-最终判断"><a href="#8-2-最终判断" class="headerlink" title="8.2 最终判断"></a>8.2 最终判断</h3><p><strong>这个领域在2026年4月已进入增量创新（incremental innovation）阶段。</strong></p>
+<p>每个子问题域都有至少一个具备工程成熟度的开源解决方案。剩下的工作是：各方案在自己的场景内优化细节（lossless-claw改进BM25评分、Headroom增加新的ContentRouter类型、Letta优化Summarizer触发策略）。没有可以从0到1构建的、既有足够价值又没有人做的独立方向。</p>
+<p><strong>方向仍然是harness工程</strong>——在特定场景（特定模型、特定任务类型、特定部署约束）内，通过组合现有工具链构建深度优化的agent体验。</p>
+<hr>
+<h2 id="附录A：源码引用索引"><a href="#附录A：源码引用索引" class="headerlink" title="附录A：源码引用索引"></a>附录A：源码引用索引</h2><p>以下所有引用基于2026年4月10-14日期间从各项目主分支克隆的代码版本。</p>
+<p>[^1]: OpenClaw <code>src/context-engine/types.ts</code> — ContextEngine接口定义，含bootstrap&#x2F;ingest&#x2F;assemble&#x2F;compact&#x2F;afterTurn等生命周期方法。<code>ownsCompaction</code>字段位于第51行，<code>rewriteTranscriptEntries()</code>位于第93-95行，<code>systemPromptAddition</code>位于<code>AssembleResult</code>类型第11行。</p>
+<p>[^2]: OpenClaw <code>src/plugins/slots.ts</code> — 排他性slot系统。<code>SLOT_BY_KIND</code>定义于第12-15行，<code>DEFAULT_SLOT_BY_KEY</code>定义于第17-20行，<code>applyExclusiveSlotSelection()</code>实现于第76-162行。</p>
+<p>[^3]: OpenClaw <code>src/context-engine/legacy.ts</code> — LegacyContextEngine实现。<code>ingest()</code>返回<code>{ingested: false}</code>，<code>assemble()</code>透传且<code>estimatedTokens: 0</code>，<code>compact()</code>委托给<code>delegateCompactionToRuntime()</code>。全文约85行。</p>
+<p>[^4]: OpenClaw <code>src/config/defaults.ts:368</code> — 默认compaction模式设为<code>&quot;safeguard&quot;</code>。</p>
+<p>[^5]: OpenClaw <code>src/hooks/bundled/session-memory/handler.ts:55-57</code> — session-memory hook仅监听<code>event.type === &quot;command&quot;</code>且<code>event.action === &quot;new&quot; || &quot;reset&quot;</code>。</p>
+<p>[^6]: OpenClaw <code>src/agents/pi-embedded-subscribe.handlers.compaction.ts:115-132</code> — <code>clearStaleAssistantUsageOnSessionMessages()</code>清除所有assistant message的usage数据。</p>
+<p>[^7]: lossless-claw <code>src/engine.ts:1199</code> — <code>LcmContextEngine implements ContextEngine</code>，构造函数接受<code>LcmDependencies</code> + <code>DatabaseSync</code>。全文4,306行。</p>
+<p>[^8]: lossless-claw <code>src/types.ts:105-165</code> — <code>LcmDependencies</code>接口定义，包含config、complete、callGateway、resolveModel、getApiKey、requireApiKey、parseAgentSessionKey、isSubagentSessionKey、normalizeAgentId、log等字段。</p>
+<p>[^9]: lossless-claw <code>src/assembler.ts:886-1059</code> — <code>ContextAssembler.assemble()</code>方法。包含context items获取（SQLite）、fresh tail分割（默认64条）、token budget感知的选择、BM25-lite相关性评分、XML格式摘要输出。</p>
+<p>[^10]: lossless-claw <code>src/db/config.ts:255</code> — <code>freshTailCount</code>默认值为64。</p>
+<p>[^11]: lossless-claw <code>src/compaction.ts:33</code> — <code>CompactionConfig</code>接口，包含contextThreshold（默认0.75）、freshTailCount、leafMinFanout、condensedMinFanout等参数。<code>CompactionLevel</code>类型为<code>&quot;normal&quot; | &quot;aggressive&quot; | &quot;fallback&quot; | &quot;capped&quot;</code>。全文起始于第1行。</p>
+<p>[^12]: lossless-claw <code>src/plugin/index.ts</code> — 插件注册胶水代码，390行。执行<code>api.registerContextEngine(&quot;lossless-claw&quot;, ...)</code>和<code>api.registerContextEngine(&quot;default&quot;, ...)</code>，注册4个工具（describe, expand, expand-query, grep），监听<code>before_reset</code>和<code>session_end</code>事件。</p>
+<p>[^13]: Headroom <code>headroom/transforms/pipeline.py:70-125</code> — 默认管线：CacheAligner → ContentRouter（或SmartCrusher fallback）→ IntelligentContextManager（或RollingWindow fallback）。ContentRouter路由策略定义于第81-89行。全文387行。</p>
+<p>[^14]: Headroom <code>headroom/transforms/smart_crusher.py:1-46</code> — SmartCrusher模块docstring。声明scope为”JSON arrays of ANY type”，safety保证包含first&#x2F;last K保留、error item永不丢弃、异常值保留、change point保护。全文3,657行。</p>
+<p>[^15]: context-mode <code>openclaw.plugin.json</code> — manifest声明<code>&quot;kind&quot;: &quot;tool&quot;</code>。通过MCP tools（ctx_execute_file, ctx_index, ctx_search）提供功能。</p>
+<p>[^16]: context-mode <code>BENCHMARK.md</code> — 整体节省率为96%（非98%）。</p>
+<p>[^17]: OpenViking <code>examples/openclaw-plugin/openclaw.plugin.json</code> — manifest声明<code>&quot;kind&quot;: &quot;context-engine&quot;</code>。功能包含autoCapture、autoRecall、bypassSessionPatterns、commitTokenThreshold。</p>
+<p>[^18]: Mem0 <code>mem0/memory/main.py:258</code> — <code>Memory</code>类定义。包含vector_store（必选）和graph store（可选，Neo4j）。同文件还有<code>AsyncMemory</code>类。全文2,597行。</p>
+<p>[^19]: Mem0 <code>mem0/memory/main.py:383</code> — <code>Memory.add()</code>方法。LLM调用提取facts → vector search找相似记忆 → LLM决策ADD&#x2F;UPDATE&#x2F;DELETE → 写入存储。graph路径通过<code>ThreadPoolExecutor</code>并行。</p>
+<p>[^20]: Mem0 <code>mem0/memory/graph_memory.py:29</code> — <code>MemoryGraph</code>类定义。使用<code>langchain_neo4j.Neo4jGraph</code>。初始化时创建Neo4j索引（<code>entity_single</code>和<code>entity_composite</code>）。</p>
+<p>[^21]: Mem0 <code>mem0/memory/graph_memory.py:76</code> — <code>MemoryGraph.add()</code>方法。调用链：<code>_retrieve_nodes_from_data()</code>（LLM实体提取）→ <code>_establish_nodes_relations_from_data()</code>（LLM关系建立）→ <code>_search_graph_db()</code>（embedding搜索）→ <code>_get_delete_entities_from_search_output()</code>（LLM删除决策）→ 执行。</p>
+<p>[^22]: Mem0 <code>mem0/memory/graph_memory.py:423-428</code> — 图关系软删除实现：<code>SET r.valid = false, r.invalidated_at = datetime()</code>。</p>
+<p>[^23]: Mem0 <code>mem0/memory/graph_memory.py:96-130</code> — <code>MemoryGraph.search()</code>方法。使用<code>rank_bm25.BM25Okapi</code>对graph查询结果做BM25重排序。</p>
+<p>[^24]: Letta <code>letta/schemas/block.py:67</code> — <code>Block</code>类定义。字段包含value（str）、limit（CORE_MEMORY_BLOCK_CHAR_LIMIT）、label（如’human’、’persona’）、read_only。<code>Human</code>子类位于第117行。</p>
+<p>[^25]: Letta <code>letta/functions/function_sets/base.py:246</code> — <code>core_memory_append()</code>实现：<code>new_value = current_value + &quot;\n&quot; + str(content)</code>。</p>
+<p>[^26]: Letta <code>letta/functions/function_sets/base.py:263</code> — <code>core_memory_replace()</code>实现：精确字符串替换，找不到old_content时抛ValueError。</p>
+<p>[^27]: Letta <code>letta/functions/function_sets/base.py:10</code> — <code>memory()</code>函数，类文件系统操作（create&#x2F;str_replace&#x2F;insert&#x2F;delete&#x2F;rename）。函数体为<code>raise NotImplementedError</code>。</p>
+<p>[^28]: Letta <code>letta/functions/function_sets/base.py:164</code> — <code>archival_memory_insert()</code>。函数体为<code>raise NotImplementedError(&quot;This should never be invoked directly.&quot;)</code>，实际路由在server端。</p>
+<p>[^29]: Letta <code>letta/functions/function_sets/base.py:194</code> — <code>archival_memory_search()</code>。支持query、tags、tag_match_mode（any&#x2F;all）、top_k、start&#x2F;end datetime。同为NotImplementedError。</p>
+<p>[^30]: Letta <code>letta/functions/function_sets/base.py:87</code> — <code>conversation_search()</code>。调用<code>self.message_manager.list_messages_for_agent()</code>，使用hybrid search，支持role和时间范围过滤。</p>
+<p>[^31]: Letta <code>letta/agents/letta_agent.py:174</code> — <code>LettaAgent.step()</code>方法入口。调用<code>_step()</code>执行循环，最多<code>max_steps</code>轮。</p>
+<p>[^32]: Letta <code>letta/agents/letta_agent.py:360-362</code> — 强制tool calling检查。无tool call时抛<code>ValueError(&quot;No tool calls found in response, model must make a tool call&quot;)</code>。</p>
+<p>[^33]: Letta <code>letta/services/summarizer/summarizer.py:36</code> — <code>Summarizer</code>类定义。接受<code>SummarizationMode</code>、<code>summarizer_agent</code>、<code>message_buffer_limit</code>（默认10）、<code>message_buffer_min</code>（默认3）、<code>partial_evict_summarizer_percentage</code>（默认0.30）。</p>
+<p>[^34]: Letta <code>letta/services/summarizer/enums.py</code> — <code>SummarizationMode</code>枚举。两个值：<code>STATIC_MESSAGE_BUFFER</code>和<code>PARTIAL_EVICT_MESSAGE_BUFFER</code>。</p>
+<p>[^35]: Letta <code>letta/services/summarizer/summarizer.py:244-300</code> — <code>_static_buffer_summarization()</code>。固定buffer模式，超过limit时丢弃旧消息保留最近<code>message_buffer_min</code>条。</p>
+<p>[^36]: Letta <code>letta/services/summarizer/summarizer.py:136-242</code> — <code>_partial_evict_buffer_summarization()</code>。MemGPT原始方案，按30%比例驱逐最旧消息，生成摘要插入context[1]。</p>
+<p>[^37]: Letta <code>letta/schemas/memory.py</code> — <code>ContextWindowOverview</code>定义。包含core_memory、archival_memory（passages数量）、recall_memory（messages数量）、summary_memory。</p>
+<p>[^38]: Zep <code>README.md:56-58</code> — “Note: This repository is currently a work in progress. This repository contains examples, integrations, and tools for building intelligent agent context with Zep.”</p>
+<p>[^39]: Zep <code>legacy/src/store/memory_ce.go:15-57</code> — <code>memoryDAO._get()</code>方法。取最后4条消息用于retrieval，调用<code>graphiti.I().GetMemory()</code>获取最多5个facts。</p>
+<p>[^40]: Zep <code>legacy/src/store/memory_ce.go:59-72</code> — <code>_initializeProcessingMemory()</code>。两个HTTP POST调用：<code>graphiti.I().PutMemory(ctx, session.SessionID, ...)</code>和<code>graphiti.I().PutMemory(ctx, *session.UserID, ...)</code>。</p>
+<p>[^41]: Zep <code>legacy/src/lib/graphiti/service_ce.go</code> — Graphiti HTTP client。<code>Service</code>接口定义于第80行，包含GetMemory&#x2F;PutMemory&#x2F;Search&#x2F;AddNode&#x2F;GetFact&#x2F;DeleteFact&#x2F;DeleteGroup&#x2F;DeleteMessage。每个方法内部是HTTP request（<code>s.newRequest()</code> + <code>s.doRequest()</code>）。全文300行。</p>
+<p>[^42]: Zep <code>legacy/src/store/message_common.go</code> — 消息存储实现。使用PostgreSQL（bun ORM）。<code>GetLastN()</code>位于第135-184行。metadata更新含advisory lock（第394-451行）。全文547行。</p>
+<p>[^43]: Zep <code>legacy/src/models/memory_common.go:86-92</code> — <code>MemoryCommon</code>结构体定义。包含Messages、RelevantFacts、Metadata三个字段。</p>
+<p>[^44]: Zep <code>legacy/src/models/fact_common.go</code> — <code>Fact</code>结构体。字段：UUID、CreatedAt、Fact（string）、Rating（*float64）。</p>
+<p>[^45]: Zep <code>legacy/src/models/session_common.go:10-22</code> — <code>SessionCommon</code>结构体。字段：UUID、ID、CreatedAt、UpdatedAt、DeletedAt、EndedAt、SessionID、Metadata、UserID、ProjectUUID。</p>
+<p>[^46]: ContextVault <code>contextvault-mcp/src/vault/types.ts:3-12</code> — <code>VaultSettings</code>接口。mode（local&#x2F;global&#x2F;full）、enforcement（light&#x2F;balanced&#x2F;strict）、limits（max docs 50&#x2F;50, max lines 100, max summary words 15）。</p>
+<p>[^47]: ContextVault <code>contextvault-mcp/src/vault/manager.ts</code> — <code>VaultManager</code>类。核心方法：<code>readDocument()</code>（fs.readFileSync）、<code>writeDocument()</code>（fs.writeFileSync）、<code>search()</code>（委托IndexManager）、<code>getEnforcementReminder()</code>（编辑计数nudge）。全文493行。</p>
+<p>[^48]: ContextVault <code>contextvault-mcp/src/vault/index-manager.ts:346-363</code> — <code>IndexManager.search()</code>。对index.md中的entry进行纯关键词匹配（split → includes → 计分）。搜索范围仅限id、topic、summary字段。</p>
+<p>[^49]: ContextVault <code>contextvault-mcp/src/vault/manager.ts:195-372</code> — Enforcement机制。包含<code>trackEdit()</code>、<code>trackResearch()</code>、<code>getEnforcementReminder()</code>（edit-based）、<code>getResearchReminder()</code>（research-based）。域分类支持frontend&#x2F;backend&#x2F;database&#x2F;testing&#x2F;config&#x2F;utils&#x2F;services&#x2F;types&#x2F;docs。</p>
+<p>[^50]: ContextVault <code>contextvault-mcp/src/vault/manager.ts:376-440</code> — <code>generateDocContent()</code>。根据type（doc&#x2F;error&#x2F;decision&#x2F;plan&#x2F;snippet&#x2F;intel&#x2F;handoff&#x2F;explain）生成不同的markdown模板。</p>
+<p>[^51]: ContextVault <code>contextvault-mcp/src/server.ts:35</code> — <code>ContextVaultServer</code>类。注册20+个MCP tools，通过<code>withTracking()</code>包装enforcement和reminder逻辑。</p>
+<p>[^52]: Hermes Agent <code>agent/context_compressor.py:612-745</code> — <code>ContextCompressor.compress()</code>。流程：修剪旧tool results → 确定边界 → 生成摘要（1次LLM调用，位于<code>_generate_summary()</code>第404行）→ 组装。</p>
+<hr>
+<h2 id="附录B：代码量统计"><a href="#附录B：代码量统计" class="headerlink" title="附录B：代码量统计"></a>附录B：代码量统计</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>核心模块代码量</th>
+<th>计量范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Headroom</td>
+<td>211,243行 Python</td>
+<td><code>headroom/**/*.py</code>（465文件）</td>
+</tr>
+<tr>
+<td>Letta</td>
+<td>31,955行 Python</td>
+<td><code>letta/{agents,schemas,services/summarizer,functions}/**/*.py</code></td>
+</tr>
+<tr>
+<td>lossless-claw</td>
+<td>22,967行 TypeScript</td>
+<td><code>src/**/*.ts</code></td>
+</tr>
+<tr>
+<td>Hermes Agent</td>
+<td>9,660行 Python</td>
+<td><code>run_agent.py</code>（单文件）</td>
+</tr>
+<tr>
+<td>Zep legacy</td>
+<td>7,885行 Go</td>
+<td><code>legacy/src/**/*.go</code></td>
+</tr>
+<tr>
+<td>Mem0核心</td>
+<td>3,341行 Python</td>
+<td><code>mem0/memory/{main,graph_memory}.py</code></td>
+</tr>
+<tr>
+<td>ContextVault</td>
+<td>~1,500行 TypeScript</td>
+<td><code>contextvault-mcp/src/**/*.ts</code></td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>本文所有技术判断基于对源码的直接阅读，写作时间2026年4月。各项目代码可能在此后发生变化。</em></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/Agent/" rel="tag"># Agent</a>
+          
+            <a href="/tags/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" rel="tag"># 技术分析</a>
+          
+            <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"># 架构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2026/04/14/jay-chou-copy/" rel="next" title="当年的周杰伦们也在抄，但他们抄得用心，不是AI时代粗制滥造的音乐垃圾">
+                <i class="fa fa-chevron-left"></i> 当年的周杰伦们也在抄，但他们抄得用心，不是AI时代粗制滥造的音乐垃圾
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2026/04/15/claude-code-model-routing/" rel="prev" title="你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由">
+                你选了 Opus，但干活的是 Haiku：从三个 md 文件看 Claude Code 的模型路由 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sherry255" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xcmkya@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2026%E5%B9%B4Agent%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E7%94%9F%E6%80%81%E5%85%A8%E6%99%AF%EF%BC%9A%E4%BB%8E%E6%BA%90%E7%A0%81%E5%88%B0%E6%9E%B6%E6%9E%84%E5%86%B3%E7%AD%96"><span class="nav-number">1.</span> <span class="nav-text">2026年Agent上下文管理生态全景：从源码到架构决策</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%BC%95%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">1 引言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%A0%94%E7%A9%B6%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 研究动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 方法论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%B0%83%E7%A0%94%E8%8C%83%E5%9B%B4"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 调研范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%BF%E4%B8%BB%E5%B9%B3%E5%8F%B0%E5%88%86%E6%9E%90%EF%BC%9AOpenClaw-ContextEngine%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.2.</span> <span class="nav-text">2 宿主平台分析：OpenClaw ContextEngine接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-ContextEngine%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 ContextEngine接口定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%8E%92%E4%BB%96%E6%80%A7Slot%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 排他性Slot系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-LegacyContextEngine%EF%BC%9A%E9%BB%98%E8%AE%A4%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%A9%BA%E5%A3%B3"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 LegacyContextEngine：默认实现的空壳</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E4%BA%94%E4%B8%AA%E6%9E%B6%E6%9E%84%E7%BC%BA%E9%99%B7"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 五个架构缺陷</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ContextEngine%E6%8F%92%E4%BB%B6%E7%94%9F%E6%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">3 ContextEngine插件生态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-lossless-claw%EF%BC%9ADAG%E6%97%A0%E6%8D%9F%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 lossless-claw：DAG无损压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">3.1.1 依赖注入设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%BB%84%E8%A3%85%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">3.1.2 上下文组装算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-3-%E5%8E%8B%E7%BC%A9%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">3.1.3 压缩配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-4-%E6%8F%92%E4%BB%B6%E6%B3%A8%E5%86%8C"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">3.1.4 插件注册</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Headroom%EF%BC%9A%E5%86%85%E5%AE%B9%E6%84%9F%E7%9F%A5%E5%8E%8B%E7%BC%A9%E7%AE%A1%E7%BA%BF"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 Headroom：内容感知压缩管线</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-%E5%8E%8B%E7%BC%A9%E7%AE%A1%E7%BA%BF"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">3.2.1 压缩管线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-SmartCrusher%EF%BC%9A%E7%BB%9F%E8%AE%A1%E9%A9%B1%E5%8A%A8%E7%9A%84JSON%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">3.2.2 SmartCrusher：统计驱动的JSON压缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-OpenClaw%E9%9B%86%E6%88%90"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">3.2.3 OpenClaw集成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-context-mode%EF%BC%9AMCP%E5%B7%A5%E5%85%B7%E6%96%B9%E6%A1%88"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 context-mode：MCP工具方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-OpenViking%EF%BC%9A%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 OpenViking：长期记忆</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AE%B0%E5%BF%86%E6%A1%86%E6%9E%B6%EF%BC%9A%E6%BA%90%E7%A0%81%E7%BA%A7%E5%88%86%E6%9E%90"><span class="nav-number">1.4.</span> <span class="nav-text">4 记忆框架：源码级分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Mem0%EF%BC%9ALLM-in-the-loop%E7%9A%84%E8%AE%B0%E5%BF%86CRUD"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 Mem0：LLM-in-the-loop的记忆CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-1-%E6%9E%B6%E6%9E%84%E6%A6%82%E8%BF%B0"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">4.1.1 架构概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-2-add-%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">4.1.2 add() 方法调用链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-3-Graph-Memory%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">4.1.3 Graph Memory实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-4-%E6%9E%B6%E6%9E%84%E5%B1%80%E9%99%90"><span class="nav-number">1.4.1.4.</span> <span class="nav-text">4.1.4 架构局限</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Letta-MemGPT%EF%BC%9AAgent-as-OS%E7%9A%84%E4%B8%89%E5%B1%82%E8%AE%B0%E5%BF%86"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 Letta&#x2F;MemGPT：Agent-as-OS的三层记忆</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1-%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">4.2.1 设计哲学</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2-%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9ACore-Memory%EF%BC%88Block%E7%B3%BB%E7%BB%9F%EF%BC%89"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">4.2.2 第一层：Core Memory（Block系统）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3-%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9AArchival-Memory%EF%BC%88%E5%90%91%E9%87%8F%E6%90%9C%E7%B4%A2%EF%BC%89"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">4.2.3 第二层：Archival Memory（向量搜索）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-4-%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9ARecall-Memory%EF%BC%88%E6%B6%88%E6%81%AF%E6%90%9C%E7%B4%A2%EF%BC%89"><span class="nav-number">1.4.2.4.</span> <span class="nav-text">4.2.4 第三层：Recall Memory（消息搜索）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-5-Agent%E4%B8%BB%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.4.2.5.</span> <span class="nav-text">4.2.5 Agent主循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-6-Summarization%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.4.2.6.</span> <span class="nav-text">4.2.6 Summarization实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-7-ContextWindowOverview"><span class="nav-number">1.4.2.7.</span> <span class="nav-text">4.2.7 ContextWindowOverview</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-8-%E6%9E%B6%E6%9E%84%E8%AF%84%E4%BB%B7"><span class="nav-number">1.4.2.8.</span> <span class="nav-text">4.2.8 架构评价</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-Zep%EF%BC%9A%E4%BB%8EGo%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%88%B0Graphiti-HTTP%E5%A3%B3"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 Zep：从Go服务器到Graphiti HTTP壳</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-1-%E9%A1%B9%E7%9B%AE%E7%8E%B0%E7%8A%B6"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">4.3.1 项目现状</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-2-CE%E7%89%88%E6%A0%B8%E5%BF%83%EF%BC%9AGraphiti-HTTP-Client"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">4.3.2 CE版核心：Graphiti HTTP Client</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-3-Graphiti%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.4.3.3.</span> <span class="nav-text">4.3.3 Graphiti服务接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-4-%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.3.4.</span> <span class="nav-text">4.3.4 消息存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-5-%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.3.5.</span> <span class="nav-text">4.3.5 数据模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-6-%E6%9E%B6%E6%9E%84%E8%AF%84%E4%BB%B7"><span class="nav-number">1.4.3.6.</span> <span class="nav-text">4.3.6 架构评价</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-ContextVault%EF%BC%9AMarkdown%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F-MCP%E5%B7%A5%E5%85%B7"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 ContextVault：Markdown文件系统 + MCP工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-1-%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">4.4.1 本质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-2-%E5%AD%98%E5%82%A8%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">4.4.2 存储模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-3-%E6%90%9C%E7%B4%A2%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.4.4.3.</span> <span class="nav-text">4.4.3 搜索实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-4-Enforcement%E6%9C%BA%E5%88%B6"><span class="nav-number">1.4.4.4.</span> <span class="nav-text">4.4.4 Enforcement机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-5-%E6%96%87%E6%A1%A3%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.4.4.5.</span> <span class="nav-text">4.4.5 文档模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-6-20-MCP-Tools"><span class="nav-number">1.4.4.6.</span> <span class="nav-text">4.4.6 20+ MCP Tools</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-7-%E6%9E%B6%E6%9E%84%E8%AF%84%E4%BB%B7"><span class="nav-number">1.4.4.7.</span> <span class="nav-text">4.4.7 架构评价</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%8B%AC%E7%AB%8BAgent%E5%88%86%E6%9E%90"><span class="nav-number">1.5.</span> <span class="nav-text">5 独立Agent分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Hermes-Agent%EF%BC%9A%E5%8D%95%E6%AC%A1LLM%E8%B0%83%E7%94%A8%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.5.1.</span> <span class="nav-text">5.1 Hermes Agent：单次LLM调用的上下文压缩</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%B7%A8%E9%A1%B9%E7%9B%AE%E6%AF%94%E8%BE%83%E4%B8%8E%E5%88%86%E6%9E%90"><span class="nav-number">1.6.</span> <span class="nav-text">6 跨项目比较与分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E5%88%86%E7%B1%BB%E5%AD%A6"><span class="nav-number">1.6.1.</span> <span class="nav-text">6.1 分类学</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-LLM%E8%B0%83%E7%94%A8%E5%BC%80%E9%94%80%E5%AF%B9%E6%AF%94"><span class="nav-number">1.6.2.</span> <span class="nav-text">6.2 LLM调用开销对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-token-budget%E6%84%9F%E7%9F%A5"><span class="nav-number">1.6.3.</span> <span class="nav-text">6.3 token budget感知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-%E8%80%A6%E5%90%88%E5%BA%A6%E4%B8%8E%E5%8F%AF%E5%A4%8D%E7%94%A8%E6%80%A7"><span class="nav-number">1.6.4.</span> <span class="nav-text">6.4 耦合度与可复用性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-Meta-Engine%E5%8F%AF%E8%A1%8C%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">1.7.</span> <span class="nav-text">7 Meta-Engine可行性分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.7.1.</span> <span class="nav-text">7.1 动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E6%8A%80%E6%9C%AF%E5%8F%AF%E8%A1%8C%E6%80%A7"><span class="nav-number">1.7.2.</span> <span class="nav-text">7.2 技术可行性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%E4%BB%B7%E5%80%BC%E5%88%86%E6%9E%90"><span class="nav-number">1.7.3.</span> <span class="nav-text">7.3 价值分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-4-%E6%88%98%E7%95%A5%E7%BB%93%E8%AE%BA"><span class="nav-number">1.7.4.</span> <span class="nav-text">7.4 战略结论</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%80%E7%BB%88%E6%94%BE%E5%BC%83%E6%89%BE%E7%8B%AC%E7%AB%8B%E9%A1%B9%E7%9B%AE%E6%96%B9%E5%90%91"><span class="nav-number">1.8.</span> <span class="nav-text">8 为什么最终放弃找独立项目方向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E6%8E%92%E9%99%A4%E7%9F%A9%E9%98%B5"><span class="nav-number">1.8.1.</span> <span class="nav-text">8.1 排除矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-%E6%9C%80%E7%BB%88%E5%88%A4%E6%96%AD"><span class="nav-number">1.8.2.</span> <span class="nav-text">8.2 最终判断</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录A：源码引用索引"><span class="nav-number">1.9.</span> <span class="nav-text">附录A：源码引用索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录B：代码量统计"><span class="nav-number">1.10.</span> <span class="nav-text">附录B：代码量统计</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sherry</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

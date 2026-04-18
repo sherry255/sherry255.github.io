@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-cat.svg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon-cat.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AI,消费者权益,吐槽," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="我最近在思考一个问题：如果我去餐厅点了一碗牛肉面，端上来的是鸡蛋面，我可以投诉。如果我买了一件标注L码的衣服，穿上去是S码的效果，我可以退货。 但如果我花钱订阅了一个AI，上个月它还能帮我写出像样的代码，这个月突然变笨了——我能怎么办？ 答案是：什么都做不了。 你买的不是一个产品，是一个”服务”大语言模型公司卖的东西有一个精心设计的特点：它永远是”服务”，不是”产品”。 产品有标准。一块CPU，标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="花钱买了个薛定谔的AI">
+<meta property="og:url" content="http://yoursite.com/2026/04/17/llm-pricing-consumer-rights/index.html">
+<meta property="og:site_name" content="Sherry&#39;s Blog">
+<meta property="og:description" content="我最近在思考一个问题：如果我去餐厅点了一碗牛肉面，端上来的是鸡蛋面，我可以投诉。如果我买了一件标注L码的衣服，穿上去是S码的效果，我可以退货。 但如果我花钱订阅了一个AI，上个月它还能帮我写出像样的代码，这个月突然变笨了——我能怎么办？ 答案是：什么都做不了。 你买的不是一个产品，是一个”服务”大语言模型公司卖的东西有一个精心设计的特点：它永远是”服务”，不是”产品”。 产品有标准。一块CPU，标">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-04-17T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T09:29:40.778Z">
+<meta property="article:author" content="Sherry">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="吐槽">
+<meta property="article:tag" content="消费者权益">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2026/04/17/llm-pricing-consumer-rights/"/>
+
+
+
+
+
+  <title>花钱买了个薛定谔的AI | Sherry's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sherry's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-catalog">
+          <a href="/catalog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            目录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rants">
+          <a href="/rants/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comment"></i> <br />
+            
+            吐槽
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            文章列表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2026/04/17/llm-pricing-consumer-rights/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">花钱买了个薛定谔的AI</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-17T10:00:00+08:00">
+                2026-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B3%95%E5%BE%8B-%E7%BB%8F%E6%B5%8E-%E6%94%BF%E6%B2%BB-%E7%A4%BE%E4%BC%9A/" itemprop="url" rel="index">
+                    <span itemprop="name">法律-经济-政治-社会</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我最近在思考一个问题：如果我去餐厅点了一碗牛肉面，端上来的是鸡蛋面，我可以投诉。如果我买了一件标注L码的衣服，穿上去是S码的效果，我可以退货。</p>
+<p>但如果我花钱订阅了一个AI，上个月它还能帮我写出像样的代码，这个月突然变笨了——我能怎么办？</p>
+<p>答案是：什么都做不了。</p>
+<h2 id="你买的不是一个产品，是一个”服务”"><a href="#你买的不是一个产品，是一个”服务”" class="headerlink" title="你买的不是一个产品，是一个”服务”"></a>你买的不是一个产品，是一个”服务”</h2><p>大语言模型公司卖的东西有一个精心设计的特点：它永远是”服务”，不是”产品”。</p>
+<p>产品有标准。一块CPU，标注了主频、核心数、跑分，买之前你知道你在买什么。服务条款则不同——OpenAI、Anthropic、Google，没有一家在订阅页面上写”本月GPT-4的智力水平为X”。他们卖给你的是”访问权限”，而不是”确定的能力”。</p>
+<p>这个区别至关重要，因为它意味着他们可以随时悄悄改变你买到的东西，而不违反任何合同。</p>
+<h2 id="定价机制：一场精心设计的信息不对称"><a href="#定价机制：一场精心设计的信息不对称" class="headerlink" title="定价机制：一场精心设计的信息不对称"></a>定价机制：一场精心设计的信息不对称</h2><p>以目前主流的几家为例：</p>
+<p><strong>按Token计费</strong>：你以为自己在为”使用量”付费，但你不知道同样一个问题，今天的模型和昨天的模型用了不同的参数、不同的对齐策略、甚至不同的底层权重。你的钱花出去了，换来的东西变了，账单上显示的数字却没有变化。</p>
+<p><strong>订阅制</strong>：月付20刀、200刀，买的是”Plus”或”Pro”会员。但会员权益从来不写”保证模型能力不下降”。他们可以悄悄把你用的模型从GPT-4换成GPT-4o-mini的某个精简版，节省算力成本，而你几乎察觉不到，更无法证明。</p>
+<p><strong>企业API定价</strong>：按版本定价，看起来清晰——你调用<code>claude-opus-4-7</code>，应该每次都是同一个模型对吧？但”同一个模型”的权重可以被悄悄更新，推理时的采样策略可以调整，RLHF的微调可以改变它的行为倾向。版本号没变，模型已经不是原来那个了。</p>
+<h2 id="模型智商：一个没有SLA保障的黑箱"><a href="#模型智商：一个没有SLA保障的黑箱" class="headerlink" title="模型智商：一个没有SLA保障的黑箱"></a>模型智商：一个没有SLA保障的黑箱</h2><p>软件行业有SLA（服务等级协议）：我们保证99.9%的可用性，否则退款。但没有一家AI公司会给你一份”智力SLA”——我们保证模型在你订阅期间的推理能力不低于某个基准。</p>
+<p>为什么？因为”智力”没有统一的客观标准，难以量化，更难以举证。</p>
+<p>用户社区里隔三差五就会出现这样的帖子：</p>
+<blockquote>
+<p>“为什么GPT-4最近越来越笨了？”<br>“Claude感觉被阉割了，代码能力下降了很多。”<br>“同样的prompt，上周还能跑，这周直接拒绝了。”</p>
+</blockquote>
+<p>这些帖子的评论区，永远充满了两派：一派说”我也感觉到了”，一派说”你的prompt写得不好”。而官方永远沉默，或者给出一句万能回复：”模型持续迭代改进中。”</p>
+<p><strong>改进</strong>。这个词用得很妙。变笨了可以叫改进，变保守了可以叫改进，拒绝更多请求也可以叫改进。反正你没有数据，你无法证明，你只能凭感觉。</p>
+<h2 id="维权困境：你甚至找不到投诉对象"><a href="#维权困境：你甚至找不到投诉对象" class="headerlink" title="维权困境：你甚至找不到投诉对象"></a>维权困境：你甚至找不到投诉对象</h2><p>假设你决定维权，你会发现这条路处处是墙。</p>
+<p><strong>第一堵墙：举证困难</strong>。你说模型变笨了，你能证明吗？你需要用完全相同的prompt、完全相同的上下文、控制所有变量，在两个时间点对比输出质量——而且这个”质量”本身就是主观的。法官不会判”这段代码写得不够好”。</p>
+<p><strong>第二堵墙：条款豁免</strong>。翻开任何一家AI公司的服务条款，你会看到类似的表述：”我们不保证服务的准确性、完整性或适用性”、”我们保留随时修改、暂停或终止服务的权利”。这些条款在用户注册时以”同意”的形式签署，具有合同效力。</p>
+<p><strong>第三堵墙：司法管辖</strong>。OpenAI总部在旧金山，Anthropic在旧金山，Google在Mountain View。就算是美国本土用户，想取消订阅都要在层层确认页面里绕圈子，想起诉更是要面对强制仲裁条款——这些公司的服务协议里几乎都写明了”放弃集体诉讼权利”。你要告谁？在哪里告？用什么告？</p>
+<p><strong>第四堵墙：维权成本</strong>。就算你有时间、有资源、有证据，为了一个月20美元的订阅费，你要请律师、跨国诉讼吗？这个账算不过来。公司正是算准了这一点。</p>
+<h2 id="这不是偶然，是商业模式设计"><a href="#这不是偶然，是商业模式设计" class="headerlink" title="这不是偶然，是商业模式设计"></a>这不是偶然，是商业模式设计</h2><p>我不认为这一切是无意的失误。这是一套精心设计的商业结构：</p>
+<ul>
+<li>用模糊的”服务”定义代替清晰的产品规格，规避质量承诺</li>
+<li>用订阅制制造用户粘性，降低用户流失的敏感度</li>
+<li>用”持续迭代”的话术，将任何负面变化包装成正面叙事</li>
+<li>用复杂的条款和跨国结构，筑起维权的高墙</li>
+</ul>
+<p>结果是：用户花了钱，买了一个会变化的东西，变好了是公司的功劳，变差了是你的感知问题。</p>
+<h2 id="但我们也不是完全没有筹码"><a href="#但我们也不是完全没有筹码" class="headerlink" title="但我们也不是完全没有筹码"></a>但我们也不是完全没有筹码</h2><p>抱怨完了，说一些稍微实际的事：</p>
+<p><strong>用脚投票</strong>。这个行业竞争激烈，用户迁移成本并不高。如果一家的模型质量下降，换一家。市场压力是真实的——用户流失会反映在续费率上，这是公司能听懂的语言。</p>
+<p><strong>善用API</strong>。与其订阅，不如直接用API调用指定版本，至少在版本号层面控制一些变量。</p>
+<p><strong>建立自己的基准测试</strong>。如果你是重度用户，可以建立一套固定的测试集，每隔一段时间跑一次，量化地追踪模型能力变化。这既是保护自己，也是积累证据。</p>
+<p><strong>集体发声</strong>。个体维权成本高，但集体声音有影响力。用户社区、科技媒体的曝光，对公司的声誉压力是真实的。</p>
+<hr>
+<p>最后，我并不是说这些AI没有价值——我每天都在用，离不开。</p>
+<p>我只是觉得：一个成熟的行业，应该有成熟的消费者保护机制。我们不应该因为技术新、监管滞后，就接受这种”花钱买了个薛定谔的AI”的现状，然后在帖子里自我安慰说”可能是我的问题”。</p>
+<p>不，很可能不是你的问题。</p>
+<!-- flag of hidden posts -->
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/%E6%B6%88%E8%B4%B9%E8%80%85%E6%9D%83%E7%9B%8A/" rel="tag"># 消费者权益</a>
+          
+            <a href="/tags/%E5%90%90%E6%A7%BD/" rel="tag"># 吐槽</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sherry255" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:xcmkya@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#你买的不是一个产品，是一个”服务”"><span class="nav-number">1.</span> <span class="nav-text">你买的不是一个产品，是一个”服务”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定价机制：一场精心设计的信息不对称"><span class="nav-number">2.</span> <span class="nav-text">定价机制：一场精心设计的信息不对称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型智商：一个没有SLA保障的黑箱"><span class="nav-number">3.</span> <span class="nav-text">模型智商：一个没有SLA保障的黑箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#维权困境：你甚至找不到投诉对象"><span class="nav-number">4.</span> <span class="nav-text">维权困境：你甚至找不到投诉对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这不是偶然，是商业模式设计"><span class="nav-number">5.</span> <span class="nav-text">这不是偶然，是商业模式设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#但我们也不是完全没有筹码"><span class="nav-number">6.</span> <span class="nav-text">但我们也不是完全没有筹码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sherry</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
