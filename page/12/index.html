@@ -268,6 +268,192 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/10/Pythonic%20%E5%86%99%E6%B3%95%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/10/Pythonic%20%E5%86%99%E6%B3%95%E6%80%BB%E7%BB%93/" itemprop="url">Pythonic 写法总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T19:45:14+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Python 这门语言的, 入门容易, 精通难, 难在语法糖吧. Python有很多trick, 可以让代码更优雅,高效,高质量.<br>　　2016年6~8月我周末都是在听一些公开课,在cs212上学了一些更Pythonic的写法:</p>
+<h2 id="找出一个列表中元素出现次数最多的元素"><a href="#找出一个列表中元素出现次数最多的元素" class="headerlink" title="找出一个列表中元素出现次数最多的元素:"></a>找出一个列表中元素出现次数最多的元素:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">1</span>]</span><br><span class="line"><span class="comment"># 统计a中每个元素出现的次数</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = &#123;i:a.count(i)  <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">set</span>(a) &#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">&#123;<span class="number">1</span>: <span class="number">1</span>, <span class="number">2</span>: <span class="number">2</span>, <span class="number">3</span>: <span class="number">1</span>, <span class="number">4</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="comment"># 返回value 最大值的key</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">max</span>(b, key=b.get)</span><br></pre></td></tr></table></figure>
+
+<h3 id="关于-Super"><a href="#关于-Super" class="headerlink" title="关于 Super"></a>关于 Super</h3><p>1,</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">.__init__()是为了继承父类的init.</span><br><span class="line"><span class="number">2.</span> 如果在子类中需要重新定义<span class="variable language_">self</span>.XXX  , 则 <span class="built_in">super</span> 需要放在最上面</span><br><span class="line">Ps : Python deepcopy 很浪费资源的 </span><br><span class="line"><span class="comment">##  用字典映射</span></span><br><span class="line"> ```Python</span><br><span class="line">remap = &#123;</span><br><span class="line">    <span class="built_in">ord</span>(<span class="string">&#x27;\n&#x27;</span>):<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">    <span class="built_in">ord</span>(<span class="string">&#x27;\t&#x27;</span>):<span class="string">&#x27; &#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">line = line.translate(remap)</span><br><span class="line"></span><br><span class="line">actions = &#123;</span><br><span class="line">        <span class="number">2</span>: print_help,</span><br><span class="line">        <span class="number">3</span>: save_help,</span><br><span class="line">&#125;</span><br><span class="line">action = actions.get(argc, usage)</span><br><span class="line">action()</span><br><span class="line"><span class="comment"># 用字典映射不同的方法</span></span><br></pre></td></tr></table></figure>
+<p>#常见的Python写法:<br>###生成器(gernerator), yield, .next()</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>g = (x * x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>g</span><br><span class="line">&lt;generator <span class="built_in">object</span> &lt;genexpr&gt; at <span class="number">0x104feab40</span>&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> n <span class="keyword">in</span> g:</span><br><span class="line"><span class="meta">... </span>    <span class="built_in">print</span> n</span><br></pre></td></tr></table></figure>
+
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器:"></a>迭代器:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>L = [x * x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>L</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> ch <span class="keyword">in</span> <span class="string">&#x27;ABC&#x27;</span>:</span><br><span class="line"><span class="meta">... </span>    <span class="built_in">print</span> ch</span><br><span class="line">...</span><br><span class="line">A</span><br><span class="line">B</span><br><span class="line">C</span><br></pre></td></tr></table></figure>
+
+<h3 id="列表生成式"><a href="#列表生成式" class="headerlink" title="列表生成式:"></a>列表生成式:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>[x * x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>) <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>]</span><br><span class="line">[<span class="number">4</span>, <span class="number">16</span>, <span class="number">36</span>, <span class="number">64</span>, <span class="number">100</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>[m + n <span class="keyword">for</span> m <span class="keyword">in</span> <span class="string">&#x27;ABC&#x27;</span> <span class="keyword">for</span> n <span class="keyword">in</span> <span class="string">&#x27;XYZ&#x27;</span>]</span><br><span class="line">[<span class="string">&#x27;AX&#x27;</span>, <span class="string">&#x27;AY&#x27;</span>, <span class="string">&#x27;AZ&#x27;</span>, <span class="string">&#x27;BX&#x27;</span>, <span class="string">&#x27;BY&#x27;</span>, <span class="string">&#x27;BZ&#x27;</span>, <span class="string">&#x27;CX&#x27;</span>, <span class="string">&#x27;CY&#x27;</span>, <span class="string">&#x27;CZ&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="map-reduce-Filter"><a href="#map-reduce-Filter" class="headerlink" title="map &#x2F; reduce &#x2F; Filter:"></a>map &#x2F; reduce &#x2F; Filter:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;<span class="built_in">map</span>(函数, 可迭代的对象)</span><br><span class="line">&gt;&gt;&gt;reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_odd</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">return</span> n % <span class="number">2</span> == <span class="number">1</span></span><br><span class="line"><span class="built_in">filter</span>(is_odd, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">15</span>])</span><br><span class="line"><span class="comment"># 结果: [1, 5, 9, 15]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h3><h3 id="一些魔法方法"><a href="#一些魔法方法" class="headerlink" title="一些魔法方法"></a>一些魔法方法</h3><h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><h3 id="利用collections-deque-保留有限的历史纪录"><a href="#利用collections-deque-保留有限的历史纪录" class="headerlink" title="利用collections.deque 保留有限的历史纪录:"></a>利用collections.deque 保留有限的历史纪录:</h3><p>使用 deque(maxlen&#x3D;N) 构造函数会新建一个固定大小的队列。当新的元素加入并 且这个队列已满的时候，最老的元素会自动被移除掉。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>q = deque(maxlen=<span class="number">3</span>) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.append(<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.append(<span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.append(<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q</span><br><span class="line">deque([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], maxlen=<span class="number">3</span>) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.append(<span class="number">4</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q</span><br><span class="line">deque([<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], maxlen=<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.append(<span class="number">5</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q</span><br><span class="line">deque([<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], maxlen=<span class="number">3</span>)</span><br><span class="line"><span class="comment"># 在队列两端插入或删除元素时间复杂度都是 O(1) ，而在列表的开头插入或删除元 素的时间复杂度为 O(N)</span></span><br></pre></td></tr></table></figure>
+<h3 id="如何在循环中获取下标"><a href="#如何在循环中获取下标" class="headerlink" title="如何在循环中获取下标:"></a>如何在循环中获取下标:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> idx, val <span class="keyword">in</span> <span class="built_in">enumerate</span>(ints):</span><br><span class="line">    <span class="built_in">print</span> idx, val</span><br><span class="line"><span class="comment"># 使用enumerate</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="如何判断一个对象是否拥有某个属性"><a href="#如何判断一个对象是否拥有某个属性" class="headerlink" title="如何判断一个对象是否拥有某个属性:"></a>如何判断一个对象是否拥有某个属性:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">hasattr</span>(a, <span class="string">&#x27;property&#x27;</span>):</span><br><span class="line">    a.<span class="built_in">property</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="staticmethod和-classmethod的区别"><a href="#staticmethod和-classmethod的区别" class="headerlink" title="@staticmethod和@classmethod的区别"></a>@staticmethod和@classmethod的区别</h3><h3 id="is是身份测试，-是相等测试"><a href="#is是身份测试，-是相等测试" class="headerlink" title="is是身份测试，&#x3D;&#x3D;是相等测试:"></a>is是身份测试，&#x3D;&#x3D;是相等测试:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">&#x27;pub&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">&#x27;&#x27;</span>.join([<span class="string">&#x27;p&#x27;</span>, <span class="string">&#x27;u&#x27;</span>, <span class="string">&#x27;b&#x27;</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a == b</span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="如何获取文件扩展名"><a href="#如何获取文件扩展名" class="headerlink" title="如何获取文件扩展名:"></a>如何获取文件扩展名:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> os</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fileName, fileExtension = os.path.splitext(<span class="string">&#x27;/path/to/somefile.ext&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fileName</span><br><span class="line"><span class="string">&#x27;/path/to/somefile&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fileExtension</span><br><span class="line"><span class="string">&#x27;.ext&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="如何获取list中包含某个元素所在的下标"><a href="#如何获取list中包含某个元素所在的下标" class="headerlink" title="如何获取list中包含某个元素所在的下标:"></a>如何获取list中包含某个元素所在的下标:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>[“foo”,“bar”,“baz”].index(<span class="string">&#x27;bar&#x27;</span>)</span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="浅拷贝深拷贝"><a href="#浅拷贝深拷贝" class="headerlink" title="浅拷贝深拷贝"></a>浅拷贝深拷贝</h3><ul>
+<li>对象的赋值是:获得了当前元素的地址元素以及子元素的地址</li>
+<li>浅拷贝: 浅拷贝仅仅复制了容器中元素的地址</li>
+<li>深拷贝，完全拷贝了一个副本，容器内部元素地址都不一样</li>
+</ul>
+<p>总结: 浅拷贝深拷贝的问题还是跟Python的引用机制有关, 说白了, append,pop这些操作, 不更换地址.<br>而对象有两种,“可更改”（mutable）与“不可更改”（immutable）对象。在python中，strings, tuples, 和numbers是不可更改的对象，而list,dict等则是可以修改的对象。<br>也就是说, 地址里的内存元素不可变, 只能另外申请一个内存.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+      
+    
+      
+        
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/16/Python%20%E7%9A%84id,%20type,%20value/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -409,165 +595,6 @@
 
       
     
-      
-        
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/17/2017%E6%80%BB%E7%BB%93%EF%BC%881%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/17/2017%E6%80%BB%E7%BB%93%EF%BC%881%EF%BC%89/" itemprop="url">2017总结（1）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-17T00:15:19+08:00">
-                2018-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%94%9F%E6%B4%BB/" itemprop="url" rel="index">
-                    <span itemprop="name">生活</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>时光飞逝，2018年已经过去小半。<br>2017年用一个字形容，就是『累』。</p>
-<p>这大概是我过去25年的总结吧。<br>花了很多时间思考一些问题。</p>
-<p>思考自己的原生家庭，思考人生。。</p>
-<p>旧的东西伴随着我，俨然已经成为一个个习惯：<br>习惯晚睡、习惯焦虑、习惯默默地去承受一些东西而不是大声地把痛苦和不满说出来。</p>
-<p>经常加班到很晚，回到家已是深夜。小区附近刚好有24小时的全家，就去买酸奶和面包做夜宵。<br>全家的小哥黑眼圈很重，问了他似乎是经常上夜班。</p>
-<p>上海雨多，有时候会用滴滴打车上下班。半夜两点、四点下班依然能打到车。<br>滴滴司机跟我说他一天要做14个小时，因为做得更多就有更多的奖励金。不然赚不到这么多钱。</p>
-<p>这个城市的人，大多如我一般，奔波着、劳碌着。为了—生存吧。</p>
-<p>有时候会想，上海就是一个巨大的机器，而我们每个人都只是这个机器上的一颗小螺丝钉。<br>我几乎很少出门，有时候团建或是聚餐跟朋友一起去浦西，都感觉像进城。</p>
-<p>而我只是一个普通的打工族，像便利店小哥、滴滴司机一样普通。</p>
-<p>背井离乡，买房无望，每天辛苦搬砖。<br>这种漂泊的感觉，时常在想起一些古诗的时候引起共鸣。</p>
-<hr>
-<h3 id="你在焦虑什么？"><a href="#你在焦虑什么？" class="headerlink" title="你在焦虑什么？"></a>你在焦虑什么？</h3><p>焦虑皆因看不到希望或者希望渺茫。<br>我似乎不得不接受我从小努力学习、好好读书、上重点班、几乎是全家族成绩最好的，然而我这么奋斗小半生，依然什么都没有。</p>
-<p>别人或有快乐的童年、幸福的家庭、房价较低的时代，财力不错的父母，几乎不费吹灰之力，就心安理得地过上了中产的生活。<br>而我，一无所有。</p>
-<p>这种焦虑感在过去几年里一直折磨着我、吞噬着我。</p>
-<p>不甘心而又无力改变现实。</p>
-<hr>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-      
-    
   </section>
 
   
@@ -618,7 +645,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">54</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -863,6 +890,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 

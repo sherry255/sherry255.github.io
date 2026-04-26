@@ -268,6 +268,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/16/Localstorage%20%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sherry's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/01/16/Localstorage%20%E4%BD%BF%E7%94%A8/" itemprop="url">Localstorage 使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-16T19:45:14+08:00">
+                2017-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>前段时间想用electron做一个类似TODO的应用, 我平时的工作写后端比较多, 走了一些坑, 也学了一些东西, 以下是我学习到的localstorage的总结:</p>
+<p>localStorage 基本特点:<br>　　以键值对(Key-Value)的方式存储，永久存储，永不失效，除非手动删除</p>
+<p>浏览器各种存储方式比较<br>　　cookie(4k)<br>　　localStorage(5M)</p>
+<p>各大网站使用的浏览器存储方式比较:<br>　　走访了一些网站, 看了看控制台的存储使用状况, 发现还是cookie居多, 也有用LocalStorage的(比如淘宝, 京东(不过大多是直接存DOM))</p>
+<p>网上常见的Localstorage使用说明:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">parseDom</span>(<span class="params">arg</span>) &#123;</span><br><span class="line">　　 <span class="keyword">var</span> objE = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>);</span><br><span class="line">　　 objE.<span class="property">innerHTML</span> = arg;</span><br><span class="line">　　 <span class="keyword">return</span> objE.<span class="property">childNodes</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 将DOM转化为string</span></span><br><span class="line">a = $(<span class="string">&quot;#lists&quot;</span>).<span class="title function_">html</span>()</span><br><span class="line"><span class="comment">// 存储到localstorage</span></span><br><span class="line"><span class="comment">//localStorage.setItem(&quot;todos&quot;, JSON.stringify(a))</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&quot;todos&quot;</span>, a)</span><br><span class="line"><span class="comment">// 将string 转化为DOM</span></span><br><span class="line">b = <span class="title function_">parseDom</span>(<span class="variable language_">localStorage</span>[<span class="string">&quot;todos&quot;</span>])</span><br><span class="line">最后插入<span class="variable constant_">DOM</span></span><br><span class="line">$(<span class="string">&quot;#lists&quot;</span>).<span class="title function_">empty</span>()</span><br><span class="line">$(<span class="string">&quot;#lists&quot;</span>).<span class="title function_">append</span>(b)</span><br></pre></td></tr></table></figure>
+<p>直接用LocalStorage 存储DOM的方式<br>　　做GTD时, 我想, 既然需要存储的信息不多(&lt;5M), 所以何必不用localStorage直接存储DOM好了,实现方式如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">saveTODO</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> l = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#lists&#x27;</span>).<span class="property">childNodes</span></span><br><span class="line">    <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&quot;todos&quot;</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(l))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 清除所有todos</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">clearAll</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">localStorage</span>.<span class="title function_">clear</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Localstorage 的另类用法<br>　　web存储器之间的区别主要是大小, 鉴于web的特殊性, 其实我们可以利用 localStorage 做一些网站上的优化, 例如:</p>
+<p>将一些常用的静态文件存入localStorage, 并按照使用频率排序, 低频的文件直接清除.这样可以大大提高网站的加载速度,节省流量</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+      
+    
+      
+        
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/11/2016%E5%B9%B4%E4%B9%B0%E8%BF%87%E7%9A%84%E6%8F%90%E9%AB%98%E7%94%9F%E6%B4%BB%E8%B4%A8%E9%87%8F%E7%9A%84%E4%B8%9C%E8%A5%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -404,166 +568,6 @@
 
       
     
-      
-        
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/01/python%20%E5%8F%AF%E5%8F%98%E5%AF%B9%E8%B1%A1%E5%AF%BC%E8%87%B4%E7%9A%84%E5%9D%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sherry's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/01/python%20%E5%8F%AF%E5%8F%98%E5%AF%B9%E8%B1%A1%E5%AF%BC%E8%87%B4%E7%9A%84%E5%9D%91/" itemprop="url">python 可变对象导致的坑</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-01T19:45:14+08:00">
-                2017-01-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python中一切都是对象,对外表现是传地址, tuple,string,number是不可变对象,也就是内存分配后,内存内 存的值不再改变.<br>Python中 list和dict是可变对象, 可以append和pop, 所以就有了坑,</p>
-<p>深拷贝浅拷贝:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a = 1</span><br><span class="line">def fun(a):</span><br><span class="line">    a = 2</span><br><span class="line">fun(a)</span><br><span class="line">print a  # 1</span><br><span class="line">a = []</span><br><span class="line">def fun(a):</span><br><span class="line">    a.append(1)</span><br><span class="line">fun(a)</span><br><span class="line">print a  # [1]</span><br></pre></td></tr></table></figure>
-
-
-<p>函数参数默认值 :</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def generate_new_list_with(my_list=[], element=None):</span><br><span class="line">...     my_list.append(element)</span><br><span class="line">...     return my_list</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; list_1 = generate_new_list_with(element=1)</span><br><span class="line">&gt;&gt;&gt; list_1</span><br><span class="line">[1]</span><br><span class="line">&gt;&gt;&gt; list_2 = generate_new_list_with(element=2)</span><br><span class="line">&gt;&gt;&gt; list_2</span><br><span class="line">[1, 2]</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-      
-    
   </section>
 
   
@@ -614,7 +618,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">54</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -859,6 +863,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
